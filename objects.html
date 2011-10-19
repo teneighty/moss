@@ -7,7 +7,327 @@
         <a href="help.html">Back to Help</a>
         <div name="objects">
             <a name="objects"><h2>Objects</h2></a>
-            <!-- OBJECTS BEGIN -->
+            <!-- OBJECTS BEGIN --><table>
+                <tr>
+                    <td><a name="battery">battery</a></td>
+                    <td></td>
+                    <td>Display current battery status and level.</td>
+                    <td></td>
+                </tr>
+            </table>
+                <tr>
+                    <td><a name="battery_bar">battery_bar</a></td>
+                    <td></td>
+                    <td>Display a bar of the current battery level.</td>
+                    <td></td>
+                </tr>
+            </table>
+                <tr>
+                    <td><a name="battery_percent">battery_percent</a></td>
+                    <td></td>
+                    <td>Display current battery level.</td>
+                    <td></td>
+                </tr>
+            </table>
+                <tr>
+                    <td><a name="battery_time">battery_time</a></td>
+                    <td></td>
+                    <td>Display the amount of time left on battery.</td>
+                    <td></td>
+                </tr>
+            </table>
+                <tr>
+                    <td><a name="color">color</a></td>
+                    <td></td>
+                    <td>Change the current paint color to the default color.</td>
+                    <td></td>
+                </tr>
+            
+                <tr>
+                    <td><a name="color">color</a></td>
+                    <td>(color)</td>
+                    <td>Change the current paint color to the value of color.</td>
+                    <td><ul><li>color - a color name or hexadecimal value
+</li></ul></td>
+                </tr>
+            </table>
+                <tr>
+                    <td><a name="cpu">cpu</a></td>
+                    <td></td>
+                    <td>Display the percentage of cpu usage.</td>
+                    <td></td>
+                </tr>
+            </table>
+                <tr>
+                    <td><a name="cpubar">cpubar</a></td>
+                    <td></td>
+                    <td>Display the percentage of cpu usage in a bar.</td>
+                    <td></td>
+                </tr>
+            </table>
+                <tr>
+                    <td><a name="cpugraph">cpugraph</a></td>
+                    <td>(color1, color2)</td>
+                    <td>Display a historical graph of cpu usage.</td>
+                    <td><ul><li>color1 - left most color of graph</li><li>color2 - right most color of graph</li></ul></td>
+                </tr>
+            
+                <tr>
+                    <td><a name="cpugraph">cpugraph</a></td>
+                    <td>(hw, color1, color2)</td>
+                    <td>Display a historical graph of cpu usage.</td>
+                    <td><ul><li>hw - height,width of the graph such as 32,120</li><li>color1 - left most color of graph</li><li>color2 - right most color of graph</li></ul></td>
+                </tr>
+            </table>
+                <tr>
+                    <td><a name="downspeed">downspeed</a></td>
+                    <td>(device)</td>
+                    <td>Display the download speed for a network interface.</td>
+                    <td><ul><li>device - network device such as eth0 or wlan0</li></ul></td>
+                </tr>
+            </table>
+                <tr>
+                    <td><a name="downspeedgraph">downspeedgraph</a></td>
+                    <td>(device, hw, color1, color2)</td>
+                    <td>Display a historical graph of download speeds for a device.</td>
+                    <td><ul><li>device - network device such as eth0 or wlan0</li><li>hw - height,width of the graph</li><li>color1 - left most color of graph</li><li>color2 - right most color of graph</li></ul></td>
+                </tr>
+            </table>
+                <tr>
+                    <td><a name="fs_bar">fs_bar</a></td>
+                    <td>(mountPoint)</td>
+                    <td>Display current file system usage in a usage bar.</td>
+                    <td><ul><li>mountPoint - Mount point such as /sdcard, /system or /data</li></ul></td>
+                </tr>
+            </table>
+                <tr>
+                    <td><a name="fs_free">fs_free</a></td>
+                    <td>(mountPoint)</td>
+                    <td>Display available diskspace.</td>
+                    <td><ul><li>mountPoint - Mount point such as /sdcard, /system or /data</li></ul></td>
+                </tr>
+            </table>
+                <tr>
+                    <td><a name="fs_size">fs_size</a></td>
+                    <td>(mountPoint)</td>
+                    <td>Display disk size.</td>
+                    <td><ul><li>mountPoint - Mount point such as /sdcard, /system or /data</li></ul></td>
+                </tr>
+            </table>
+                <tr>
+                    <td><a name="fs_used">fs_used</a></td>
+                    <td>(mountPoint)</td>
+                    <td>Display the amount of disk usage.</td>
+                    <td><ul><li>mountPoint - Mount point such as /sdcard, /system or /data</li></ul></td>
+                </tr>
+            </table>
+                <tr>
+                    <td><a name="hr">hr</a></td>
+                    <td></td>
+                    <td>Draw a horizontal rule using the default line height.</td>
+                    <td></td>
+                </tr>
+            
+                <tr>
+                    <td><a name="hr">hr</a></td>
+                    <td>(lh)</td>
+                    <td>Draw a horizontal rule using a line height of lh.</td>
+                    <td><ul><li>lh - a number, used as the new line height
+</li></ul></td>
+                </tr>
+            </table>
+                <tr>
+                    <td><a name="interval">interval</a></td>
+                    <td></td>
+                    <td>Changed the current update interval.</td>
+                    <td></td>
+                </tr>
+            </table>
+                <tr>
+                    <td><a name="kernel">kernel</a></td>
+                    <td></td>
+                    <td>Display the kernel version.</td>
+                    <td></td>
+                </tr>
+            </table>
+                <tr>
+                    <td><a name="loadavg">loadavg</a></td>
+                    <td></td>
+                    <td>Display the 1, 5 and 15 minute load avgerage of jobs in the run queue.</td>
+                    <td></td>
+                </tr>
+            
+                <tr>
+                    <td><a name="loadavg">loadavg</a></td>
+                    <td>(idx)</td>
+                    <td>Display either 1, 5 or 15 minute load avgerage of jobs in the run queue.</td>
+                    <td><ul><li>idx - An integer value, 1 &gte; idx &lte; 3.
+</li></ul></td>
+                </tr>
+            </table>
+                <tr>
+                    <td><a name="machine">machine</a></td>
+                    <td></td>
+                    <td>Display the machine name</td>
+                    <td></td>
+                </tr>
+            </table>
+                <tr>
+                    <td><a name="mem">mem</a></td>
+                    <td></td>
+                    <td>Display memory used.</td>
+                    <td></td>
+                </tr>
+            </table>
+                <tr>
+                    <td><a name="membar">membar</a></td>
+                    <td></td>
+                    <td>Display memory used in a bar graph.</td>
+                    <td></td>
+                </tr>
+            </table>
+                <tr>
+                    <td><a name="memmax">memmax</a></td>
+                    <td></td>
+                    <td>Display the maximum available memory.</td>
+                    <td></td>
+                </tr>
+            </table>
+                <tr>
+                    <td><a name="memperc">memperc</a></td>
+                    <td></td>
+                    <td>Display the percentage of memory being used.</td>
+                    <td></td>
+                </tr>
+            </table>
+                <tr>
+                    <td><a name="printf">printf</a></td>
+                    <td>(format, objects)</td>
+                    <td>Accepts a format string and other text objects.</td>
+                    <td><ul><li>format - a format string as describe in...</li><li>objects - a variable list of text objects
+</li></ul></td>
+                </tr>
+            </table>
+                <tr>
+                    <td><a name="processes">processes</a></td>
+                    <td></td>
+                    <td>Display the total number of forks since boot.</td>
+                    <td></td>
+                </tr>
+            </table>
+                <tr>
+                    <td><a name="realtime">realtime</a></td>
+                    <td></td>
+                    <td>Display the systems time since the system was booted, including deep
+ sleep.</td>
+                    <td></td>
+                </tr>
+            </table>
+                <tr>
+                    <td><a name="running_processes">running_processes</a></td>
+                    <td></td>
+                    <td>Number of processes in runnable state.</td>
+                    <td></td>
+                </tr>
+            </table>
+                <tr>
+                    <td><a name="stippled_hr">stippled_hr</a></td>
+                    <td></td>
+                    <td>Draw a stippled horizontal rule with the default spacing.</td>
+                    <td></td>
+                </tr>
+            
+                <tr>
+                    <td><a name="stippled_hr">stippled_hr</a></td>
+                    <td>(spacing)</td>
+                    <td>Draw a stippled horizontal rule with the default spacing.</td>
+                    <td><ul><li>spacing - a number to specify the size of the dashes.
+</li></ul></td>
+                </tr>
+            </table>
+                <tr>
+                    <td><a name="swap">swap</a></td>
+                    <td></td>
+                    <td>Display the amount of swap memory being used.</td>
+                    <td></td>
+                </tr>
+            </table>
+                <tr>
+                    <td><a name="swapbar">swapbar</a></td>
+                    <td></td>
+                    <td>Display swap memory used in a bar graph.</td>
+                    <td></td>
+                </tr>
+            </table>
+                <tr>
+                    <td><a name="swapmax">swapmax</a></td>
+                    <td></td>
+                    <td>Display the maximum swap memory available.</td>
+                    <td></td>
+                </tr>
+            </table>
+                <tr>
+                    <td><a name="swapperc">swapperc</a></td>
+                    <td></td>
+                    <td>Display the percentage of swap memory being used.</td>
+                    <td></td>
+                </tr>
+            </table>
+                <tr>
+                    <td><a name="sysname">sysname</a></td>
+                    <td></td>
+                    <td>Display the system name</td>
+                    <td></td>
+                </tr>
+            </table>
+                <tr>
+                    <td><a name="top">top</a></td>
+                    <td>(var, num)</td>
+                    <td>Display information about the top running processes. For example to
+ display the top three processes, and their cpu usage:
+ <pre><code>
+  ${top name 1}${top cpu 1}
+  ${top name 2}${top cpu 2}
+  ${top name 3}${top cpu 3}
+ </code></pre></td>
+                    <td><ul><li>var - The name of the variable to display</li><li>num - An integer, &gte; 1</li></ul></td>
+                </tr>
+            </table>
+                <tr>
+                    <td><a name="top_mem">top_mem</a></td>
+                    <td>(var, num)</td>
+                    <td>Display information about the top memory consuming processes. For
+ example to display the top three processes, and their mem usage:
+ <pre><code>
+  ${top name 1}${top mem 1}
+  ${top name 2}${top mem 2}
+  ${top name 3}${top mem 3}
+ </code></pre></td>
+                    <td><ul><li>var - The name of the variable to display</li><li>num - An integer, &gte; 1</li></ul></td>
+                </tr>
+            </table>
+                <tr>
+                    <td><a name="upspeed">upspeed</a></td>
+                    <td>(device)</td>
+                    <td>Display the upload speed for a network interface.</td>
+                    <td><ul><li>device - network device such as eth0 or wlan0</li></ul></td>
+                </tr>
+            </table>
+                <tr>
+                    <td><a name="upspeedgraph">upspeedgraph</a></td>
+                    <td>(device, hw, color1, color2)</td>
+                    <td>Display a historical graph of upload speeds for a device.</td>
+                    <td><ul><li>device - network device such as eth0 or wlan0</li><li>hw - height,width of the graph</li><li>color1 - left most color of graph</li><li>color2 - right most color of graph</li></ul></td>
+                </tr>
+            </table>
+                <tr>
+                    <td><a name="uptime">uptime</a></td>
+                    <td></td>
+                    <td>Display the systems uptime. On android this does not include when the
+ system enters deep sleep. @see Realtime.</td>
+                    <td></td>
+                </tr>
+            </table>
             <!-- OBJECTS END -->
         </div>
     </body>
