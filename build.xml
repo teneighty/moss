@@ -39,10 +39,12 @@
 
 <!-- extension targets. Uncomment the ones where you want to do custom work
      in between standard targets -->
+
+    <target name="-pre-compile">
+        <exec executable="ndk-build"></exec>
+    </target>
 <!--
     <target name="-pre-build">
-    </target>
-    <target name="-pre-compile">
     </target>
 
     [This is typically used for code obfuscation.
