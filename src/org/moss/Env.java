@@ -123,18 +123,15 @@ public class Env {
 
     public void loadPrefs(SharedPreferences prefs) {
 
+        /* If font size changes, so will the max(X|Y) */
+        this.maxX = 0;
+        this.maxY = 0;
+
         if (null != config) {
             this.updateInterval = (long) (1000.0f * config.getUpdateInterval());
 
             try {
-                float fontSize = Config.CONF_FONT_SIZE_VALUE;
-                String ssize = prefs.getString(Config.CONF_FONT_SIZE, String.valueOf(Config.CONF_FONT_SIZE_VALUE));
-                if (null != ssize && !ssize.contains(".")) {
-                    ssize += ".0";
-                    fontSize = new Float(ssize).floatValue();
-                } else {
-                    fontSize = config.getFontSize();
-                }
+                float fontSize = prefs.getFloat("font_size", config.getFontSize());
                 paint.setTextSize(fontSize);
             } catch (NumberFormatException e) {
                 Log.e(TAG, "", e);

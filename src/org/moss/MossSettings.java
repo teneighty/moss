@@ -113,8 +113,8 @@ public class MossSettings extends PreferenceActivity
             return;
         }
         SharedPreferences.Editor edit = prefs.edit();
-        if (null == prefs.getString("font_size", null)) {
-            edit.putString("font_size", String.format("%.0f", singleton.env.getConfig().getFontSize()));
+        if (-1.0f == prefs.getFloat("font_size", -1.0f)) {
+            edit.putFloat("font_size", singleton.env.getConfig().getFontSize());
         }
         if (null == prefs.getString("background_color", null)) {
             /* TODO: this is repeated throughout the code, refactor */
@@ -217,7 +217,7 @@ public class MossSettings extends PreferenceActivity
         reset.setOnMenuItemClickListener(new OnMenuItemClickListener() {
             public boolean onMenuItemClick(MenuItem item) {
                 SharedPreferences.Editor edit = prefs.edit();
-                edit.putString(pref.getKey(), null);
+                edit.remove(pref.getKey());
                 edit.commit();
 
                 defaultPrefs();
@@ -282,11 +282,17 @@ public class MossSettings extends PreferenceActivity
                 continue;
             }
 
-            CharSequence value = prefs.getString(key, "");
-            if (p instanceof CheckBoxPreference || p instanceof ListPreference) {
+            if (p instanceof CheckBoxPreference 
+                    || p instanceof ListPreference) {
                 continue;
             }
-            p.setSummary(value);
+            if ("font_size".equals(key)) {
+                CharSequence value = String.format("%.0f", prefs.getFloat(key, -1.0f));
+                p.setSummary(value);
+            } else {
+                CharSequence value = prefs.getString(key, "");
+                p.setSummary(value);
+            }
         }
     }
 

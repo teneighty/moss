@@ -53,7 +53,7 @@
 
     <PreferenceCategory android:title="@string/font_cat">
 
-        <EditTextPreference
+        <org.moss.prefs.FontSizePreference
             android:key="font_size"
             android:title="@string/font_size_title"
             android:singleLine="true"
