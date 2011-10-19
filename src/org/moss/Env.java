@@ -145,6 +145,12 @@ public class Env {
             backgroundColor = Common.hexToInt(prefBg, Config.CONF_BACKGROUND_COLOR_VALUE);
             /* set alpha channel */
             backgroundColor |= 0xff000000;
+
+            String modColorStr = prefs.getString("mod_color", config.getModColor());
+            modColor = Common.hexToInt(modColorStr, -1);
+            if (modColor != -1) {
+                modColor |= 0xff000000;
+            }
         }
 
         /* TODO: 
@@ -188,12 +194,10 @@ public class Env {
         this.canvas = c;
 
         c.save();
-        c.drawColor(getBackgroundColor());
-        if (null != config.getModColor()) {
+        c.drawColor(this.backgroundColor);
+        if (this.modColor != -1) {
             int orig = paint.getColor();
-            int mod = Common.hexToInt(config.getModColor(), 0x0);
-            mod |= 0xFF000000;
-            paint.setColor(mod);
+            paint.setColor(this.modColor);
             for (int i = 0; i < getPaperWidth() || i < getPaperHeight(); i += 5) {
                 c.drawLine(0, i, getPaperWidth(), i, paint);
                 c.drawLine(i, 0, i, getPaperHeight(), paint);
@@ -344,6 +348,10 @@ public class Env {
         return backgroundColor;
     }
 
+    public int getModColor() {
+        return modColor;
+    }
+
     public void addExs(MossException ex) {
         this.exs.add(ex);
     }
@@ -412,6 +420,7 @@ public class Env {
 
     private long updateInterval;
     private int backgroundColor;
+    private int modColor;
     private Bitmap backgroundImage;
 
     private ConfigWatcher cwatcher;

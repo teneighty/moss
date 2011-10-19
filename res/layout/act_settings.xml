@@ -42,6 +42,16 @@
             android:singleLine="true"
             />
 
+        <org.moss.prefs.ColorPickerPreference
+            android:key="mod_color"
+            android:title="@string/mod_color_title"
+            android:singleLine="true"
+            />
+
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/font_cat">
 
         <EditTextPreference
             android:key="font_size"
@@ -62,9 +72,16 @@
             />
 
         <Preference
+            android:key="config_reset"
+            android:title="@string/reset"
+            android:summary="@string/reset_summary"
+            android:singleLine="true"
+            />
+
+        <Preference
             android:key="config_help"
             android:title="@string/help"
-            android:summary="@string/reload_summary"
+            android:summary="@string/help_summary"
             android:singleLine="true"
             />
 

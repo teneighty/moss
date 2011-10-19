@@ -83,6 +83,15 @@ public class MossSettings extends PreferenceActivity
                 }
             });
         }
+        Preference reset = (Preference) findPreference("config_reset");
+        if (null != reset) {
+            reset.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+                public boolean onPreferenceClick(Preference pref) {
+                    resetDefaults();
+                    return true;
+                }
+            });
+        }
         Preference help = (Preference) findPreference("config_help");
         if (null != help) {
             help.setOnPreferenceClickListener(new OnPreferenceClickListener() {
@@ -113,6 +122,14 @@ public class MossSettings extends PreferenceActivity
             int c = Common.hexToInt(prefBg, Config.CONF_BACKGROUND_COLOR_VALUE);
             c |= 0xFF000000;
             edit.putString("background_color", String.format("#%x", c));
+        }
+        if (null == prefs.getString("mod_color", null)) {
+            String mod = singleton.env.getConfig().getModColor();
+            if (null != mod) {
+                int c = Common.hexToInt(mod, -1);
+                c |= 0xFF000000;
+                edit.putString("mod_color", String.format("#%x", c));
+            }
         }
         edit.commit();
     }
@@ -190,9 +207,8 @@ public class MossSettings extends PreferenceActivity
         final Preference pref = (Preference) this.getListView().getItemAtPosition(info.position);;
         menu.setHeaderTitle(pref.getTitle());
 
-        if (!"background_image".equals(pref.getKey())
-                && !"background_color".equals(pref.getKey())
-                && !"font_size".equals(pref.getKey())) {
+        
+        if (!isDefaultable(pref.getKey())) {
             return;
         }
 
@@ -292,6 +308,28 @@ public class MossSettings extends PreferenceActivity
 
         return alertDialog;
     }
+
+    private void resetDefaults() {
+        SharedPreferences.Editor edit = prefs.edit();
+        for (String k : defaultable) {
+            edit.putString(k, null);
+        }
+        edit.commit();
+        defaultPrefs();
+    }
+
+    private boolean isDefaultable(String key) {
+        for (String k : defaultable) {
+            if (k.equals(key)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    static String[] defaultable = new String[] {
+        "background_image", "background_color", "mod_color", "font_size"
+    };
 
     private Env.Current currentEnv = Env.Current.INSTANCE;
 
