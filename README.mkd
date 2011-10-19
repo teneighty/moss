@@ -1,0 +1,12 @@
+Moss
+====
+
+Moss is a conky like live wallpaper for android. It provides different system
+statistics such as uptime, cpu usage, network usage, top processes, and battery
+life. 
+
+TODO
+====
+* Use a better color picker
+* IntentReceiver when SDcard mounted
+* Fix battery_time 
