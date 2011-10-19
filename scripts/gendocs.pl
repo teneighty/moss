@@ -5,10 +5,10 @@ use warnings;
 
 use HTML::Entities;
 use File::Basename;
+use Getopt::Long;
+use Pod::Usage;
 
 my $package = 'org/moss/objects';
-my $CONFIG_FILE = 'assets/config.html';
-my $OBJECT_FILE = 'assets/objects.html';
 my $TMP_OUT_DIR = '/tmp/moss-docs';
 my $CONFIG_JAVA = 'src/org/moss/Config.java';
 my $CONFIG_DOC = "$TMP_OUT_DIR/org/moss/Config.html";
@@ -44,7 +44,11 @@ sub run_javadoc {
     print "Running javadoc\n";
     my $files = join(' ', split(/\n/, `find src/org/moss/objects -type f -not -name '.*.swp'`));
     mkdir $TMP_OUT_DIR;
-    `javadoc -d $TMP_OUT_DIR $files $CONFIG_JAVA `;
+    my $ec = system("javadoc -d $TMP_OUT_DIR $files $CONFIG_JAVA 1>/dev/null 2>&1 ");
+    if ($ec != 0) {
+        print "Javadoc failed with $ec: exiting.\n";
+        exit 1;
+    }
     return 1;
 }
 
@@ -121,6 +125,23 @@ sub slurp {
     return $body;
 }
 
+sub uncommitted_changes {
+    my $mods = `git status -s`;
+    return length($mods) > 0;
+}
+
+my ($help, $sitedocs) = (0, 0);
+
+GetOptions('help' => \$help
+         , 'sitedocs' => \$sitedocs
+       ) or pod2usage(2);
+pod2usage(1) if $help;
+
+if (uncommitted_changes()) {
+    print "Uncomitted changes!?! I'm outta here!\n";
+    exit 0;
+}
+
 my $objs = { };
 my $config = load_config();
 my $lookup = load_objects();
@@ -129,54 +150,114 @@ if (run_javadoc()) {
     parse_files($objs, $lookup);
 }
 
+my $CONFIG_FILE = 'assets/config.html';
+my $OBJECT_FILE = 'assets/objects.html';
+
 my $config_html = '';
-for my $k (sort keys %{ $config }) {
-    my %h = %{ $config->{$k} };
-    my $var_name = $h{var_name};
-    my $desc = $h{desc} || '';
-    $config_html .= qq{
-        <div>
-            <h3>$var_name</h3>
-            <p>
-            $desc
-            </p>
-            <hr />
-        </div>
-    }
-}
-
 my $obj_html = '';
-for my $k (sort keys %{ $objs }) {
-    for my $c (@{ $objs->{$k} }) {
-        my $desc = $c->{desc};
-        my @params = @{ $c->{params} };
-        my $phdr = '';
-        my $pbody = '';
 
-        if ($#params + 1 > 0) {
-            $pbody .= 'Parameters: <ul>';
-            for my $p (@params) {
-                my $name = $p->[0];
-                my $desc = $p->[1];
-                $phdr .= "$name, ";
-                $pbody .= "<li>$name - $desc</li>";
-            }
-            $phdr =~ s/\s*,\s*$//g;
-            $phdr = "($phdr)";
-            $pbody .= '</ul>';
+if ($sitedocs) {
+    $CONFIG_FILE = 'config.html';
+    $OBJECT_FILE = 'objects.html';
+
+    $config_html .= "<table>\n";
+    for my $k (sort keys %{ $config }) {
+        my %h = %{ $config->{$k} };
+        my $var_name = $h{var_name};
+        my $desc = $h{desc} || '';
+        $config_html .= qq{
+            <tr>
+                <td><h3>$var_name</td>
+                <td>
+                $desc
+                </td>
+            </tr>
         }
+    }
+    $config_html .= "</table>\n";
 
-        $obj_html .= qq{
+    $obj_html .= "<table>\n";
+    for my $k (sort keys %{ $objs }) {
+        for my $c (@{ $objs->{$k} }) {
+            my $desc = $c->{desc};
+            my @params = @{ $c->{params} };
+            my $phdr = '';
+            my $pbody = '';
+
+            if ($#params + 1 > 0) {
+                $pbody .= '<ul>';
+                for my $p (@params) {
+                    my $name = $p->[0];
+                    my $desc = $p->[1];
+                    $phdr .= "$name, ";
+                    $pbody .= "<li>$name - $desc</li>";
+                }
+                $phdr =~ s/\s*,\s*$//g;
+                $phdr = "($phdr)";
+                $pbody .= '</ul>';
+            }
+
+            $obj_html .= qq{
+                <tr>
+                    <td><a name="$k">$k</a></td>
+                    <td>$phdr</td>
+                    <td>$desc</td>
+                    <td>$pbody</td>
+                </tr>
+            };
+        }
+    }
+    $obj_html .= "</table>\n";
+    # checkout gh-pages
+    `git checkout gh-pages`
+} else {
+    for my $k (sort keys %{ $config }) {
+        my %h = %{ $config->{$k} };
+        my $var_name = $h{var_name};
+        my $desc = $h{desc} || '';
+        $config_html .= qq{
             <div>
-                <h3><a name="$k">$k</a>$phdr</h3>
+                <h3>$var_name</h3>
                 <p>
                 $desc
                 </p>
-                $pbody
                 <hr />
             </div>
-        };
-   }
+        }
+    }
+
+    for my $k (sort keys %{ $objs }) {
+        for my $c (@{ $objs->{$k} }) {
+            my $desc = $c->{desc};
+            my @params = @{ $c->{params} };
+            my $phdr = '';
+            my $pbody = '';
+
+            if ($#params + 1 > 0) {
+                $pbody .= 'Parameters: <ul>';
+                for my $p (@params) {
+                    my $name = $p->[0];
+                    my $desc = $p->[1];
+                    $phdr .= "$name, ";
+                    $pbody .= "<li>$name - $desc</li>";
+                }
+                $phdr =~ s/\s*,\s*$//g;
+                $phdr = "($phdr)";
+                $pbody .= '</ul>';
+            }
+
+            $obj_html .= qq{
+                <div>
+                    <h3><a name="$k">$k</a>$phdr</h3>
+                    <p>
+                    $desc
+                    </p>
+                    $pbody
+                    <hr />
+                </div>
+            };
+        }
+    }
 }
 
 my $file = slurp($CONFIG_FILE);
@@ -191,4 +272,47 @@ $file =~ s/(^\s*<!-- OBJECTS BEGIN -->\s*$).*(^\s*<!-- OBJECTS END -->\s*$)/$1$o
 open(OBJECTS, ">$OBJECT_FILE");
 print OBJECTS $file;
 close(OBJECTS);
+
+# If we are not on the master branch any longer, return
+if ($sitedocs) {
+    `git add config.html objects.html`;
+    `git commit -m 'Updated online documentation.'`;
+    `git checkout master`;
+}
+
+
+__END__
+
+=head1 NAME
+
+gendocs.pl
+
+=head1 SYNOPSIS
+
+B<gendocs.pl> S<[ B<-h> ]> S<[ B<-d> ]>
+
+=head1 DESCRIPTION
+
+Generate documentation for the moss android application or the moss site.
+
+=head1 OPTIONS
+
+=over 4
+
+=item B<-h>, B<--help>
+
+Help: Print the usage.
+
+=item B<-s>, B<--site>
+
+Generate the documentation for the moss site. The default is to generate html
+for the internal help pages.
+
+=back
+
+=head1 AUTHOR
+
+Tim Horton
+
+=cut
 
