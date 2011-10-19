@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <string-array name="config_sample_names">
+        <item>Default</item>
+        <item>Network Emphasis</item>
+        <item>Process Emphasis</item>
+        <item>Large Configuration</item>
+        <item>Custom</item>
+    </string-array>
+
+    <string-array name="config_sample_values">
+        <item>default.conf</item>
+        <item>network.conf</item>
+        <item>process.conf</item>
+        <item>full.conf</item>
+        <item>CUSTOM</item>
+    </string-array>
+
+</resources>
+

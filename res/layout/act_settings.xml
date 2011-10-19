@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen 
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res/org.moss.prefs"
+        android:title="@string/settings"
+        android:key="settings">
+
+    <PreferenceCategory android:title="@string/config_cat">
+
+        <ListPreference
+            android:key="sample_config_file"
+            android:title="@string/config_sample_title"
+            android:summary="@string/config_sample_summary"
+            android:entries="@array/config_sample_names"
+            android:entryValues="@array/config_sample_values" 
+            android:defaultValue="default.conf" 
+        />
+
+        <EditTextPreference
+            android:key="config_file"
+            android:title="@string/config_file"
+            android:singleLine="true"
+            android:enabled="false"
+            />
+
+    </PreferenceCategory> 
+
+    <PreferenceCategory android:title="@string/background_cat">
+
+        <!--
+             TODO:
+        <Preference
+            android:key="background_image"
+            android:title="@string/bg_image_title"
+            android:singleLine="true"
+            />
+        -->
+
+        <org.moss.prefs.ColorPickerPreference
+            android:key="background_color"
+            android:title="@string/bg_color_title"
+            android:singleLine="true"
+            />
+
+
+        <EditTextPreference
+            android:key="font_size"
+            android:title="@string/font_size_title"
+            android:singleLine="true"
+            android:numeric="decimal"
+            />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/misc">
+
+        <Preference
+            android:key="config_reload"
+            android:title="@string/reload"
+            android:summary="@string/reload_summary"
+            android:singleLine="true"
+            />
+
+        <Preference
+            android:key="config_help"
+            android:title="@string/help"
+            android:summary="@string/reload_summary"
+            android:singleLine="true"
+            />
+
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

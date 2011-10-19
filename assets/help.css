@@ -1,0 +1,9 @@
+body { background-color: #000; color: #eee; }
+ul { list-style-type: none; margin: 0; padding: 0 0 0 10px; }
+h2 { color: #fff; }
+h3 { font-size: 12pt; color: #fff; }
+
+pre, code { font: 10pt Courier, monospace; } 
+blockquote { margin: 0.9em; padding: 0 0 0 10px; font-size: 10pt; }
+hr { background-color: #fff; }
+a { color: #ccc; font-size: 1.2em; }

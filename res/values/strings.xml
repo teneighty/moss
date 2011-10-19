@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <!-- General -->
+    <skip />
+
+    <!-- Application name -->
+    <string name="wallpapers">Moss</string>
+    <string name="moss">Moss</string>
+    <string name="settings">Settings</string>
+    <string name="description">System monitor wallpaper, in the likeness of Conky.</string>
+
+    <!-- Prefs -->
+
+    <string name="config_cat">Configuration</string>
+    <string name="config_sample_title">Configuration File</string>
+    <string name="config_sample_summary">Preconfigured readonly configurations.</string>
+    <string name="config_file">Custom File</string>
+
+    <string name="background_cat">Background</string>
+    <string name="bg_image_title">Image</string>
+    <string name="bg_color_title">Color</string>
+
+    <string name="font_cat">Font</string>
+    <string name="font_size_title">Font Size</string>
+    <string name="font_face_title">Font Family</string>
+
+    <string name="pick_a_color">Select a color: </string>
+
+    <!-- service -->
+    <string name="service_desc">Moss data gathering service</string>
+
+    <string name="dia_errors_title">Configuration Errors</string>
+    <string name="reload">Reload</string>
+    <string name="reload_summary">Force Moss to reload your configuration.</string>
+    <string name="loading">Loading...</string>
+    <string name="reset">Reset</string>
+    <string name="help">Help</string>
+    <string name="help_summary">Display the Moss help pages.</string>
+
+    <string name="misc">Miscellaneous</string>
+
+</resources>
