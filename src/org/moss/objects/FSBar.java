@@ -2,6 +2,7 @@ package org.moss.objects;
 
 import org.moss.Env;
 import org.moss.Common;
+import org.moss.util.Bar;
 import org.moss.objects.FSJni.StatFS;
 
 public class FSBar implements MossObject {
@@ -26,7 +27,9 @@ public class FSBar implements MossObject {
     public void draw(Env env) {
         StatFS stat = fs.getStatFS(mountPoint);
         float frac = stat.usedBytes / (float) stat.totalBytes;
-        Common.drawBar(env, frac);
+
+        Bar b = new Bar();
+        b.drawBar(env, frac);
     }
 
     public void postDraw(Env env) { }

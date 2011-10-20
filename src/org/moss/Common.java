@@ -18,57 +18,6 @@ public class Common {
         env.setX(x + width);
     }
 
-    public static void drawBar(final Env env, final float perc) {
-        drawBar(env, perc, env.getLineHeight(), env.getMaxX() - env.getX());
-    }
-
-    public static void drawBar(final Env env, final float perc, final float height, final float width) {
-        final Paint p = env.getPaint();
-        final int origColor = p.getColor();
-        final Style origStyle = p.getStyle();
-
-        String defaultBorderColor = env.getConfig().getOutlineColor();
-        String defaultShadeColor = env.getConfig().getShadeColor();
-
-        if (null != defaultBorderColor) {
-            int c = Color.lookupColor(defaultBorderColor);
-            if (c <= -1) {
-                c = origColor;
-            }
-            c |= 0xFF000000;
-            p.setColor(c);
-        }
-        p.setStyle(Style.STROKE);
-
-        float boxWidth = width;
-        float barWidth = boxWidth * perc;
-
-        float x = env.getX();
-        float y = env.getY() - p.getTextSize() + PADDING;
-        // float y = (env.getY() - p.getTextSize() + PADDING) + height - PADDING;
-        env.setLineHeight((height - p.getTextSize()) + p.getTextSize());
-
-        /* Draw Outline */
-        env.getCanvas().drawRect(x, y, env.getMaxX(), env.getY() - PADDING, p);
-
-        if (null != defaultShadeColor) {
-            int c = Color.lookupColor(defaultShadeColor);
-            if (c <= -1) {
-                c = origColor;
-            }
-            c |= 0xFF000000;
-            p.setColor(c);
-        }
-
-        p.setStyle(Style.FILL);
-
-        /* Draw Bar */
-        env.getCanvas().drawRect(x, y, x + barWidth, env.getY() - PADDING, env.getPaint());
-
-        p.setStyle(origStyle);
-        p.setColor(origColor);
-    }
-
     public static String formatSeconds(long seconds) {
         long days;
         int hours, minutes;
@@ -119,5 +68,4 @@ public class Common {
     }
 
     static String[] suffixes = {"B", "KiB", "MiB", "GiB", "TiB", "PiB", ""};
-    static final float PADDING = 2;
 }

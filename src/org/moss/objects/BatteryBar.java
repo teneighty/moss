@@ -3,6 +3,7 @@ package org.moss.objects;
 import org.moss.Env;
 import org.moss.Common;
 import org.moss.ParseException;
+import org.moss.util.Bar;
 
 public class BatteryBar implements MossObject {
 
@@ -27,7 +28,8 @@ public class BatteryBar implements MossObject {
     public void preDraw(Env env) { }
 
     public void draw(Env env) {
-        Common.drawBar(env, battInfo.getLevelFrac(), barHeight, barWidth);
+        Bar b = new Bar();
+        b.drawBar(env, battInfo.getLevelFrac(), barHeight, barWidth);
     }
 
     public void postDraw(Env env) { }

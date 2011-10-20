@@ -2,6 +2,7 @@ package org.moss.objects;
 
 import org.moss.Env;
 import org.moss.Common;
+import org.moss.util.Bar;
 
 public class CpuBar implements MossObject {
 
@@ -17,7 +18,8 @@ public class CpuBar implements MossObject {
     public void preDraw(Env env) { }
 
     public void draw(Env env) {
-        Common.drawBar(env, cpuInfo.getCpuUsage());
+        Bar b = new Bar();
+        b.drawBar(env, cpuInfo.getCpuUsage());
     }
 
     public void postDraw(Env env) { }

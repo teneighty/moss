@@ -30,17 +30,15 @@ public class ColorPickerPreference extends DialogPreference {
 
         widget = (View) view.findViewById(org.moss.R.id.color_box);
         if (null != widget) {
-            String color = getPersistedString("FF000000");
-            int defColor = Common.hexToInt(color, 0x000000);
-            widget.setBackgroundColor(defColor);
+            int color = getPersistedInt(0xFF000000);
+            widget.setBackgroundColor(color);
         }
     }
 
     @Override
     protected void showDialog(Bundle state) {
-        String color = getPersistedString("FF000000");
-        int defColor = Common.hexToInt(color, 0x000000);
-        final ColorPickerDialog dialog = new ColorPickerDialog(getContext(), ccListener, defColor);
+        int color = getPersistedInt(0xFF000000);
+        final ColorPickerDialog dialog = new ColorPickerDialog(getContext(), ccListener, color);
         dialog.setOnDismissListener(this);
         dialog.show();
     }
@@ -53,9 +51,10 @@ public class ColorPickerPreference extends DialogPreference {
             if (widget != null) {
                 widget.setBackgroundColor(color);
             }
+            persistInt(color);
+
             String hex = String.format("#%x", color);
             setSummary(hex);
-            persistString(hex);
         }
     };
 

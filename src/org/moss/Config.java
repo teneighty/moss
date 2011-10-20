@@ -130,24 +130,24 @@ public class Config {
         return fontSize;
     }
 
-    public String getModColor() {
-        return modColor;
+    public int getModColor() {
+        return Color.lookupColor(modColor);
     }
 
-    public String getBackgroundColor() {
-        return backgroundColor;
+    public int getBackgroundColor() {
+        return Color.lookupColor(backgroundColor);
     }
 
-    public String getDefaultColor() {
-        return defaultColor;
+    public int getDefaultColor() {
+        return Color.lookupColor(defaultColor);
     }
 
-    public String getOutlineColor() {
-        return outlineColor;
+    public int getOutlineColor() {
+        return Color.lookupColor(outlineColor);
     }
 
-    public String getShadeColor() {
-        return shadeColor;
+    public int getShadeColor() {
+        return Color.lookupColor(shadeColor);
     }
 
     public boolean getAutoReload() {
@@ -198,7 +198,7 @@ public class Config {
      * Sets the font size for the display.
      */
     public static final String CONF_FONT_SIZE = "font_size";
-    public static final float CONF_FONT_SIZE_VALUE = 10.0f;
+    public static final float CONF_FONT_SIZE_VALUE = 12.0f;
 
     /**
      * An absolute path to a background image. <code>/sdcard/moss/bg-fav.png</code>

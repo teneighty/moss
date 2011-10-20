@@ -1,12 +1,18 @@
 Moss
 ====
 
-Moss is a conky like live wallpaper for android. It provides different system
-statistics such as uptime, cpu usage, network usage, top processes, and battery
-life. 
+Moss is a [Conky][conky] like live wallpaper for android. It provides system statistics
+such as uptime, cpu usage, network usage, top processes, and battery level.
+It is highly configurable. Configuration tries to closely follow [Conky's][conky] syntax. 
+
+For example configurations please see [the samples on the Moss site][samples].
 
 TODO
 ====
 * Use a better color picker
+* Fixed color picker to ints rather then string
 * IntentReceiver when SDcard mounted
 * Fix battery_time 
+
+[conky]: http://www.conky.com
+[samples]: http://teneighty.github.com/moss/samples.html

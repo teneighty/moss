@@ -138,13 +138,10 @@ public class Env {
                 paint.setTextSize(Config.CONF_FONT_SIZE_VALUE);
             }
 
-            String prefBg = prefs.getString(Config.CONF_BACKGROUND_COLOR, config.getBackgroundColor());
-            backgroundColor = Common.hexToInt(prefBg, Config.CONF_BACKGROUND_COLOR_VALUE);
-            /* set alpha channel */
+            backgroundColor = prefs.getInt("background_color", config.getBackgroundColor());
             backgroundColor |= 0xff000000;
 
-            String modColorStr = prefs.getString("mod_color", config.getModColor());
-            modColor = Common.hexToInt(modColorStr, -1);
+            modColor = prefs.getInt("mod_color", config.getModColor());
             if (modColor != -1) {
                 modColor |= 0xff000000;
             }

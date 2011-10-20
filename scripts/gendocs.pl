@@ -160,7 +160,13 @@ if ($sitedocs) {
     $CONFIG_FILE = 'config.html';
     $OBJECT_FILE = 'objects.html';
 
-    $config_html .= "<table>\n";
+    $config_html .= qq{
+        <table>
+            <tr>
+                <th>Variable</th>
+                <th>Description</th>
+            </tr>
+    };
     for my $k (sort keys %{ $config }) {
         my %h = %{ $config->{$k} };
         my $var_name = $h{var_name};
@@ -168,15 +174,20 @@ if ($sitedocs) {
         $config_html .= qq{
             <tr>
                 <td><h3>$var_name</td>
-                <td>
-                $desc
-                </td>
+                <td>$desc</td>
             </tr>
         }
     }
-    $config_html .= "</table>\n";
+    $config_html .= "\n</table>\n";
 
-    $obj_html .= "<table>\n";
+    $obj_html .= qq{
+        <table>
+            <tr>
+                <th>Object</th>
+                <th>Parameters</th>
+                <th>Description</th>
+            </tr>
+    };
     for my $k (sort keys %{ $objs }) {
         for my $c (@{ $objs->{$k} }) {
             my $desc = $c->{desc};
@@ -199,15 +210,17 @@ if ($sitedocs) {
 
             $obj_html .= qq{
                 <tr>
-                    <td><a name="$k">$k</a></td>
+                    <td><h3>$k</h3></td>
                     <td>$phdr</td>
-                    <td>$desc</td>
-                    <td>$pbody</td>
+                    <td>
+                        <p>$desc</p>
+                        <p>$pbody</p>
+                    </td>
                 </tr>
             };
         }
     }
-    $obj_html .= "</table>\n";
+    $obj_html .= "\n</table>\n";
     # checkout gh-pages
     `git checkout gh-pages`
 } else {

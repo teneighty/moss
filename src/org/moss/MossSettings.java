@@ -107,33 +107,6 @@ public class MossSettings extends PreferenceActivity
         onSharedPreferenceChanged(prefs, null);
     }
 
-    private void defaultPrefs() {
-        Env.Current singleton = Env.Current.INSTANCE;
-        if (null == singleton.env) {
-            return;
-        }
-        SharedPreferences.Editor edit = prefs.edit();
-        if (-1.0f == prefs.getFloat("font_size", -1.0f)) {
-            edit.putFloat("font_size", singleton.env.getConfig().getFontSize());
-        }
-        if (null == prefs.getString("background_color", null)) {
-            /* TODO: this is repeated throughout the code, refactor */
-            String prefBg = singleton.env.getConfig().getBackgroundColor();
-            int c = Common.hexToInt(prefBg, Config.CONF_BACKGROUND_COLOR_VALUE);
-            c |= 0xFF000000;
-            edit.putString("background_color", String.format("#%x", c));
-        }
-        if (null == prefs.getString("mod_color", null)) {
-            String mod = singleton.env.getConfig().getModColor();
-            if (null != mod) {
-                int c = Common.hexToInt(mod, -1);
-                c |= 0xFF000000;
-                edit.putString("mod_color", String.format("#%x", c));
-            }
-        }
-        edit.commit();
-    }
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -273,6 +246,32 @@ public class MossSettings extends PreferenceActivity
         }
     }
 
+    private void defaultPrefs() {
+        Env.Current singleton = Env.Current.INSTANCE;
+        if (null == singleton.env) {
+            return;
+        }
+        SharedPreferences.Editor edit = prefs.edit();
+        if (-1.0f == prefs.getFloat("font_size", -1.0f)) {
+            edit.putFloat("font_size", singleton.env.getConfig().getFontSize());
+        }
+        if (-1 == prefs.getInt("background_color", -1)) {
+            int c = singleton.env.getConfig().getBackgroundColor();
+            if (-1 != c) {
+                c |= 0xFF000000;
+                edit.putInt("background_color", c);
+            }
+        }
+        if (-1 == prefs.getInt("mod_color", -1)) {
+            int c = singleton.env.getConfig().getModColor();
+            if (-1 != c) {
+                c |= 0xFF000000;
+                edit.putInt("mod_color", c);
+            }
+        }
+        edit.commit();
+    }
+
     protected void updatePrefs() {
         SharedPreferences prefs = getPreferenceManager().getSharedPreferences();
         for (String key : prefs.getAll().keySet()) {
@@ -286,11 +285,15 @@ public class MossSettings extends PreferenceActivity
                     || p instanceof ListPreference) {
                 continue;
             }
+            CharSequence value;
             if ("font_size".equals(key)) {
-                CharSequence value = String.format("%.0f", prefs.getFloat(key, -1.0f));
-                p.setSummary(value);
+                value = String.format("%.0f", prefs.getFloat(key, -1.0f));
+            } else if ("background_color".equals(key) || "mod_color".equals(key)) {
+                value = String.format("#%x", prefs.getInt(key, 0));
             } else {
-                CharSequence value = prefs.getString(key, "");
+                value = prefs.getString(key, "");
+            }
+            if (null != value) {
                 p.setSummary(value);
             }
         }

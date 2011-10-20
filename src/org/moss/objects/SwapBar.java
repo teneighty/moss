@@ -2,6 +2,7 @@ package org.moss.objects;
 
 import org.moss.Common;
 import org.moss.Env;
+import org.moss.util.Bar;
 
 public class SwapBar implements MossObject {
 
@@ -22,7 +23,8 @@ public class SwapBar implements MossObject {
             perc = (memInfo.getSwapTotal() - memInfo.getSwapFree())
                  / (float) memInfo.getSwapTotal();
         }
-        Common.drawBar(env, perc);
+        Bar b = new Bar();
+        b.drawBar(env, perc);
     }
 
     public void postDraw(Env env) { }

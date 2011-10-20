@@ -31,11 +31,7 @@ public class Color implements MossObject {
     public void draw(Env env) {
         int c = -1;
         if (null == this.color || this.color < 0) {
-            String def = env.getConfig().getDefaultColor();
-            this.color = colorMap.get(def);
-            if (null == this.color) {
-                this.color = Common.hexToInt(def, -1);
-            }
+            c = env.getConfig().getDefaultColor();
         } else {
             c = this.color;
         }

@@ -51,16 +51,10 @@ public class Graph {
         final int origColor = p.getColor();
         final Style origStyle = p.getStyle();
 
-        String defaultBorderColor = env.getConfig().getOutlineColor();
-        String defaultShadeColor = env.getConfig().getShadeColor();
-
-        if (null != defaultBorderColor) {
-            int border = Color.lookupColor(defaultBorderColor);
-            if (border <= -1) {
-                border = origColor;
-            }
-            border |= 0xFF000000;
-            p.setColor(border);
+        if (-1 != env.getConfig().getOutlineColor()) {
+            int c = env.getConfig().getOutlineColor();
+            c |= 0xFF000000;
+            p.setColor(c);
         }
         p.setStyle(Style.STROKE);
 
