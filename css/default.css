@@ -66,18 +66,14 @@ body {
     text-decoration: none;
 }
 
-#menu a:hover {
-    color: #CCC;
-}
+#menu a:hover { color: #CCC; }
 
-.clear {
-    clear: both;
-}
+.clear { clear: both; }
 
-td { 
-    vertical-align: top;
-}
+#content table ul { margin: 10px; }
+#content tr:nth-child(odd)  { background-color: #ccc; }
+#content tr:nth-child(even) { background-color: #fff; }
+#content td { vertical-align: top; }
+#content th { text-align: left; }
 
-table ul {
-    margin: 10px;
-}
+
