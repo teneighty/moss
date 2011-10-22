@@ -95,11 +95,20 @@ p {
 
 .clear { clear: both; }
 
-#content table ul { margin: 10px; }
+#content { padding-bottom: 5px; }
+#content table { 
+    border: #000 solid 1px;
+    box-shadow: 0px 0px 10px #ccc;
+    -webkit-box-shadow: 0px 0px 10px #ccc;
+    -moz-box-shadow: 0px 0px 10px #ccc;
+    margin: 0 auto;
+}
+#content table ul { margin: 10px; list-style-type: none; }
 #content tr:nth-child(odd)  { background-color: #ccc; }
 #content tr:nth-child(even) { background-color: #fff; }
-#content td { vertical-align: top; }
-#content th { text-align: left; }
+
+#content td { padding 5px; vertical-align: top; }
+#content th { font-size: 1.1em; text-align: left; }
 
 .samples {
     margin: 0 auto;
