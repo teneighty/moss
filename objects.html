@@ -2,6 +2,18 @@
 layout: default
 title: Objects
 ---
+<p>
+    This section lists various objects you can use in the layout portion of
+    your configuration file. Objects are enclosed in <code>${...}</code>. For
+    example, to display the amount of disk usage on sdcard you could say,
+    versus the amount of available space:
+
+    <block><code><pre>
+        FS: ${fs_used /sdcard} / ${fs_size /sdcard}
+    </pre></code></block>
+
+    You can get more ideas for layouts by looking at the <a href="samples.html">examples</a>. 
+</p>
 <!-- OBJECTS BEGIN -->
         <table>
             <tr>

@@ -1,0 +1,57 @@
+# Default update stats every 5 seconds
+update_interval  5.0
+background_mod #333333 #555555
+alignment top_middle
+
+default_color white
+default_shade_color MyBlue
+default_outline_color white
+
+# Custom colors using colorN
+colorAlertHigh #ddaa00
+colorAlertMid  #ddaa66
+colorAlertLow  #ddaabb
+colorMyBlue  #336699
+
+gap_y 60.0
+gap_x 0.0
+
+TEXT
+${interval 60.0}
+${color lightgrey}Sysname: ${color}$sysname 
+${color lightgrey}Kernel: ${color}$kernel 
+${color lightgrey}Machine: ${color}$machine
+$hr
+${interval 1.0}${color lightgrey}Uptime:$color $uptime ${color lightgrey} - Realtime: $color$realtime
+${color lightgrey}CPU Usage:${color} ${cpu}% ${cpubar}
+${color lightgrey}${cpugraph 0x333333 0x336699}
+${color lightgrey}Battery:$color $battery
+${color lightgrey}Load:$color $loadavg
+${color lightgrey}RAM Usage:$color ${printf "%-20.20s" ${printf "%s/%s - %s%%" $mem $memmax $memperc}} $membar
+${color lightgrey}Swap Usage:$color ${printf "%-19.19s" ${printf "%s/%s - %s%%" $swap $swapmax $swapperc}} $swapbar
+${color lightgrey}Processes:$color $processes  ${color grey}
+${color lightgrey}Running:$color $running_processes
+$color$stippled_hr
+${color lightgrey}Networking:
+eth0 Down:${color #8844ee} ${downspeed eth0} ${color lightgrey} Up:${color #22ccff} ${upspeed eth0} 
+${downspeedgraph eth0 40,150 ff0000 0000ff} ${upspeedgraph eth0 40,150 0000ff ff0000}
+${color lightgrey}File systems:
+/system $color${printf "%5.5s/%-7.7s" ${fs_used /system} ${fs_size /system}} ${fs_bar /system}${color lightgrey}
+/data   $color${printf "%5.5s/%-7.7s" ${fs_used /data} ${fs_size /data}} ${fs_bar /data}${color lightgrey}
+/sdcard $color${printf "%5.5s/%-7.7s" ${fs_used /sdcard} ${fs_size /sdcard}} ${fs_bar /sdcard}
+$color$stippled_hr${interval 5.0}
+${color}Name                PID    CPU%   MEM% 
+${color AlertHigh}${top name 1}${top pid 1}${top cpu 1}${top mem 1}
+${color AlertMid}${top name 2}${top pid 2}${top cpu 2}${top mem 2}
+${color AlertLow}${top name 3}${top pid 3}${top cpu 3}${top mem 3}
+${color lightgrey}${top name 4}${top pid 4}${top cpu 4}${top mem 4}
+${color lightgrey}${top name 5}${top pid 5}${top cpu 5}${top mem 5}
+
+${color}Mem usage
+${color AlertHigh}${top_mem name 1}${top_mem pid 1}${top_mem cpu 1}${top_mem mem 1}
+${color AlertMid}${top_mem name 2}${top_mem pid 2}${top_mem cpu 2}${top_mem mem 2}
+${color AlertLow}${top_mem name 3}${top_mem pid 3}${top_mem cpu 3}${top_mem mem 3}
+${color lightgrey}${top_mem name 4}${top_mem pid 4}${top_mem cpu 4}${top_mem mem 4}
+${color lightgrey}${top_mem name 5}${top_mem pid 5}${top_mem cpu 5}${top_mem mem 5}
+
+# vim:set ft=conkyrc:
