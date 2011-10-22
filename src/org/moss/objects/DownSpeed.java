@@ -11,6 +11,7 @@ public class DownSpeed extends AbsMossObject implements MossObject {
      */
     public DownSpeed(String device) {
         this.device = device;
+        netDevInfo.registerDevice(device);
     }
 
     public DataProvider getDataProvider() {

@@ -25,8 +25,8 @@ public enum ProcNetDev implements DataProvider {
     class Device {
         String deviceName;
 
-        List<DeviceStat> recvHistory;
-        List<DeviceStat> transHistory;
+        RRDList<DeviceStat> recvHistory;
+        RRDList<DeviceStat> transHistory;
 
         long recvSpeed;
         long transSpeed;
@@ -48,6 +48,25 @@ public enum ProcNetDev implements DataProvider {
         devices = new HashMap<String, Device>();
     }
 
+    public synchronized void registerDevice(String deviceName) {
+        if (null == devices.get(deviceName)) {
+            Device device = new Device();
+            device.deviceName = deviceName;
+            device.recvHistory = new RRDList<DeviceStat>(MAX_HISTORY);
+            device.transHistory = new RRDList<DeviceStat>(MAX_HISTORY);
+            devices.put(device.deviceName, device);
+        }
+    }
+
+    public synchronized void registerDevice(String deviceName, int width) {
+        registerDevice(deviceName);
+        Device device = devices.get(deviceName);
+        if (null != device) {
+            device.recvHistory.setMaxCapacity(width);
+            device.transHistory.setMaxCapacity(width);
+        }
+    }
+
     public void startup(Context context) { }
 
     public synchronized void update(State state) {
@@ -66,11 +85,7 @@ public enum ProcNetDev implements DataProvider {
                     } else {
                         Device device = devices.get(m.group(1));
                         if (null == device) {
-                            device = new Device();
-                            device.deviceName = m.group(1);
-                            device.recvHistory = new RRDList<DeviceStat>(MAX_HISTORY);
-                            device.transHistory = new RRDList<DeviceStat>(MAX_HISTORY);
-                            devices.put(device.deviceName, device);
+                            continue;
                         }
                         long curRecv = Common.toLong(m.group(2));
                         long curTrans = Common.toLong(m.group(10));

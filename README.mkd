@@ -9,8 +9,7 @@ For example configurations please see [the samples on the Moss site][samples].
 
 TODO
 ====
-* Use a better color picker
-* Fixed color picker to ints rather then string
+* Fixed reset on settings. 
 * IntentReceiver when SDcard mounted
 * Fix battery_time 
 

@@ -79,7 +79,6 @@ public enum ProcList implements DataProvider {
             info.stime = stime;
             info.cpuTotal = cpuTotal;
             info.memTotal = memTotal;
-            info.ioTotal = ioTotal;
             info.processes = processes;
             info.procsRunning = procsRunning;
             return info;
@@ -99,7 +98,6 @@ public enum ProcList implements DataProvider {
 
         long cpuTotal;
         long memTotal;
-        long ioTotal;
     }
 
     ProcList() {
@@ -131,7 +129,7 @@ public enum ProcList implements DataProvider {
     }
 
     public synchronized List<Proc> getProcesses() {
-        return new ArrayList<Proc>(procCopy);
+        return new ArrayList<Proc>(processes.values());
     }
 
     public synchronized List<Graphable> getCpuHistory() {
@@ -181,13 +179,13 @@ public enum ProcList implements DataProvider {
             }
         }
 
-        this.procCopy = new ArrayList<Proc>(processes.size());
+        // this.procCopy = new ArrayList<Proc>(processes.size());
         for (Proc p : processes.values()) {
             if (wasVisible) {
                 p.cpuPerc = 100.0f * (p.cpu / (float) (newCpu.cpuTotal - oldCpu.cpuTotal));
                 p.memPerc = 100.0f * (p.memSize / (float) newCpu.memTotal);
             }
-            procCopy.add(p.clone());
+            // procCopy.add(p.clone());
         }
 
         timestamp++;
@@ -206,7 +204,6 @@ public enum ProcList implements DataProvider {
 
         oldCpu = newCpu;
         newCpu.memTotal = 0;
-        newCpu.ioTotal = 0;
         newCpu = new CpuInfo();
 
         try {
@@ -442,13 +439,13 @@ public enum ProcList implements DataProvider {
             + ".*$";
 
     static final String TAG = "ProcMemInfo";
-    static List<Proc> procCopy;
+    // static List<Proc> procCopy;
     static List<CpuInfo> cpuHistory;
     static Map<String, Proc> processes;
     static Map<String, String> packageLookup;
     static {
         cpuHistory = new RRDList<CpuInfo>(400);
-        procCopy = new ArrayList<Proc>();
+        // procCopy = new ArrayList<Proc>();
         processes = new ConcurrentHashMap<String, Proc>();
         packageLookup = new ConcurrentHashMap<String, String>();
     }

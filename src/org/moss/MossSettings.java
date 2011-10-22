@@ -172,7 +172,7 @@ public class MossSettings extends PreferenceActivity
     }
 
     @Override
-    public void onCreateContextMenu(ContextMenu menu, View v,
+    public void onCreateContextMenu(ContextMenu menu, final View view,
                                     ContextMenu.ContextMenuInfo menuInfo) {
         AdapterView.AdapterContextMenuInfo info =
             (AdapterView.AdapterContextMenuInfo) menuInfo;
@@ -194,6 +194,7 @@ public class MossSettings extends PreferenceActivity
                 edit.commit();
 
                 defaultPrefs();
+                updatePrefs();
 
                 return true;
             }
@@ -285,11 +286,17 @@ public class MossSettings extends PreferenceActivity
                     || p instanceof ListPreference) {
                 continue;
             }
-            CharSequence value;
+            CharSequence value = null;
             if ("font_size".equals(key)) {
                 value = String.format("%.0f", prefs.getFloat(key, -1.0f));
             } else if ("background_color".equals(key) || "mod_color".equals(key)) {
-                value = String.format("#%x", prefs.getInt(key, 0));
+                int c = prefs.getInt(key, -1);
+                Log.i(TAG, "GOT HERE " + c);
+                if (-1 != c) {
+                    value = String.format("#%x", c);
+                } else {
+                    value = "No color";
+                }
             } else {
                 value = prefs.getString(key, "");
             }
@@ -321,10 +328,11 @@ public class MossSettings extends PreferenceActivity
     private void resetDefaults() {
         SharedPreferences.Editor edit = prefs.edit();
         for (String k : defaultable) {
-            edit.putString(k, null);
+            edit.remove(k);
         }
         edit.commit();
         defaultPrefs();
+        updatePrefs();
     }
 
     private boolean isDefaultable(String key) {

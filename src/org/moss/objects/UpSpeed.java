@@ -11,6 +11,7 @@ public class UpSpeed extends AbsMossObject implements MossObject {
      */
     public UpSpeed(String device) {
         this.device = device;
+        netDevInfo.registerDevice(device);
     }
 
     public DataProvider getDataProvider() {

@@ -16,6 +16,7 @@ public class UpSpeedGraph extends AbsGraphObject implements MossObject {
         super(hw, color1, color2);
         this.device = device;
         this.scale = 1024 * 10;
+        netDevInfo.registerDevice(device, Math.round(width));
     }
 
     public DataProvider getDataProvider() {

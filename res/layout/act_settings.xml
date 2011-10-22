@@ -36,17 +36,29 @@
             />
         -->
 
+        <com.att.preference.colorpicker.ColorPickerPreference
+            android:key="background_color"
+            android:title="@string/bg_color_title"
+            android:defaultValue="@integer/COLOR_BLACK"
+        />
+
+        <com.att.preference.colorpicker.ColorPickerPreference
+            android:key="mod_color"
+            android:title="@string/mod_color_title"
+            android:defaultValue="@integer/COLOR_BLACK"
+        />
+
+    <!--
         <org.moss.prefs.ColorPickerPreference
             android:key="background_color"
             android:title="@string/bg_color_title"
-            android:singleLine="true"
             />
 
         <org.moss.prefs.ColorPickerPreference
             android:key="mod_color"
             android:title="@string/mod_color_title"
-            android:singleLine="true"
             />
+    -->
 
 
     </PreferenceCategory>
