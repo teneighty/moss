@@ -13,7 +13,7 @@ public class Uptime extends AbsMossObject implements MossObject, DataProvider {
      * system enters deep sleep. @see Realtime.
      */
     public Uptime() {
-        uptime = 0;
+        uptime = SystemClock.uptimeMillis();
     }
 
     public DataProvider getDataProvider() {

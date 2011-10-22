@@ -13,7 +13,7 @@ public class Realtime extends AbsMossObject implements MossObject, DataProvider 
      * sleep.
      */
     public Realtime() {
-        realTime = 0;
+        realTime = SystemClock.elapsedRealtime();
     }
 
     public DataProvider getDataProvider() {
