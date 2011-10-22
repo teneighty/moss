@@ -1,7 +1,15 @@
+* {
+    margin: 0;
+    padding: 0;
+}
 
 body {
     padding: 50px;
     font: 1.0em 'Carter One', arial, serif; 
+}
+
+p {
+    margin: 20px 0;
 }
 
 #container { 
