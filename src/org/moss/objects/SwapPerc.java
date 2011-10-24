@@ -20,7 +20,7 @@ public class SwapPerc extends AbsMossObject implements MossObject {
             perc = (double) (memInfo.getSwapTotal() - memInfo.getSwapFree())
                  / (double) memInfo.getSwapTotal();
         }
-        return String.valueOf(Math.ceil(perc * 100.0));
+        return String.format("%.2f", perc * 100.0);
     }
 
     private ProcMemInfo memInfo;

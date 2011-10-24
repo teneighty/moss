@@ -1,8 +1,15 @@
 package org.moss.objects;
 
+import android.util.Log;
+
+import org.moss.Env;
 import org.moss.ParseException;
 
+import java.util.IllegalFormatException;
+
 public class Printf extends AbsMossObject implements MossObject {
+
+    static final String TAG = "Printf";
 
     /**
      * Accepts a format string and other text objects.
@@ -25,13 +32,36 @@ public class Printf extends AbsMossObject implements MossObject {
         return null;
     }
 
+    public void preDraw(Env env) {
+        for (Object o : objects) {
+            if (o instanceof MossObject) {
+                ((MossObject) o).preDraw(env);
+            }
+        }
+    }
+
+    public void postDraw(Env env) {
+        for (Object o : objects) {
+            if (o instanceof MossObject) {
+                ((MossObject) o).postDraw(env);
+            }
+        }
+    }
+
     @Override
     public String toString() {
         String[] strs = new String[objects.length];
         for (int i = 0; i < objects.length; i++) {
             strs[i] = nvl(objects[i].toString(), "");
         }
-        return String.format(format, (Object[]) strs);
+        try {
+            return String.format(format, (Object[]) strs);
+        } catch (IllegalFormatException e) {
+            Log.e(TAG, "", e);
+        } catch (NullPointerException e) {
+            Log.e(TAG, "", e);
+        }
+        return "";
     }
 
     private String nvl(String s1, String s2) {

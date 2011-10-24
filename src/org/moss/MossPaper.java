@@ -19,6 +19,7 @@ public class MossPaper extends WallpaperService {
     static final String TAG = "MossPaper";
 
     static final int DEFAULT_INTERVAL = 1000;
+    static final int HANDLER_INTERVAL = 200;
 
     private MossEngine mossEngine;
     private final IBinder mBinder = new PaperBinder();
@@ -62,7 +63,6 @@ public class MossPaper extends WallpaperService {
         private boolean isBound = false;
         private boolean isVisible = false;
 
-
         private final Runnable mDrawMoss = new Runnable() {
             public void run() {
                 drawFrame();
@@ -89,7 +89,6 @@ public class MossPaper extends WallpaperService {
 
             /* Maybe this should be in its own thread */
             /* Load config */
-            Env.reload(MossPaper.this, prefs);
             onSharedPreferenceChanged(prefs, null);
 
             /* Start the data service */
@@ -112,17 +111,8 @@ public class MossPaper extends WallpaperService {
             }
         }
 
-        void reloadConfig(SharedPreferences prefs) {
-            if (prefs == null) {
-                prefs = this.prefs;
-            }
-
-            single.env.startFileWatcher(mHandler, new Runnable() {
-                public void run() {
-                    reloadConfig(null);
-                }
-            });
-
+        void reloadConfig() {
+            Env.load(MossPaper.this, mHandler);
             /* Update data providers and restart service */
             if (null != single.env.getDataProviders()) {
                 doBindService();
@@ -136,9 +126,9 @@ public class MossPaper extends WallpaperService {
             if (key == null
                     || "config_file".equals(key)
                     || "sample_config_file".equals(key)) {
-                reloadConfig(prefs);
+                reloadConfig();
             } else {
-                single.env.loadPrefs(prefs);
+                single.env.loadPrefs(MossPaper.this, prefs);
             }
         }
 

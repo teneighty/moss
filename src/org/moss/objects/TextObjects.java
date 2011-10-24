@@ -13,38 +13,94 @@ public class TextObjects {
 
     static final String TAG = "TextObjects";
 
+    static class Args {
+
+        protected Class mClass;
+
+        Args(Class clazz) {
+            this.mClass = clazz;
+        }
+
+        MossObject newInstance(String ident, List<Object> args) throws Exception {
+            Class[] sigs = new Class[args.size()];
+            Object[] nargs = new Object[args.size()];
+
+            for (int i = 0; i < args.size(); ++i) {
+                sigs[i] = args.get(i).getClass();
+                nargs[i] = (Object) args.get(i);
+            }
+            Constructor<MossObject> con = mClass.getDeclaredConstructor(sigs);
+            return con.newInstance(nargs);
+        }
+
+        static Args def(Class c) {
+            return new Args(c);
+        }
+    }
+
+    static class JoinArgs extends Args {
+
+        JoinArgs(Class clazz) {
+            super(clazz);
+        }
+
+        MossObject newInstance(String ident, List<Object> args) throws Exception {
+            if (args.size() > 0) {
+                Class[] sigs = new Class[] {String.class};
+                Constructor<MossObject> con = mClass.getDeclaredConstructor(sigs);
+                return con.newInstance(join(args));
+            } else {
+                Constructor<MossObject> con = mClass.getDeclaredConstructor();
+                return con.newInstance();
+            }
+        }
+    }
+
+    static class ColorArgs extends Args {
+
+        ColorArgs(String color) {
+            super(Color.class);
+            this.mColor = color;
+        }
+
+        MossObject newInstance(String ident, List<Object> _args) throws Exception {
+            Class[] sigs = new Class[] {String.class};
+            Constructor<MossObject> con = mClass.getDeclaredConstructor(sigs);
+            return con.newInstance(mColor);
+        }
+
+        private String mColor;
+    }
+
+    static class PrintfArgs extends Args {
+
+        PrintfArgs(Class clazz) {
+            super(clazz);
+        }
+
+        MossObject newInstance(String ident, List<Object> args) throws Exception {
+            Class[] sigs = new Class[] {String.class, Object[].class};
+            Object[] nargs = new Object[2];
+            nargs[0] = (String) args.get(0);
+            Object[] nsubargs = new Object[args.size() - 1];
+            for (int i = 1; i < args.size(); ++i) {
+                nsubargs[i - 1] = args.get(i);
+            }
+            nargs[1] = nsubargs;
+            Constructor<MossObject> con = mClass.getDeclaredConstructor(sigs);
+            return con.newInstance(nargs);
+        }
+    }
+
     public static MossObject inst(String ident, List<Object> args) throws ParseException {
-        Class c = TEXT_OBJECTS.get(ident);
-        if (null == c) {
+        Args pa = TEXT_OBJECTS.get(ident);
+        if (null == pa) {
             ParseException pe = new ParseException("No such object");
             pe.setIdent(ident);
             throw pe;
         }
         try {
-            Class[] sigs = null;
-            Object[] nargs = null;
-            if ("printf".equals(ident)) {
-                sigs = new Class[] {String.class, Object[].class};
-                nargs = new Object[2];
-                nargs[0] = (String) args.get(0);
-                Object[] nsubargs = new Object[args.size() - 1];
-                for (int i = 1; i < args.size(); ++i) {
-                    nsubargs[i - 1] = args.get(i);
-                }
-                nargs[1] = nsubargs;
-                Constructor<MossObject> con = c.getDeclaredConstructor(sigs);
-                return con.newInstance(nargs);
-            } else {
-                sigs = new Class[args.size()];
-                nargs = new Object[args.size()];
-
-                for (int i = 0; i < args.size(); ++i) {
-                    sigs[i] = args.get(i).getClass();
-                    nargs[i] = (Object) args.get(i);
-                }
-                Constructor<MossObject> con = c.getDeclaredConstructor(sigs);
-                return con.newInstance(nargs);
-            }
+            return pa.newInstance(ident, args);
         } catch (NoSuchMethodException e) {
             ParseException pe = new ParseException("Incorrect parameters");
             pe.setIdent(ident);
@@ -77,57 +133,65 @@ public class TextObjects {
         return buf.toString().replaceAll("\\s+$", "");
     }
 
-    static Map<String, Class> TEXT_OBJECTS;
+    static Map<String, Args> TEXT_OBJECTS;
     static {
-        TEXT_OBJECTS = new HashMap<String, Class>();
+        TEXT_OBJECTS = new HashMap<String, Args>();
 
-        TEXT_OBJECTS.put("interval", Interval.class);
-        TEXT_OBJECTS.put("printf", Printf.class);
+        TEXT_OBJECTS.put("interval", Args.def(Interval.class));
+        TEXT_OBJECTS.put("printf", new PrintfArgs(Printf.class));
 
-        TEXT_OBJECTS.put("color", Color.class);
-        TEXT_OBJECTS.put("hr", HRule.class);
-        TEXT_OBJECTS.put("stippled_hr", StippledHRule.class);
+        TEXT_OBJECTS.put("color", Args.def(Color.class));
+        TEXT_OBJECTS.put("hr", Args.def(HRule.class));
+        TEXT_OBJECTS.put("stippled_hr", Args.def(StippledHRule.class));
 
-        TEXT_OBJECTS.put("sysname", SysName.class);
-        TEXT_OBJECTS.put("kernel", Kernel.class);
-        TEXT_OBJECTS.put("machine", Machine.class);
-        TEXT_OBJECTS.put("uptime", Uptime.class);
-        TEXT_OBJECTS.put("realtime", Realtime.class);
-        TEXT_OBJECTS.put("loadavg", LoadAvg.class);
+        TEXT_OBJECTS.put("sysname", Args.def(SysName.class));
+        TEXT_OBJECTS.put("kernel", Args.def(Kernel.class));
+        TEXT_OBJECTS.put("machine", Args.def(Machine.class));
+        TEXT_OBJECTS.put("uptime", Args.def(Uptime.class));
+        TEXT_OBJECTS.put("realtime", Args.def(Realtime.class));
+        TEXT_OBJECTS.put("loadavg", Args.def(LoadAvg.class));
 
-        TEXT_OBJECTS.put("mem", Mem.class);
-        TEXT_OBJECTS.put("memmax", MemMax.class);
-        TEXT_OBJECTS.put("memperc", MemPerc.class);
-        TEXT_OBJECTS.put("membar", MemBar.class);
-        TEXT_OBJECTS.put("swap", Swap.class);
-        TEXT_OBJECTS.put("swapmax", SwapMax.class);
-        TEXT_OBJECTS.put("swapperc", SwapPerc.class);
-        TEXT_OBJECTS.put("swapbar", SwapBar.class);
+        TEXT_OBJECTS.put("mem", Args.def(Mem.class));
+        TEXT_OBJECTS.put("memmax", Args.def(MemMax.class));
+        TEXT_OBJECTS.put("memperc", Args.def(MemPerc.class));
+        TEXT_OBJECTS.put("membar", Args.def(MemBar.class));
+        TEXT_OBJECTS.put("swap", Args.def(Swap.class));
+        TEXT_OBJECTS.put("swapmax", Args.def(SwapMax.class));
+        TEXT_OBJECTS.put("swapperc", Args.def(SwapPerc.class));
+        TEXT_OBJECTS.put("swapbar", Args.def(SwapBar.class));
 
-        TEXT_OBJECTS.put("processes", Processes.class);
-        TEXT_OBJECTS.put("running_processes", ProcsRunning.class);
+        TEXT_OBJECTS.put("processes", Args.def(Processes.class));
+        TEXT_OBJECTS.put("running_processes", Args.def(ProcsRunning.class));
 
-        TEXT_OBJECTS.put("top", Top.class);
-        TEXT_OBJECTS.put("top_mem", TopMem.class);
+        TEXT_OBJECTS.put("top", Args.def(Top.class));
+        TEXT_OBJECTS.put("top_mem", Args.def(TopMem.class));
 
-        TEXT_OBJECTS.put("fs_free", FSFree.class);
-        TEXT_OBJECTS.put("fs_used", FSUsed.class);
-        TEXT_OBJECTS.put("fs_size", FSSize.class);
-        TEXT_OBJECTS.put("fs_bar", FSBar.class);
+        TEXT_OBJECTS.put("fs_free", Args.def(FSFree.class));
+        TEXT_OBJECTS.put("fs_used", Args.def(FSUsed.class));
+        TEXT_OBJECTS.put("fs_used_perc", Args.def(FSUsedPerc.class));
+        TEXT_OBJECTS.put("fs_size", Args.def(FSSize.class));
+        TEXT_OBJECTS.put("fs_bar", Args.def(FSBar.class));
 
-        TEXT_OBJECTS.put("cpu", Cpu.class);
-        TEXT_OBJECTS.put("cpubar", CpuBar.class);
-        TEXT_OBJECTS.put("cpugraph", CpuGraph.class);
+        TEXT_OBJECTS.put("cpu", Args.def(Cpu.class));
+        TEXT_OBJECTS.put("cpubar", Args.def(CpuBar.class));
+        TEXT_OBJECTS.put("cpugraph", Args.def(CpuGraph.class));
 
-        TEXT_OBJECTS.put("battery", Battery.class);
-        TEXT_OBJECTS.put("battery_bar", BatteryBar.class);
-        TEXT_OBJECTS.put("battery_percent", BatteryPercent.class);
+        TEXT_OBJECTS.put("battery", Args.def(Battery.class));
+        TEXT_OBJECTS.put("battery_bar", Args.def(BatteryBar.class));
+        TEXT_OBJECTS.put("battery_percent", Args.def(BatteryPercent.class));
         /* TODO: fix battery time */
         // TEXT_OBJECTS.put("battery_time", BatteryTime.class);
 
-        TEXT_OBJECTS.put("downspeed", DownSpeed.class);
-        TEXT_OBJECTS.put("downspeedgraph", DownSpeedGraph.class);
-        TEXT_OBJECTS.put("upspeed", UpSpeed.class);
-        TEXT_OBJECTS.put("upspeedgraph", UpSpeedGraph.class);
+        TEXT_OBJECTS.put("downspeed", Args.def(DownSpeed.class));
+        TEXT_OBJECTS.put("downspeedgraph", Args.def(DownSpeedGraph.class));
+        TEXT_OBJECTS.put("upspeed", Args.def(UpSpeed.class));
+        TEXT_OBJECTS.put("upspeedgraph", Args.def(UpSpeedGraph.class));
+
+        TEXT_OBJECTS.put("goto", Args.def(Goto.class));
+        TEXT_OBJECTS.put("vgoto", Args.def(VGoto.class));
+        TEXT_OBJECTS.put("offset", Args.def(Offset.class));
+        TEXT_OBJECTS.put("voffset", Args.def(VOffset.class));
+        TEXT_OBJECTS.put("font", new JoinArgs(Font.class));
+        TEXT_OBJECTS.put("time", new JoinArgs(Time.class));
     }
 }

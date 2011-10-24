@@ -41,10 +41,10 @@ public class StippledHRule extends HRule implements MossObject {
             new DashPathEffect(new float[] {space, space}, 0));
 
         env.getCanvas().drawLine(
-            env.getX(), env.getY(),
-            env.getMaxX(), env.getY(),
+            env.getX(), env.getY() + PADDING,
+            env.getMaxX(), env.getY() + PADDING,
             env.getPaint());
-            env.setY(env.getY() + env.getPaint().getTextSize());
+            env.setY(env.getY() + env.getPaint().getTextSize() + PADDING);
 
         p.setPathEffect(null);
         p.setStyle(s);
@@ -55,4 +55,5 @@ public class StippledHRule extends HRule implements MossObject {
     private float space;
 
     static final float DEF_SPACE = 10f;
+    static final float PADDING = 20.0f;
 }

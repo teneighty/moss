@@ -1,15 +1,24 @@
 package org.moss.objects;
 
-import org.moss.Common;
 import org.moss.Env;
-import org.moss.util.Bar;
 
-public class MemBar implements MossObject {
+public class MemBar extends AbsBarObject implements MossObject {
 
     /**
      * Display memory used in a bar graph.
      */
-    public MemBar() { }
+    public MemBar() {
+        super();
+    }
+
+    /**
+     * Display memory used in a bar graph.
+     *
+     * @param hw comma delimited string of height and width
+     */
+    public MemBar(String hw) {
+        super(hw);
+    }
 
     public DataProvider getDataProvider() {
         return memInfo;
@@ -23,8 +32,7 @@ public class MemBar implements MossObject {
             perc = (memInfo.getMemTotal() - memInfo.getMemFree())
                  / (float)  memInfo.getMemTotal();
         }
-        Bar b = new Bar();
-        b.drawBar(env, perc);
+        doDraw(env, perc);
     }
 
     public void postDraw(Env env) { }

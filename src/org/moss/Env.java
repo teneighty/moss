@@ -39,22 +39,25 @@ public class Env {
     }
 
     class ConfigWatcher extends FileObserver {
-        public ConfigWatcher(String directory, String filename, Handler handler, Runnable runnable) {
+
+        private String mFilename;
+        private Context mContext;
+
+        public ConfigWatcher(Context context, String directory, String filename) {
             super(directory, FileObserver.MODIFY);
-            this.filename = filename;
-            this.handler = handler;
-            this.runnable = runnable;
+            this.mFilename = filename;
+            this.mContext = context;
         }
 
         public void onEvent(int event, String path) {
-            if ((event & FileObserver.MODIFY) != 0 && path.equals(filename)) {
-                handler.post(runnable);
+            if ((event & FileObserver.MODIFY) != 0 && path.equals(mFilename)) {
+                mHandler.post(new Runnable() {
+                    public void run() {
+                        Env.reload(mContext);
+                    }
+                });
             }
         }
-
-        private String filename;
-        private Handler handler;
-        private Runnable runnable;
     }
 
 
@@ -70,7 +73,18 @@ public class Env {
         exs = new ArrayList<MossException>();
     }
 
-    public static void reload(Context context, SharedPreferences prefs) {
+    public void destroy() {
+        stopFileWatcher();
+    }
+
+    public static void load(Context context, Handler handler) {
+        mHandler = handler;
+        reload(context);
+    }
+
+    public static void reload(Context context) {
+        SharedPreferences prefs =
+            context.getSharedPreferences(MossPaper.SHARED_PREFS_NAME, 0);
         Env oldEnv = Current.INSTANCE.env;
         Env newEnv = null;
         try {
@@ -82,28 +96,32 @@ public class Env {
                     Parser p = new Parser();
                     String cfile = prefs.getString("config_file", "");
                     InputStream in = new FileInputStream(cfile);
-                    newEnv = p.parse(in);
+                    newEnv = new Env();
                     newEnv.configFile = new File(cfile);
+                    p.buildEnv(newEnv, in);
                 } catch (IOException e) {
                     newEnv = loadDefaultConfig(context, prefs);
                 }
             } else {
                 newEnv = loadDefaultConfig(context, prefs);
-                if (null != oldEnv) {
-                    oldEnv.stopFileWatcher();
-                }
             }
-
-            newEnv.loadPrefs(prefs);
-            newEnv.buildDataProviders();
 
             if (null != oldEnv) {
-                newEnv.paperHeight = oldEnv.getPaperHeight();
-                newEnv.paperWidth = oldEnv.getPaperWidth();
+                oldEnv.stopFileWatcher();
             }
+            newEnv.startFileWatcher(context);
+
+            newEnv.loadPrefs(context, prefs);
+            newEnv.buildDataProviders();
+
             synchronized (Current.INSTANCE) {
-                Current.INSTANCE.env = newEnv;
+                if (oldEnv != null) {
+                    newEnv.paperHeight = oldEnv.getPaperHeight();
+                    newEnv.paperWidth = oldEnv.getPaperWidth();
+                    oldEnv.destroy();
+                }
                 oldEnv = null;
+                Current.INSTANCE.env = newEnv;
             }
         } catch (IOException e) {
             /* This is not good */
@@ -116,12 +134,14 @@ public class Env {
         AssetManager am = context.getAssets();
         String def = prefs.getString("sample_config_file", "default.conf");
         if (Config.CUSTOM.equals(def)) {
-            def = "default.conf";
+            def = "error.conf";
         }
-        return p.parse(am.open(def));
+        Env env = new Env();
+        p.buildEnv(env, am.open(def));
+        return env;
     }
 
-    public void loadPrefs(SharedPreferences prefs) {
+    public void loadPrefs(Context context, SharedPreferences prefs) {
 
         /* If font size changes, so will the max(X|Y) */
         this.maxX = 0;
@@ -131,12 +151,12 @@ public class Env {
             this.updateInterval = (long) (1000.0f * config.getUpdateInterval());
 
             try {
-                float fontSize = prefs.getFloat("font_size", config.getFontSize());
-                paint.setTextSize(fontSize);
+                fontSize = prefs.getFloat("font_size", config.getFontSize());
             } catch (NumberFormatException e) {
                 Log.e(TAG, "", e);
-                paint.setTextSize(Config.CONF_FONT_SIZE_VALUE);
+                fontSize = Config.CONF_FONT_SIZE_VALUE;
             }
+            paint.setTextSize(fontSize);
 
             backgroundColor = prefs.getInt("background_color", config.getBackgroundColor());
             backgroundColor |= 0xff000000;
@@ -147,17 +167,14 @@ public class Env {
             }
         }
 
-        /* TODO: 
-        if (null != prefs.getString(Config.CONF_BACKGROUND_IMAGE, null)) {
+        if (null != config.getBackgroundImagePath()) {
             try {
                 backgroundImage =
-                    BitmapFactory.decodeFile(
-                        prefs.getString(Config.CONF_BACKGROUND_IMAGE, null));
+                    BitmapFactory.decodeFile(config.getBackgroundImagePath());
             } catch (Exception e) {
                 Log.e(TAG, "", e);
             }
         }
-        */
         lineHeight = paint.getTextSize();
     }
 
@@ -189,17 +206,18 @@ public class Env {
 
         c.save();
         c.drawColor(this.backgroundColor);
-        if (this.modColor != -1) {
-            int orig = paint.getColor();
-            paint.setColor(this.modColor);
-            for (int i = 0; i < getPaperWidth() || i < getPaperHeight(); i += 5) {
-                c.drawLine(0, i, getPaperWidth(), i, paint);
-                c.drawLine(i, 0, i, getPaperHeight(), paint);
+        if (null != backgroundImage) {
+            c.drawBitmap(backgroundImage, 0, 0, paint);
+        } else {
+            if (this.modColor != -1) {
+                int orig = paint.getColor();
+                paint.setColor(this.modColor);
+                for (int i = 0; i < getPaperWidth() || i < getPaperHeight(); i += 5) {
+                    c.drawLine(0, i, getPaperWidth(), i, paint);
+                    c.drawLine(i, 0, i, getPaperHeight(), paint);
+                }
+                paint.setColor(orig);
             }
-            paint.setColor(orig);
-        }
-        if (null != getBackgroundImage()) {
-            c.drawBitmap(getBackgroundImage(), 0.0f, 0.0f, null);
         }
         float startx = 0.0f, starty = 0.0f;
         if (getMaxX() > 0 && getMaxY() > 0) {
@@ -245,15 +263,14 @@ public class Env {
         c.restore();
     }
 
-    public void startFileWatcher(Handler handler, Runnable runnable) {
+    public void startFileWatcher(Context context) {
         if (configFile == null) {
             return;
         }
         stopFileWatcher();
         if (config.getAutoReload()) {
             cwatcher =
-                new ConfigWatcher(configFile.getParent(), configFile.getName(),
-                                  handler, runnable);
+                new ConfigWatcher(context, configFile.getParent(), configFile.getName());
             cwatcher.startWatching();
             Log.i(TAG, "Auto Reload ENABLED");
         } else {
@@ -264,6 +281,7 @@ public class Env {
     void stopFileWatcher() {
         if (cwatcher != null) {
             cwatcher.stopWatching();
+            cwatcher.mContext = null;
             cwatcher = null;
         }
     }
@@ -306,6 +324,14 @@ public class Env {
         return config;
     }
 
+    public File getConfigFile() {
+        return configFile;
+    }
+
+    public void setConfigFile(File cf) {
+        this.configFile = cf;
+    }
+
     public void setLayout(Layout l) {
         this.layout = l;
     }
@@ -334,16 +360,16 @@ public class Env {
         return dataProviders;
     }
 
-    public Bitmap getBackgroundImage() {
-        return backgroundImage;
-    }
-
     public int getBackgroundColor() {
         return backgroundColor;
     }
 
     public int getModColor() {
         return modColor;
+    }
+
+    public float getFontSize() {
+        return fontSize;
     }
 
     public void addExs(MossException ex) {
@@ -415,7 +441,10 @@ public class Env {
     private long updateInterval;
     private int backgroundColor;
     private int modColor;
+    private float fontSize;
     private Bitmap backgroundImage;
+
+    static Handler mHandler;
 
     private ConfigWatcher cwatcher;
 

@@ -51,8 +51,7 @@ public class Parser {
         this.colNo = 1;
     }
 
-    public Env parse(InputStream is) throws IOException {
-        Env env = new Env();
+    public void buildEnv(Env env, InputStream is) throws IOException {
         String s = slurp(is);
         String[] split = s.split("TEXT");
         if (split.length == 2) {
@@ -61,7 +60,6 @@ public class Parser {
         } else {
             env.setLayout(parseLayout(env, split[0]));
         }
-        return env;
     }
 
     private Config parseConfig(Env env, String s) {
@@ -88,6 +86,7 @@ public class Parser {
                 if ('\n' == c) {
                     try {
                         config.put(
+                            env,
                             key.toString().trim(),
                             value.toString().trim());
                     } catch (MossException e) {

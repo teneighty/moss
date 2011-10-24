@@ -7,6 +7,9 @@
      Version Control Systems. -->
     <property file="local.properties" />
 
+    <taskdef resource="checkstyletask.properties"
+             classpath="tools/checkstyle-5.3-all.jar"/>
+
     <!-- The build.properties file can be created by you and is never touched
          by the 'android' tool. This is the place to change some of the
          default property values used by the Ant rules.
@@ -53,6 +56,11 @@
     <target name="-post-compile">
     </target>
 -->
+    <target name="checkstyle">
+        <checkstyle config="tools/checkstyle.xml" >
+            <fileset dir="src/" includes="**/*.java"/>
+        </checkstyle>
+    </target>
 
     <!-- Execute the Android Setup task that will setup some properties
          specific to the target, and import the build rules files.

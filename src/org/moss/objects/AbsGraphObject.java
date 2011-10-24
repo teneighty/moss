@@ -7,9 +7,6 @@ import java.util.List;
 
 abstract class AbsGraphObject {
 
-    /**
-     * TODO: Add error checking
-     */
     AbsGraphObject(String color1, String color2) {
         this.height = 32f;
         this.width = 150f;

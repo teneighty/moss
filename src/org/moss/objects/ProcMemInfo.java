@@ -46,7 +46,7 @@ public enum ProcMemInfo implements DataProvider {
                         } else if ("SwapTotal:".equals(split[0])) {
                             swapTotal = value;
                         } else if ("SwapFree:".equals(split[0])) {
-                            swapTotal = value;
+                            swapFree = value;
                         }
                     }
                 }

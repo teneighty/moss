@@ -5,20 +5,13 @@ import org.moss.Common;
 import org.moss.ParseException;
 import org.moss.util.Bar;
 
-public class BatteryBar implements MossObject {
+public class BatteryBar extends AbsBarObject  implements MossObject {
 
     /**
      * Display a bar of the current battery level.
      */
-    public BatteryBar(String heightWidth) throws ParseException {
-        String[] hw = heightWidth.split(",");
-
-        try {
-            this.barHeight = Common.toFloat(hw[0]);
-            this.barWidth = Common.toFloat(hw[1]);
-        } catch (NumberFormatException e) {
-            throw new ParseException("Invalid heightWidth");
-        }
+    public BatteryBar(String hw) throws ParseException {
+        super(hw);
     }
 
     public DataProvider getDataProvider() {
@@ -28,8 +21,7 @@ public class BatteryBar implements MossObject {
     public void preDraw(Env env) { }
 
     public void draw(Env env) {
-        Bar b = new Bar();
-        b.drawBar(env, battInfo.getLevelFrac(), barHeight, barWidth);
+        doDraw(env, battInfo.getLevelFrac());
     }
 
     public void postDraw(Env env) { }

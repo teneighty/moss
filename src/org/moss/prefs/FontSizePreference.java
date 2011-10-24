@@ -70,7 +70,7 @@ public class FontSizePreference extends DialogPreference implements OnSeekBarCha
         mText.setTextAppearance(getContext(), android.R.attr.textAppearanceLarge);
         layout.addView(mText);
 
-        mProgress = (int)(getPersistedFloat(Config.CONF_FONT_SIZE_VALUE));
+        mProgress = (int) (getPersistedFloat(Config.CONF_FONT_SIZE_VALUE));
 		SeekBar sb = new SeekBar(getContext());
 		sb.setMax(MAX - MIN);
 		sb.setProgress(mProgress - MIN);
@@ -98,7 +98,7 @@ public class FontSizePreference extends DialogPreference implements OnSeekBarCha
 	}
 
     private int adjustProgress(int progress) {
-        return progress + MIN; 
+        return progress + MIN;
     }
 
 	public void onStartTrackingTouch(SeekBar seekBar) { }

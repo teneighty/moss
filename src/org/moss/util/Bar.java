@@ -4,7 +4,6 @@ import android.graphics.Paint;
 import android.graphics.Paint.Style;
 
 import org.moss.Env;
-import org.moss.objects.Color;
 
 public class Bar {
 
@@ -30,12 +29,11 @@ public class Bar {
         float barWidth = boxWidth * perc;
 
         float x = env.getX();
-        float y = env.getY() - p.getTextSize() + PADDING;
-        // float y = (env.getY() - p.getTextSize() + PADDING) + height - PADDING;
-        env.setLineHeight((height - p.getTextSize()) + p.getTextSize());
+        float y = env.getY() + height;
+        env.setLineHeight(height);
 
         /* Draw Outline */
-        env.getCanvas().drawRect(x, y, env.getMaxX(), env.getY() - PADDING, p);
+        env.getCanvas().drawRect(x, env.getY() + PADDING, x + boxWidth, y - PADDING, p);
 
         if (-1 != env.getConfig().getShadeColor()) {
             int c = env.getConfig().getShadeColor();
@@ -46,10 +44,11 @@ public class Bar {
         p.setStyle(Style.FILL);
 
         /* Draw Bar */
-        env.getCanvas().drawRect(x, y, x + barWidth, env.getY() - PADDING, env.getPaint());
+        env.getCanvas().drawRect(x, env.getY() + PADDING, x + barWidth, y - PADDING, env.getPaint());
 
         p.setStyle(origStyle);
         p.setColor(origColor);
+        env.setX(x + boxWidth);
     }
 
     static final float PADDING = 2;

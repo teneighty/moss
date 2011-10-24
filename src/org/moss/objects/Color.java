@@ -55,6 +55,10 @@ public class Color implements MossObject {
         return color;
     }
 
+    public static void addColorObject(String alias, String color) {
+        TextObjects.TEXT_OBJECTS.put(alias, new TextObjects.ColorArgs(color));
+    }
+
     private Integer color;
 
     public static Map<String, Integer> colorMap;

@@ -1,6 +1,9 @@
 package org.moss;
 
 import org.moss.objects.Color;
+import org.moss.objects.Font;
+
+import java.io.File;
 
 public class Config {
 
@@ -14,29 +17,17 @@ public class Config {
 
     public Config() {
         this.autoReload = true;
-        updateInterval = CONF_UPDATE_INTERVAL_VALUE;
-        fontSize = CONF_FONT_SIZE_VALUE;
+        this.updateInterval = CONF_UPDATE_INTERVAL_VALUE;
+        this.halign = HAlign.LEFT;
+        this.valign = VAlign.TOP;
     }
 
-    public void put(String k, String v) throws ConfigException {
-        if (k.indexOf("color") == 0) {
-            String cname = k.replaceAll("color", "");
-            int cvalue = Common.hexToInt(v, -1);
-            if (cvalue > -1) {
-                Color.colorMap.put(cname, cvalue);
-            }
-        } else if (CONF_UPDATE_INTERVAL.equals(k)) {
+    public void put(Env env, String k, String v) throws MossException {
+        if (CONF_UPDATE_INTERVAL.equals(k)) {
             try {
                 updateInterval = new Float(v).floatValue();
             } catch (NumberFormatException e) {
                 updateInterval = CONF_UPDATE_INTERVAL_VALUE;
-                throw new ConfigException(v + " is invalid.");
-            }
-        } else if (CONF_FONT_SIZE.equals(k)) {
-            try {
-                fontSize = new Float(v).floatValue();
-            } catch (NumberFormatException e) {
-                fontSize = CONF_FONT_SIZE_VALUE;
                 throw new ConfigException(v + " is invalid.");
             }
         } else if (CONF_BACKGROUND_COLOR.equals(k)) {
@@ -48,7 +39,7 @@ public class Config {
         } else if (CONF_DEFAULT_SHADE_COLOR.equals(k)) {
             shadeColor = v;
         } else if (CONF_BACKGROUND_MOD.equals(k)) {
-            String[] colors = v.split(" ");
+            String[] colors = v.split("\\s+");
             if (colors.length == 2) {
                 backgroundColor = colors[0];
                 modColor = colors[1];
@@ -77,6 +68,19 @@ public class Config {
                 gapY = 0.0f;
                 throw new ConfigException(v + " is invalid.");
             }
+        } else if (CONF_BACKGROUND_IMAGE.equals(k)) {
+            File img = new File(v);
+            if (img != null
+                    && !img.isAbsolute()
+                    && null != env.getConfigFile()) {
+                File pfile = env.getConfigFile().getParentFile();
+                img = new File(pfile, v);
+            }
+            if (img == null) {
+                throw new ConfigException("Invalid background file");
+            } else {
+                bgImage = img.toString();
+            }
         } else if ("alignment".equals(k)) {
             String[] split = v.split("_");
             if (split.length == 2) {
@@ -101,6 +105,30 @@ public class Config {
             } else {
                 throw new ConfigException(v + " is invalid.");
             }
+        } else if (CONF_ADD_COLOR.equals(k)) {
+            String[] arr = v.split("\\s+");
+            if (arr.length == 2) {
+                int cvalue = Common.hexToInt(arr[1].trim(), -1);
+                if (cvalue > -1) {
+                    Color.colorMap.put(arr[0].trim(), cvalue);
+                }
+            } else {
+                throw new ConfigException("'" + v + "' is invalid.");
+            }
+        } else if (k.indexOf("color") == 0) {
+            Color.addColorObject(k, v);
+        } else if (CONF_FONT.equals(k)) {
+            Font.loadFont("default", v);
+        } else if ("font_load".equals(k)) {
+            String[] arr = v.split("\\s+");
+            if (arr.length == 2) {
+                Font.loadTypeface(env, arr[0], arr[1]);
+            } else {
+                throw new ConfigException("requires alias and font path.");
+            }
+        } else if (k.indexOf("font") == 0) {
+            String cname = k.replaceAll("font", "");
+            Font.loadFont(cname, v);
         } else {
             throw new ConfigException("Unknown config option.");
         }
@@ -127,7 +155,7 @@ public class Config {
     }
 
     public float getFontSize() {
-        return fontSize;
+        return (float) Font.getDefaultFontSize();
     }
 
     public int getModColor() {
@@ -154,18 +182,22 @@ public class Config {
         return autoReload;
     }
 
+    public String getBackgroundImagePath() {
+        return bgImage;
+    }
+
     private VAlign valign;
     private HAlign halign;
     private boolean autoReload;
     private float gapX;
     private float gapY;
     private float updateInterval;
-    private float fontSize;
     private String backgroundColor;
     private String modColor;
     private String defaultColor;
     private String outlineColor;
     private String shadeColor;
+    private String bgImage;
 
 
     /**
@@ -184,6 +216,11 @@ public class Config {
     public static final String CONF_DISABLE_AUTO_RELOAD = "disable_auto_reload";
 
     /**
+     * Added or override colors to color dictionary
+     */
+    public static final String CONF_ADD_COLOR = "color_add";
+
+    /**
      * Set the default color of the paint.
      */
     public static final String CONF_DEFAULT_COLOR = "default_color";
@@ -195,15 +232,15 @@ public class Config {
     public static final float CONF_UPDATE_INTERVAL_VALUE = 1.0f;
 
     /**
-     * Sets the font size for the display.
+     * Sets the default font for the display.
      */
-    public static final String CONF_FONT_SIZE = "font_size";
+    public static final String CONF_FONT = "font";
     public static final float CONF_FONT_SIZE_VALUE = 12.0f;
 
     /**
      * An absolute path to a background image. <code>/sdcard/moss/bg-fav.png</code>
      */
-    // public static final String CONF_BACKGROUND_IMAGE = background_image;
+    public static final String CONF_BACKGROUND_IMAGE = "background_image";
 
     /**
      * The background color for the wallpaper.

@@ -1,10 +1,5 @@
 package org.moss;
 
-import android.graphics.Paint;
-import android.graphics.Paint.Style;
-
-import org.moss.objects.Color;
-
 public class Common {
 
     public static void drawText(final Env env, final String txt) {
@@ -14,7 +9,7 @@ public class Common {
 
         float x = env.getX();
         float width = env.getPaint().measureText(txt, 0, txt.length());
-        env.getCanvas().drawText(txt, x, env.getY(), env.getPaint());
+        env.getCanvas().drawText(txt, x, env.getY() + env.getLineHeight(), env.getPaint());
         env.setX(x + width);
     }
 
@@ -54,7 +49,7 @@ public class Common {
         h = h.replaceAll("#", "");
         try {
             return Long.valueOf(h, 16).intValue();
-        } catch (NumberFormatException e) { 
+        } catch (NumberFormatException e) {
             return i;
         }
     }

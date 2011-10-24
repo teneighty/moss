@@ -7,11 +7,16 @@ It is highly configurable. Configuration tries to closely follow [Conky's][conky
 
 For example configurations please see [the samples on the Moss site][samples].
 
-TODO
-====
-* Fixed reset on settings. 
-* IntentReceiver when SDcard mounted
-* Fix battery_time 
+Current Release TODO
+======================
+* Reload once SDcard mounted
+* Upon reload, clear prefs, default prefs and update summaries
+
+Future Releases
+========================
+* Add weather
+* Add background image
+* Fix battery\_time
 
 [conky]: http://www.conky.com
 [samples]: http://teneighty.github.com/moss/samples.html

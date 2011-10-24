@@ -29,10 +29,10 @@ public class HRule implements MossObject {
 
     public void draw(Env env) {
         env.getCanvas().drawRect(
-            env.getX(), env.getY(),
-            env.getMaxX(), env.getY() + lineHeight,
+            env.getX(), env.getY() + PADDING,
+            env.getMaxX(), env.getY() + lineHeight + PADDING,
             env.getPaint());
-            env.setY(env.getY() + env.getPaint().getTextSize());
+            env.setY(env.getY() + env.getPaint().getTextSize() + PADDING);
     }
 
     public void postDraw(Env env) { }
@@ -43,4 +43,5 @@ public class HRule implements MossObject {
 
     private float lineHeight;
     static final float DEF_HEIGHT = 1f;
+    static final float PADDING = 20.0f;
 }

@@ -5,7 +5,6 @@ import android.graphics.Paint.Style;
 
 import org.moss.Env;
 import org.moss.objects.Graphable;
-import org.moss.objects.Color;
 
 import java.util.List;
 
@@ -59,14 +58,14 @@ public class Graph {
         p.setStyle(Style.STROKE);
 
         float x = env.getX();
-        float y = env.getY() - p.getTextSize() + PADDING;
+        float y = env.getY() + PADDING;
 
         if (width <= 0) {
             width = env.getMaxX() - x;
         }
         float maxX = x + (width > 0 ? width : env.getMaxX());
         float maxY = y + height - PADDING;
-        env.setLineHeight((height - p.getTextSize()) + p.getTextSize());
+        env.setLineHeight(height);
 
         /* Draw Outline */
         env.getCanvas().drawRect(x, y, maxX, maxY, p);

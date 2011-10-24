@@ -109,6 +109,9 @@ public class DataService extends Service {
                 Log.e(TAG, "", e);
             }
         }
+        if (nextRun == null) {
+            nextRun = 1L;
+        }
         handler.postDelayed(handlerCallback, nextRun);
     }
 

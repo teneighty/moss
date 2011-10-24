@@ -1,6 +1,5 @@
 package org.moss.objects;
 
-import org.moss.Common;
 import org.moss.Env;
 import org.moss.util.Bar;
 

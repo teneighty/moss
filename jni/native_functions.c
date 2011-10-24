@@ -1,7 +1,9 @@
+#include <jni.h>
+#include <locale.h>
+#include <string.h>
 #include <sys/vfs.h>
 #include <sys/utsname.h>
-#include <string.h>
-#include <jni.h>
+#include <time.h>
 
 void
 Java_org_moss_objects_FSJni_getFsInfo(JNIEnv* env,
@@ -81,4 +83,23 @@ Java_org_moss_objects_UnameProvider_setUname(JNIEnv* env,
             (*env)->SetObjectField(env, obj, machine, jstr);
         }
     }
+}
+
+jstring
+Java_org_moss_objects_Time_strftime(JNIEnv* env,
+                                    jobject obj,
+                                    jstring jformat)
+{
+    char buf[128];
+    const jbyte *format = (*env)->GetStringUTFChars(env, jformat, NULL);
+    if (NULL == format) {
+        return;
+    }
+    time_t t = time(NULL);
+    struct tm *tm = localtime(&t);
+    setlocale(LC_TIME, "");
+    strftime(buf, 128, format, tm);
+    
+    (*env)->ReleaseStringUTFChars(env, jformat, format);
+    return (*env)->NewStringUTF(env, buf);
 }

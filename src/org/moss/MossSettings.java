@@ -79,6 +79,10 @@ public class MossSettings extends PreferenceActivity
             reload.setOnPreferenceClickListener(new OnPreferenceClickListener() {
                 public boolean onPreferenceClick(Preference pref) {
                     reloadConfig(prefs, "config_reload");
+                    resetDefaults();
+                    defaultPrefs();
+                    updatePrefs();
+                    checkErrors();
                     return true;
                 }
             });
@@ -180,7 +184,7 @@ public class MossSettings extends PreferenceActivity
         final Preference pref = (Preference) this.getListView().getItemAtPosition(info.position);;
         menu.setHeaderTitle(pref.getTitle());
 
-        
+
         if (!isDefaultable(pref.getKey())) {
             return;
         }
@@ -221,7 +225,7 @@ public class MossSettings extends PreferenceActivity
         r.setSummary(R.string.loading);
         new Thread(new Runnable() {
             public void run() {
-                Env.reload(MossSettings.this, prefs);
+                Env.reload(MossSettings.this);
                 MossSettings.this.runOnUiThread(new Runnable() {
                     public void run() {
                         if (null != r) {
@@ -237,7 +241,7 @@ public class MossSettings extends PreferenceActivity
     private void checkErrors() {
         boolean hasErrors = false;
         synchronized (currentEnv) {
-            /* XXX: buzz, your girlfriend...wooof, I can do better then this */
+            /* TODO: buzz, your girlfriend...wooof, I can do better then this */
             if (currentEnv.env != null && currentEnv.env.hasExs()) {
                 hasErrors = true;
             }
@@ -282,7 +286,7 @@ public class MossSettings extends PreferenceActivity
                 continue;
             }
 
-            if (p instanceof CheckBoxPreference 
+            if (p instanceof CheckBoxPreference
                     || p instanceof ListPreference) {
                 continue;
             }
@@ -291,7 +295,6 @@ public class MossSettings extends PreferenceActivity
                 value = String.format("%.0f", prefs.getFloat(key, -1.0f));
             } else if ("background_color".equals(key) || "mod_color".equals(key)) {
                 int c = prefs.getInt(key, -1);
-                Log.i(TAG, "GOT HERE " + c);
                 if (-1 != c) {
                     value = String.format("#%x", c);
                 } else {

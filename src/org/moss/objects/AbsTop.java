@@ -49,15 +49,15 @@ public abstract class AbsTop extends AbsMossObject implements MossObject {
             return "";
         }
         if ("name".equals(var)) {
-            return String.format("%-20.19s", e.name);
+            return e.name;
         } else if ("package".equals(var)) {
-            return String.format("%-20.19s", e.packageName);
+            return e.packageName;
         } else if ("pid".equals(var)) {
-            return String.format("%-7.7s", e.pid);
+            return e.pid;
         } else if ("cpu".equals(var)) {
-            return String.format("%-7.2f", e.cpuPerc);
+            return String.format("%.2f", e.cpuPerc);
         } else if ("mem".equals(var)) {
-            return String.format("%-7.2f", e.memPerc);
+            return String.format("%.2f", e.memPerc);
         } else {
             return "";
         }
