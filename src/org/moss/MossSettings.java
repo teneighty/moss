@@ -52,38 +52,33 @@ public class MossSettings extends PreferenceActivity
         this.registerForContextMenu(this.getListView());
         this.inflater = LayoutInflater.from(this);
 
-        /*
-        Preference configFile = (Preference) findPreference("config_file");
-        if (null != configFile) {
-            configFile.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+        Preference configList = (Preference) findPreference("config_list");
+        if (null != configList) {
+            configList.setOnPreferenceClickListener(new OnPreferenceClickListener() {
                 public boolean onPreferenceClick(Preference pref) {
-                    Intent intent = new Intent(Intent.ACTION_GET_CONTENT, null);
-                    intent.setType("text/*");
-                    MossSettings.this.startActivityForResult(intent, SELECT_CONFIG);
-
+                    startActivity(new Intent(MossSettings.this, MossConfigs.class));
                     return true;
                 }
             });
         }
-        */
+
+        Preference overrides = (Preference) findPreference("config_overrides");
+        if (null != overrides) {
+            overrides.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+                public boolean onPreferenceClick(Preference pref) {
+                    startActivity(new Intent(MossSettings.this, MossOverrides.class));
+                    return true;
+                }
+            });
+        }
 
         Preference reload = (Preference) findPreference("config_reload");
         if (null != reload) {
             reload.setOnPreferenceClickListener(new OnPreferenceClickListener() {
                 public boolean onPreferenceClick(Preference pref) {
                     reloadConfig(prefs, "config_reload");
-                    updatePrefs();
+                    PrefUtils.updatePrefs(MossSettings.this);
                     checkErrors();
-                    return true;
-                }
-            });
-        }
-        Preference reset = (Preference) findPreference("config_reset");
-        if (null != reset) {
-            reset.setOnPreferenceClickListener(new OnPreferenceClickListener() {
-                public boolean onPreferenceClick(Preference pref) {
-                    PrefUtils.resetPrefs(currentEnv.env, prefs);
-
                     return true;
                 }
             });
@@ -101,29 +96,8 @@ public class MossSettings extends PreferenceActivity
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        /*
-        if (requestCode == SELECT_CONFIG && resultCode == Activity.RESULT_OK && null != data) {
-            try {
-                Preference pref = (Preference) findPreference("config_file");
-                File path = new File(new URI(data.getDataString()));
-                pref.setSummary(path.toString());
-
-                SharedPreferences.Editor edit = prefs.edit();
-                edit.putString(pref.getKey(), path.toString());
-                edit.commit();
-            } catch (URISyntaxException e) {
-                Log.e(TAG, "", e);
-            }
-        }
-        */
-    }
-
-    @Override
     protected void onResume() {
-        updatePrefs();
+        PrefUtils.updatePrefs(this);
         super.onResume();
     }
 
@@ -137,19 +111,11 @@ public class MossSettings extends PreferenceActivity
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
 
-        if ("sample_config_file".equals(key) || null == key) {
-            Preference pref = findPreference("config_file");
-            if (Config.CUSTOM.equals(sharedPreferences.getString("sample_config_file", ""))) {
-                pref.setEnabled(true);
-            } else {
-                pref.setEnabled(false);
-            }
-        }
         if ("sample_config_file".equals(key) || "config_file".equals(key)) {
             reloadConfig(prefs, key);
             checkErrors();
         }
-        updatePrefs();
+        PrefUtils.updatePrefs(this);
     }
 
     @Override
@@ -194,7 +160,7 @@ public class MossSettings extends PreferenceActivity
                 edit.commit();
 
                 PrefUtils.defaultPrefs(currentEnv.env, prefs);
-                updatePrefs();
+                PrefUtils.updatePrefs(MossSettings.this);
 
                 return true;
             }
@@ -215,21 +181,9 @@ public class MossSettings extends PreferenceActivity
     }
 
     private void reloadConfig(final SharedPreferences prefs, String key) {
-        final Preference r = MossSettings.this.findPreference(key);
-        final CharSequence sum = r.getSummary();
-        r.setEnabled(false);
-        r.setSummary(R.string.loading);
         new Thread(new Runnable() {
             public void run() {
                 Env.reload(MossSettings.this);
-                MossSettings.this.runOnUiThread(new Runnable() {
-                    public void run() {
-                        if (null != r) {
-                            r.setSummary(sum);
-                            r.setEnabled(true);
-                        }
-                    }
-                });
             }
         }).start();
     }
@@ -244,38 +198,6 @@ public class MossSettings extends PreferenceActivity
         }
         if (hasErrors) {
             showDialog(DIA_ERROR_LIST);
-        }
-    }
-
-    protected void updatePrefs() {
-        SharedPreferences prefs = getPreferenceManager().getSharedPreferences();
-        for (String key : prefs.getAll().keySet()) {
-            Preference p = this.findPreference(key);
-
-            if (p == null) {
-                continue;
-            }
-
-            if (p instanceof CheckBoxPreference
-                    || p instanceof ListPreference) {
-                continue;
-            }
-            CharSequence value = null;
-            if ("font_size".equals(key)) {
-                value = String.format("%.0f", prefs.getFloat(key, -1.0f));
-            } else if ("background_color".equals(key) || "mod_color".equals(key)) {
-                int c = prefs.getInt(key, -1);
-                if (-1 != c) {
-                    value = String.format("#%x", c);
-                } else {
-                    value = "No color";
-                }
-            } else {
-                value = prefs.getString(key, "");
-            }
-            if (null != value) {
-                p.setSummary(value);
-            }
         }
     }
 

@@ -21,17 +21,17 @@
             <meta-data android:name="android.service.wallpaper" android:resource="@xml/mosspaper" />
         </service>
 
-        <activity
-            android:label="@string/settings"
-            android:name=".MossSettings"
-            android:exported="true">
-        </activity>
+        <activity android:label="@string/settings"
+                  android:name=".MossSettings" android:exported="true" />
 
-        <activity
-            android:label="@string/help"
-            android:name=".MossHelp"
-            android:exported="true">
-        </activity>
+        <activity android:label="@string/configs"
+                  android:name=".MossConfigs" />
+
+        <activity android:label="@string/overrides"
+                  android:name=".MossOverrides" />
+
+        <activity android:label="@string/help"
+                  android:name=".MossHelp" />
 
         <service 
             android:name=".DataService"

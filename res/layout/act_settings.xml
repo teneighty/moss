@@ -5,99 +5,33 @@
         android:title="@string/settings"
         android:key="settings">
 
-    <PreferenceCategory android:title="@string/config_cat">
-
-        <ListPreference
-            android:key="sample_config_file"
-            android:title="@string/config_sample_title"
-            android:summary="@string/config_sample_summary"
-            android:entries="@array/config_sample_names"
-            android:entryValues="@array/config_sample_values" 
-            android:defaultValue="default.conf" 
+    <Preference
+        android:key="config_list"
+        android:title="@string/configs"
+        android:summary="@string/overrides_summary"
+        android:singleLine="true"
         />
 
-        <EditTextPreference
-            android:key="config_file"
-            android:title="@string/config_file"
-            android:singleLine="true"
-            android:enabled="false"
-            />
-
-    </PreferenceCategory> 
-
-    <PreferenceCategory android:title="@string/background_cat">
-
-        <!--
-             TODO:
-        <Preference
-            android:key="background_image"
-            android:title="@string/bg_image_title"
-            android:singleLine="true"
-            />
-        -->
-
-        <com.att.preference.colorpicker.ColorPickerPreference
-            android:key="background_color"
-            android:title="@string/bg_color_title"
-            android:defaultValue="@integer/COLOR_BLACK"
+    <Preference
+        android:key="config_reload"
+        android:title="@string/reload"
+        android:summary="@string/reload_summary"
+        android:singleLine="true"
         />
 
-        <com.att.preference.colorpicker.ColorPickerPreference
-            android:key="mod_color"
-            android:title="@string/mod_color_title"
-            android:defaultValue="@integer/COLOR_BLACK"
+    <Preference
+        android:key="config_overrides"
+        android:title="@string/overrides"
+        android:summary="@string/overrides_summary"
+        android:singleLine="true"
         />
 
-    <!--
-        <org.moss.prefs.ColorPickerPreference
-            android:key="background_color"
-            android:title="@string/bg_color_title"
-            />
+    <Preference
+        android:key="config_help"
+        android:title="@string/help"
+        android:summary="@string/help_summary"
+        android:singleLine="true"
+        />
 
-        <org.moss.prefs.ColorPickerPreference
-            android:key="mod_color"
-            android:title="@string/mod_color_title"
-            />
-    -->
-
-
-    </PreferenceCategory>
-
-    <PreferenceCategory android:title="@string/font_cat">
-
-        <org.moss.prefs.FontSizePreference
-            android:key="font_size"
-            android:title="@string/font_size_title"
-            android:singleLine="true"
-            android:numeric="decimal"
-            />
-
-    </PreferenceCategory>
-
-    <PreferenceCategory android:title="@string/misc">
-
-        <Preference
-            android:key="config_reload"
-            android:title="@string/reload"
-            android:summary="@string/reload_summary"
-            android:singleLine="true"
-            />
-
-        <Preference
-            android:key="config_reset"
-            android:title="@string/reset"
-            android:summary="@string/reset_summary"
-            android:singleLine="true"
-            />
-
-        <Preference
-            android:key="config_help"
-            android:title="@string/help"
-            android:summary="@string/help_summary"
-            android:singleLine="true"
-            />
-
-
-    </PreferenceCategory>
 
 </PreferenceScreen>

@@ -10,10 +10,7 @@ For example configurations please see [the samples on the Moss site][samples].
 Current Release TODO
 ======================
 * Reorganize preferences
-    * Use a list for selecting configuration
-        * Add bottom include a custom path
-    * Separate activity for preference overrides
-        * Move reset to preference override activity
+* Added db for config files
 
 Future Releases
 ========================

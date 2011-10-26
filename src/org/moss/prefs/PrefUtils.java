@@ -2,10 +2,46 @@ package org.moss.prefs;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.preference.CheckBoxPreference;
+import android.preference.ListPreference;
+import android.preference.PreferenceActivity;
+import android.preference.Preference;
 
 import org.moss.Env;
 
 public class PrefUtils {
+
+    public static void updatePrefs(PreferenceActivity activity) {
+        SharedPreferences prefs = activity.getPreferenceManager().getSharedPreferences();
+        for (String key : prefs.getAll().keySet()) {
+            Preference p = activity.findPreference(key);
+
+            if (p == null) {
+                continue;
+            }
+
+            if (p instanceof CheckBoxPreference
+                    || p instanceof ListPreference) {
+                continue;
+            }
+            CharSequence value = null;
+            if ("font_size".equals(key)) {
+                value = String.format("%.0f", prefs.getFloat(key, -1.0f));
+            } else if ("background_color".equals(key) || "mod_color".equals(key)) {
+                int c = prefs.getInt(key, -1);
+                if (-1 != c) {
+                    value = String.format("#%x", c);
+                } else {
+                    value = "No color";
+                }
+            } else {
+                value = prefs.getString(key, "");
+            }
+            if (null != value) {
+                p.setSummary(value);
+            }
+        }
+    }
 
     public static void resetPrefs(Env env, SharedPreferences prefs) {
         SharedPreferences.Editor edit = prefs.edit();

@@ -283,10 +283,14 @@ public class Env {
     }
 
     void stopFileWatcher() {
-        if (cwatcher != null) {
-            cwatcher.stopWatching();
-            cwatcher.mContext = null;
-            cwatcher = null;
+        try {
+            if (cwatcher != null) {
+                cwatcher.stopWatching();
+                cwatcher.mContext = null;
+                cwatcher = null;
+            }
+        } catch (NullPointerException e) {
+            Log.e(TAG, "", e);
         }
     }
 

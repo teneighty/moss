@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen 
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res/org.moss.prefs"
+        android:title="@string/settings"
+        android:key="settings">
+
+    <PreferenceCategory android:title="@string/background_cat">
+
+        <com.att.preference.colorpicker.ColorPickerPreference
+            android:key="background_color"
+            android:title="@string/bg_color_title"
+            android:defaultValue="@integer/COLOR_BLACK"
+        />
+
+        <com.att.preference.colorpicker.ColorPickerPreference
+            android:key="mod_color"
+            android:title="@string/mod_color_title"
+            android:defaultValue="@integer/COLOR_BLACK"
+        />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/font_cat">
+
+        <org.moss.prefs.FontSizePreference
+            android:key="font_size"
+            android:title="@string/font_size_title"
+            android:singleLine="true"
+            android:numeric="decimal"
+            />
+
+    </PreferenceCategory>
+
+    <Preference
+        android:key="config_reset"
+        android:title="@string/reset"
+        android:summary="@string/reset_summary"
+        android:singleLine="true"
+        />
+
+</PreferenceScreen>
