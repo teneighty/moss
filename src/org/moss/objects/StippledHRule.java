@@ -55,5 +55,5 @@ public class StippledHRule extends HRule implements MossObject {
     private float space;
 
     static final float DEF_SPACE = 10f;
-    static final float PADDING = 20.0f;
+    static final float PADDING = 10.0f;
 }

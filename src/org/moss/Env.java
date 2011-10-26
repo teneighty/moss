@@ -5,6 +5,7 @@ import org.moss.objects.MossObject;
 import org.moss.objects.DataProvider;
 import org.moss.objects.Interval;
 import org.moss.objects.UpdateManager;
+import org.moss.prefs.PrefUtils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -110,6 +111,9 @@ public class Env {
                 oldEnv.stopFileWatcher();
             }
             newEnv.startFileWatcher(context);
+
+            PrefUtils.resetPrefs(newEnv, prefs);
+            PrefUtils.defaultPrefs(newEnv, prefs);
 
             newEnv.loadPrefs(context, prefs);
             newEnv.buildDataProviders();

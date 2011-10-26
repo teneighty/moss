@@ -30,7 +30,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.AdapterView;
 
+import org.moss.prefs.PrefUtils;
+
 import java.io.File;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 
 public class MossSettings extends PreferenceActivity
@@ -48,39 +52,26 @@ public class MossSettings extends PreferenceActivity
         this.registerForContextMenu(this.getListView());
         this.inflater = LayoutInflater.from(this);
 
-        Preference imagePref = (Preference) findPreference("background_image");
-        if (null != imagePref) {
-            imagePref.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+        /*
+        Preference configFile = (Preference) findPreference("config_file");
+        if (null != configFile) {
+            configFile.setOnPreferenceClickListener(new OnPreferenceClickListener() {
                 public boolean onPreferenceClick(Preference pref) {
-                    /* TODO: what's a better way todo this? */
-                    mTempFile = new File("/sdcard/moss-background.png");
-                    mTempFile.getParentFile().mkdirs();
-
                     Intent intent = new Intent(Intent.ACTION_GET_CONTENT, null);
-                    intent.setType("image/*");
-                    intent.putExtra("crop", "true");
-                    intent.putExtra("outputX", Env.Current.INSTANCE.env.getPaperWidth());
-                    intent.putExtra("outputY", Env.Current.INSTANCE.env.getPaperHeight());
-                    intent.putExtra("aspectX", Env.Current.INSTANCE.env.getPaperWidth());
-                    intent.putExtra("aspectY", Env.Current.INSTANCE.env.getPaperHeight());
-                    intent.putExtra("scale", true);
-                    intent.putExtra("noFaceDetection", true);
-                    intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(mTempFile));
-                    intent.putExtra("outputFormat", Bitmap.CompressFormat.PNG.name());
-                    MossSettings.this.startActivityForResult(intent, SELECT_IMAGE);
+                    intent.setType("text/*");
+                    MossSettings.this.startActivityForResult(intent, SELECT_CONFIG);
 
                     return true;
                 }
             });
         }
+        */
 
         Preference reload = (Preference) findPreference("config_reload");
         if (null != reload) {
             reload.setOnPreferenceClickListener(new OnPreferenceClickListener() {
                 public boolean onPreferenceClick(Preference pref) {
                     reloadConfig(prefs, "config_reload");
-                    resetDefaults();
-                    defaultPrefs();
                     updatePrefs();
                     checkErrors();
                     return true;
@@ -91,7 +82,8 @@ public class MossSettings extends PreferenceActivity
         if (null != reset) {
             reset.setOnPreferenceClickListener(new OnPreferenceClickListener() {
                 public boolean onPreferenceClick(Preference pref) {
-                    resetDefaults();
+                    PrefUtils.resetPrefs(currentEnv.env, prefs);
+
                     return true;
                 }
             });
@@ -105,9 +97,6 @@ public class MossSettings extends PreferenceActivity
                 }
             });
         }
-
-        defaultPrefs();
-        updatePrefs();
         onSharedPreferenceChanged(prefs, null);
     }
 
@@ -115,14 +104,21 @@ public class MossSettings extends PreferenceActivity
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == SELECT_IMAGE && resultCode == Activity.RESULT_OK && null != data) {
-            Preference pref = (Preference) findPreference("background_image");
-            pref.setSummary(mTempFile.toString());
+        /*
+        if (requestCode == SELECT_CONFIG && resultCode == Activity.RESULT_OK && null != data) {
+            try {
+                Preference pref = (Preference) findPreference("config_file");
+                File path = new File(new URI(data.getDataString()));
+                pref.setSummary(path.toString());
 
-            SharedPreferences.Editor edit = prefs.edit();
-            edit.putString(pref.getKey(), mTempFile.toString());
-            edit.commit();
+                SharedPreferences.Editor edit = prefs.edit();
+                edit.putString(pref.getKey(), path.toString());
+                edit.commit();
+            } catch (URISyntaxException e) {
+                Log.e(TAG, "", e);
+            }
         }
+        */
     }
 
     @Override
@@ -140,7 +136,6 @@ public class MossSettings extends PreferenceActivity
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        updatePrefs();
 
         if ("sample_config_file".equals(key) || null == key) {
             Preference pref = findPreference("config_file");
@@ -154,6 +149,7 @@ public class MossSettings extends PreferenceActivity
             reloadConfig(prefs, key);
             checkErrors();
         }
+        updatePrefs();
     }
 
     @Override
@@ -185,7 +181,7 @@ public class MossSettings extends PreferenceActivity
         menu.setHeaderTitle(pref.getTitle());
 
 
-        if (!isDefaultable(pref.getKey())) {
+        if (!PrefUtils.isDefaultable(pref.getKey())) {
             return;
         }
 
@@ -197,7 +193,7 @@ public class MossSettings extends PreferenceActivity
                 edit.remove(pref.getKey());
                 edit.commit();
 
-                defaultPrefs();
+                PrefUtils.defaultPrefs(currentEnv.env, prefs);
                 updatePrefs();
 
                 return true;
@@ -251,32 +247,6 @@ public class MossSettings extends PreferenceActivity
         }
     }
 
-    private void defaultPrefs() {
-        Env.Current singleton = Env.Current.INSTANCE;
-        if (null == singleton.env) {
-            return;
-        }
-        SharedPreferences.Editor edit = prefs.edit();
-        if (-1.0f == prefs.getFloat("font_size", -1.0f)) {
-            edit.putFloat("font_size", singleton.env.getConfig().getFontSize());
-        }
-        if (-1 == prefs.getInt("background_color", -1)) {
-            int c = singleton.env.getConfig().getBackgroundColor();
-            if (-1 != c) {
-                c |= 0xFF000000;
-                edit.putInt("background_color", c);
-            }
-        }
-        if (-1 == prefs.getInt("mod_color", -1)) {
-            int c = singleton.env.getConfig().getModColor();
-            if (-1 != c) {
-                c |= 0xFF000000;
-                edit.putInt("mod_color", c);
-            }
-        }
-        edit.commit();
-    }
-
     protected void updatePrefs() {
         SharedPreferences prefs = getPreferenceManager().getSharedPreferences();
         for (String key : prefs.getAll().keySet()) {
@@ -327,29 +297,6 @@ public class MossSettings extends PreferenceActivity
 
         return alertDialog;
     }
-
-    private void resetDefaults() {
-        SharedPreferences.Editor edit = prefs.edit();
-        for (String k : defaultable) {
-            edit.remove(k);
-        }
-        edit.commit();
-        defaultPrefs();
-        updatePrefs();
-    }
-
-    private boolean isDefaultable(String key) {
-        for (String k : defaultable) {
-            if (k.equals(key)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    static String[] defaultable = new String[] {
-        "background_image", "background_color", "mod_color", "font_size"
-    };
 
     private Env.Current currentEnv = Env.Current.INSTANCE;
 
@@ -426,7 +373,6 @@ public class MossSettings extends PreferenceActivity
     }
 
     private SharedPreferences prefs;
-    private File mTempFile;
     private LayoutInflater inflater = null;
-    static final int SELECT_IMAGE = 1111;
+    static final int SELECT_CONFIG = 1111;
 }

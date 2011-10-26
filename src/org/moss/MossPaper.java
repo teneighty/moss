@@ -1,8 +1,10 @@
 package org.moss;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.ComponentName;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.graphics.Canvas;
@@ -69,6 +71,14 @@ public class MossPaper extends WallpaperService {
             }
         };
 
+        /* Reload the configuration once external media becomes available */
+        private BroadcastReceiver mSdReceiver = new BroadcastReceiver(){
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                reloadConfig();
+            }
+        }; 
+
         private ServiceConnection sconn = new ServiceConnection() {
             public void onServiceConnected(ComponentName className, IBinder service) {
                 dataService = ((DataService.DataBinder) service).getService();
@@ -83,6 +93,11 @@ public class MossPaper extends WallpaperService {
         };
 
         MossEngine() {
+            IntentFilter filter = new IntentFilter();
+            filter.addAction(Intent.ACTION_MEDIA_MOUNTED);
+            filter.addDataScheme("file");
+            registerReceiver(mSdReceiver, new IntentFilter(filter));
+
             mOffset = 0.5f;
             prefs = MossPaper.this.getSharedPreferences(SHARED_PREFS_NAME, 0);
             prefs.registerOnSharedPreferenceChangeListener(this);
@@ -113,6 +128,7 @@ public class MossPaper extends WallpaperService {
 
         void reloadConfig() {
             Env.load(MossPaper.this, mHandler);
+
             /* Update data providers and restart service */
             if (null != single.env.getDataProviders()) {
                 doBindService();
@@ -128,7 +144,9 @@ public class MossPaper extends WallpaperService {
                     || "sample_config_file".equals(key)) {
                 reloadConfig();
             } else {
-                single.env.loadPrefs(MossPaper.this, prefs);
+                if (single.env != null) {
+                    single.env.loadPrefs(MossPaper.this, prefs);
+                }
             }
         }
 
@@ -143,6 +161,7 @@ public class MossPaper extends WallpaperService {
             super.onDestroy();
             doUnbindService();
             mHandler.removeCallbacks(mDrawMoss);
+            unregisterReceiver(mSdReceiver);
         }
 
         @Override

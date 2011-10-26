@@ -43,5 +43,5 @@ public class HRule implements MossObject {
 
     private float lineHeight;
     static final float DEF_HEIGHT = 1f;
-    static final float PADDING = 20.0f;
+    static final float PADDING = 10.0f;
 }

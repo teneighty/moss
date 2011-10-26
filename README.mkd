@@ -9,13 +9,16 @@ For example configurations please see [the samples on the Moss site][samples].
 
 Current Release TODO
 ======================
-* Reload once SDcard mounted
-* Upon reload, clear prefs, default prefs and update summaries
+* Reorganize preferences
+    * Use a list for selecting configuration
+        * Add bottom include a custom path
+    * Separate activity for preference overrides
+        * Move reset to preference override activity
 
 Future Releases
 ========================
 * Add weather
-* Add background image
+* Allow more config overrides
 * Fix battery\_time
 
 [conky]: http://www.conky.com
