@@ -25,7 +25,7 @@ public class Bar {
         }
         p.setStyle(Style.STROKE);
 
-        float boxWidth = width;
+        float boxWidth = (width == -1.0f) ? env.getMaxX() : width;
         float barWidth = boxWidth * perc;
 
         float x = env.getX();
@@ -33,7 +33,7 @@ public class Bar {
         env.setLineHeight(height);
 
         /* Draw Outline */
-        env.getCanvas().drawRect(x, env.getY() + PADDING, x + boxWidth, y - PADDING, p);
+        env.getCanvas().drawRect(x, env.getY(), x + boxWidth, y, p);
 
         if (-1 != env.getConfig().getShadeColor()) {
             int c = env.getConfig().getShadeColor();
@@ -44,12 +44,10 @@ public class Bar {
         p.setStyle(Style.FILL);
 
         /* Draw Bar */
-        env.getCanvas().drawRect(x, env.getY() + PADDING, x + barWidth, y - PADDING, env.getPaint());
+        env.getCanvas().drawRect(x, env.getY(), x + barWidth, y, env.getPaint());
 
         p.setStyle(origStyle);
         p.setColor(origColor);
         env.setX(x + boxWidth);
     }
-
-    static final float PADDING = 2;
 }

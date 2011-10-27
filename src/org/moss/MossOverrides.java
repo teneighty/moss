@@ -25,7 +25,7 @@ public class MossOverrides extends PreferenceActivity
     @Override
     protected void onCreate(Bundle icicle) {
         super.onCreate(icicle);
-        getPreferenceManager().setSharedPreferencesName(MossPaper.SHARED_PREFS_NAME);
+        getPreferenceManager().setSharedPreferencesName(WallPaper.SHARED_PREFS_NAME);
         addPreferencesFromResource(R.layout.act_settings_overrides);
 
         prefs = getPreferenceManager().getSharedPreferences();

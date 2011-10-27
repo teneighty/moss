@@ -81,6 +81,14 @@ public class Config {
             } else {
                 bgImage = img.toString();
             }
+        } else if (CONF_DEFAULT_UPPERCASE.equals(k)) {
+            if ("yes".equals(v.trim())) {
+                uppercase = true;
+            } else if ("no".equals(v.trim())) {
+                uppercase = false;
+            } else {
+                throw new ConfigException("Invalid type for uppercase.");
+            }
         } else if ("alignment".equals(k)) {
             String[] split = v.split("_");
             if (split.length == 2) {
@@ -186,9 +194,14 @@ public class Config {
         return bgImage;
     }
 
+    public boolean getUppercase() {
+        return uppercase;
+    }
+
     private VAlign valign;
     private HAlign halign;
     private boolean autoReload;
+    private boolean uppercase;
     private float gapX;
     private float gapY;
     private float updateInterval;
@@ -263,6 +276,11 @@ public class Config {
      * default shade color.
      */
     public static final String CONF_DEFAULT_SHADE_COLOR = "default_shade_color";
+
+    /**
+     * All text in uppercase
+     */
+    public static final String CONF_DEFAULT_UPPERCASE = "uppercase";
 
     public static final String CUSTOM = "CUSTOM";
 }

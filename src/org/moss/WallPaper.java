@@ -15,10 +15,10 @@ import android.os.IBinder;
 import android.service.wallpaper.WallpaperService;
 import android.view.SurfaceHolder;
 
-public class MossPaper extends WallpaperService {
+public class WallPaper extends WallpaperService {
 
     static final String SHARED_PREFS_NAME = "MossSettings";
-    static final String TAG = "MossPaper";
+    static final String TAG = "WallPaper";
 
     static final int DEFAULT_INTERVAL = 1000;
     static final int HANDLER_INTERVAL = 200;
@@ -27,12 +27,12 @@ public class MossPaper extends WallpaperService {
     private final IBinder mBinder = new PaperBinder();
 
     class PaperBinder extends Binder {
-        MossPaper getService() {
-            return MossPaper.this;
+        WallPaper getService() {
+            return WallPaper.this;
         }
     }
 
-    public MossPaper() { }
+    public WallPaper() { }
 
     @Override
     public void onCreate() {
@@ -99,7 +99,7 @@ public class MossPaper extends WallpaperService {
             registerReceiver(mSdReceiver, new IntentFilter(filter));
 
             mOffset = 0.5f;
-            prefs = MossPaper.this.getSharedPreferences(SHARED_PREFS_NAME, 0);
+            prefs = WallPaper.this.getSharedPreferences(SHARED_PREFS_NAME, 0);
             prefs.registerOnSharedPreferenceChangeListener(this);
 
             /* Maybe this should be in its own thread */
@@ -113,7 +113,7 @@ public class MossPaper extends WallpaperService {
 
         void doBindService() {
             if (!isBound) {
-                bindService(new Intent(MossPaper.this,
+                bindService(new Intent(WallPaper.this,
                         DataService.class), sconn, Context.BIND_AUTO_CREATE);
                 isBound = true;
             }
@@ -127,7 +127,7 @@ public class MossPaper extends WallpaperService {
         }
 
         void reloadConfig() {
-            Env.load(MossPaper.this, mHandler);
+            Env.load(WallPaper.this, mHandler);
 
             /* Update data providers and restart service */
             if (null != single.env.getDataProviders()) {
@@ -145,7 +145,7 @@ public class MossPaper extends WallpaperService {
                 reloadConfig();
             } else {
                 if (single.env != null) {
-                    single.env.loadPrefs(MossPaper.this, prefs);
+                    single.env.loadPrefs(WallPaper.this, prefs);
                 }
             }
         }
@@ -216,6 +216,14 @@ public class MossPaper extends WallpaperService {
             try {
                 c = holder.lockCanvas();
                 if (c != null) {
+                    if (single.env.getMaxX() <= 0) {
+                        /** getMaxX <= 0 so this is the first time drawing.
+                         * Moss doesn't know how wide this configuration is
+                         * until it has drawn it once. Second time around it
+                         * can calculate the proper startx and starty
+                         */
+                        single.env.draw(c);
+                    }
                     single.env.draw(c);
                 }
             } finally {

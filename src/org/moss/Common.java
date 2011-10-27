@@ -1,14 +1,25 @@
 package org.moss;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.File;
+import java.io.InputStream;
+import java.io.FileInputStream;
+import java.io.IOException;
+
 public class Common {
 
-    public static void drawText(final Env env, final String txt) {
+    public static void drawText(final Env env, String txt) {
         if (null == txt || txt.length() == 0) {
             return;
+        }
+        if (env.getConfig().getUppercase()) {
+            txt = txt.toUpperCase();
         }
 
         float x = env.getX();
         float width = env.getPaint().measureText(txt, 0, txt.length());
+        env.setLineHeight(env.getPaint().getTextSize());
         env.getCanvas().drawText(txt, x, env.getY() + env.getLineHeight(), env.getPaint());
         env.setX(x + width);
     }
@@ -61,6 +72,46 @@ public class Common {
     public static float toFloat(String s) {
         return new Float(s).floatValue();
     }
+
+    public static String slurp(File file) throws IOException {
+        String body = "";
+        InputStream is = null;
+        try {
+            is = new FileInputStream(file);
+            body = slurp(is);
+        } finally {
+            if (is != null) {
+                is.close();
+            }
+        }
+        return body;
+    }
+
+    public static String slurp(InputStream is) throws IOException {
+        String line;
+        BufferedReader reader = null;
+        StringBuffer buf = new StringBuffer("");
+        try {
+            reader = new BufferedReader(new InputStreamReader(is));
+
+            while ((line = reader.readLine()) != null) {
+                if (line.indexOf("#") == 0) {
+                    buf.append("\n");
+                    continue;
+                }
+                buf.append(line).append("\n");
+            }
+        } finally {
+            if (null != is) {
+                is.close();
+            }
+            if (null != reader) {
+                reader.close();
+            }
+        }
+        return buf.toString();
+    }
+
 
     static String[] suffixes = {"B", "KiB", "MiB", "GiB", "TiB", "PiB", ""};
 }

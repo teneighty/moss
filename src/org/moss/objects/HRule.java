@@ -1,5 +1,8 @@
 package org.moss.objects;
 
+import android.graphics.Paint;
+import android.graphics.Paint.Style;
+
 import org.moss.Env;
 import org.moss.ParseException;
 
@@ -28,11 +31,19 @@ public class HRule implements MossObject {
     public void preDraw(Env env) { }
 
     public void draw(Env env) {
+        final Paint p = env.getPaint();
+        Style s = p.getStyle();
+        p.setStyle(Style.FILL);
+
+        /* move cursor to bottom of text and draw up */
+        float y = env.getY() + env.getLineHeight();
         env.getCanvas().drawRect(
-            env.getX(), env.getY() + PADDING,
-            env.getMaxX(), env.getY() + lineHeight + PADDING,
+            env.getX(), y,
+            env.getMaxX(), y - lineHeight,
             env.getPaint());
-            env.setY(env.getY() + env.getPaint().getTextSize() + PADDING);
+
+        p.setStyle(s);
+        // env.setX(env.getMaxX());
     }
 
     public void postDraw(Env env) { }
@@ -43,5 +54,4 @@ public class HRule implements MossObject {
 
     private float lineHeight;
     static final float DEF_HEIGHT = 1f;
-    static final float PADDING = 10.0f;
 }

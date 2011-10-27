@@ -15,8 +15,13 @@ abstract class AbsBarObject {
 
     AbsBarObject(String hw) {
         String[] hwarr = hw.split(",");
-        this.height = new Float(hwarr[0]).floatValue();
-        this.width = new Float(hwarr[1]).floatValue();
+        if (hwarr.length == 2) {
+            this.height = new Float(hwarr[0]).floatValue();
+            this.width = new Float(hwarr[1]).floatValue();
+        } else {
+            this.height = new Float(hwarr[0]).floatValue();
+            this.width = -1.0f;
+        }
     }
 
     protected void doDraw(Env env, float perc) {

@@ -145,6 +145,7 @@ public class TextObjects {
         TEXT_OBJECTS.put("stippled_hr", Args.def(StippledHRule.class));
 
         TEXT_OBJECTS.put("sysname", Args.def(SysName.class));
+        TEXT_OBJECTS.put("nodename", Args.def(Nodename.class));
         TEXT_OBJECTS.put("kernel", Args.def(Kernel.class));
         TEXT_OBJECTS.put("machine", Args.def(Machine.class));
         TEXT_OBJECTS.put("uptime", Args.def(Uptime.class));
@@ -184,8 +185,10 @@ public class TextObjects {
 
         TEXT_OBJECTS.put("downspeed", Args.def(DownSpeed.class));
         TEXT_OBJECTS.put("downspeedgraph", Args.def(DownSpeedGraph.class));
+        TEXT_OBJECTS.put("totaldown", Args.def(TotalDown.class));
         TEXT_OBJECTS.put("upspeed", Args.def(UpSpeed.class));
         TEXT_OBJECTS.put("upspeedgraph", Args.def(UpSpeedGraph.class));
+        TEXT_OBJECTS.put("totalup", Args.def(TotalUp.class));
 
         TEXT_OBJECTS.put("image", Args.def(Image.class));
         TEXT_OBJECTS.put("goto", Args.def(Goto.class));

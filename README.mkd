@@ -9,8 +9,9 @@ For example configurations please see [the samples on the Moss site][samples].
 
 Current Release TODO
 ======================
-* Reorganize preferences
-* Added db for config files
+* Add manifest to moss packs 
+* Rename Class files and package
+* Clean up preferences
 
 Future Releases
 ========================

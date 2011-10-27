@@ -61,7 +61,6 @@ public class Env {
         }
     }
 
-
     public Env() {
         paint = new Paint();
         paint.setColor(0xffffffff);
@@ -69,6 +68,7 @@ public class Env {
         paint.setStrokeWidth(1);
         paint.setStrokeCap(Paint.Cap.ROUND);
         paint.setStyle(Paint.Style.FILL_AND_STROKE);
+        paint.setStrokeWidth(1.0f);
         paint.setTypeface(Typeface.MONOSPACE);
 
         exs = new ArrayList<MossException>();
@@ -85,7 +85,7 @@ public class Env {
 
     public static void reload(Context context) {
         SharedPreferences prefs =
-            context.getSharedPreferences(MossPaper.SHARED_PREFS_NAME, 0);
+            context.getSharedPreferences(WallPaper.SHARED_PREFS_NAME, 0);
         Env oldEnv = Current.INSTANCE.env;
         Env newEnv = null;
         try {
@@ -397,7 +397,7 @@ public class Env {
     }
 
     public void resetLineHeight() {
-        this.lineHeight = paint.getTextSize();
+        this.lineHeight = 0;
     }
 
     public float getLineHeight() {

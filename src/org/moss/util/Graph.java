@@ -58,13 +58,13 @@ public class Graph {
         p.setStyle(Style.STROKE);
 
         float x = env.getX();
-        float y = env.getY() + PADDING;
+        float y = env.getY();
 
         if (width <= 0) {
             width = env.getMaxX() - x;
         }
         float maxX = x + (width > 0 ? width : env.getMaxX());
-        float maxY = y + height - PADDING;
+        float maxY = y + height;
         env.setLineHeight(height);
 
         /* Draw Outline */
@@ -149,6 +149,4 @@ public class Graph {
     private int scale;
     private int colorLeft;
     private int colorRight;
-
-    static final float PADDING = 2;
 }

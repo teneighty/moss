@@ -22,7 +22,11 @@ public class Parser {
         public void preDraw(Env env) { }
 
         public void draw(Env env) {
-            env.setY(env.getY() + env.getLineHeight());
+            if (env.getLineHeight() <= 0) {
+                env.setY(env.getY() + env.getPaint().getTextSize() + PADDING);
+            } else {
+                env.setY(env.getY() + env.getLineHeight() + PADDING);
+            }
             env.setX(0.0f);
             env.resetLineHeight();
         }
@@ -52,7 +56,7 @@ public class Parser {
     }
 
     public void buildEnv(Env env, InputStream is) throws IOException {
-        String s = slurp(is);
+        String s = Common.slurp(is);
         String[] split = s.split("TEXT");
         if (split.length == 2) {
             env.setConfig(parseConfig(env, split[0]));
@@ -240,36 +244,11 @@ public class Parser {
         return Character.isLetterOrDigit(c) || '_' == c;
     }
 
-    private String slurp(InputStream is) throws IOException {
-        String line;
-        BufferedReader reader = null;
-        StringBuffer buf = new StringBuffer("");
-        try {
-            reader = new BufferedReader(new InputStreamReader(is));
-
-            while ((line = reader.readLine()) != null) {
-                if (line.indexOf("#") == 0) {
-                    buf.append("\n");
-                    continue;
-                }
-                buf.append(line).append("\n");
-            }
-        } finally {
-            if (null != is) {
-                is.close();
-            }
-            if (null != reader) {
-                reader.close();
-            }
-        }
-        return buf.toString();
-    }
-
     private MossObject mossArg;
     private List<MossException> errors;
     private int lineNo;
     private int colNo;
 
+    static final float PADDING = 2.0f;
     static final String TAG = "MossParser";
-
 }

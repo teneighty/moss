@@ -31,6 +31,9 @@ public enum ProcNetDev implements DataProvider {
         long recvSpeed;
         long transSpeed;
 
+        long totalDown;
+        long totalUp;
+
         long recvLast;
         long transLast;
         long timestamp;
@@ -87,22 +90,22 @@ public enum ProcNetDev implements DataProvider {
                         if (null == device) {
                             continue;
                         }
-                        long curRecv = Common.toLong(m.group(2));
-                        long curTrans = Common.toLong(m.group(10));
+                        device.totalDown = Common.toLong(m.group(2));
+                        device.totalUp = Common.toLong(m.group(10));
 
                         if (true) {
                             DeviceStat stat = new DeviceStat();
-                            device.recvSpeed = stat.bytes = curRecv - device.recvLast;
+                            device.recvSpeed = stat.bytes = device.totalDown - device.recvLast;
                             device.recvHistory.add(stat);
                         }
                         if (true) {
                             DeviceStat stat = new DeviceStat();
-                            device.transSpeed = stat.bytes = curTrans - device.transLast;
+                            device.transSpeed = stat.bytes = device.totalUp - device.transLast;
                             device.transHistory.add(stat);
                         }
 
-                        device.recvLast = curRecv;
-                        device.transLast = curTrans;
+                        device.recvLast = device.totalDown;
+                        device.transLast = device.totalUp;
                         device.timestamp = ts;
                     }
                 }
@@ -122,6 +125,24 @@ public enum ProcNetDev implements DataProvider {
             }
         } catch (IOException e) {
             Log.e(TAG, "IO Exception getting /proc/net/dev", e);
+        }
+    }
+
+    public synchronized long getTotalDown(String deviceName) {
+        Device d = devices.get(deviceName);
+        if (null != d) {
+            return d.totalDown;
+        } else {
+            return 0L;
+        }
+    }
+
+    public synchronized long getTotalUp(String deviceName) {
+        Device d = devices.get(deviceName);
+        if (null != d) {
+            return d.totalUp;
+        } else {
+            return 0L;
         }
     }
 

@@ -3,12 +3,21 @@ package org.moss.objects;
 import org.moss.Env;
 import org.moss.util.Bar;
 
-public class SwapBar implements MossObject {
+public class SwapBar extends AbsBarObject implements MossObject {
 
     /**
      * Display swap memory used in a bar graph.
      */
     public SwapBar() { }
+
+    /**
+     * Display swap used in a bar graph.
+     *
+     * @param hw comma delimited string of height and width
+     */
+    public SwapBar(String hw) {
+        super(hw);
+    }
 
     public DataProvider getDataProvider() {
         return memInfo;
@@ -22,8 +31,7 @@ public class SwapBar implements MossObject {
             perc = (memInfo.getSwapTotal() - memInfo.getSwapFree())
                  / (float) memInfo.getSwapTotal();
         }
-        Bar b = new Bar();
-        b.drawBar(env, perc);
+        doDraw(env, perc);
     }
 
     public void postDraw(Env env) { }

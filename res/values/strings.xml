@@ -28,6 +28,7 @@
 
     <string name="dia_errors_title">Configuration Errors</string>
 
+    <string name="moss_viewer">Moss Viewer</string>
     <string name="configs">Configurations</string>
     <string name="configs_summary">Select a new configuration configurations.</string>
     <string name="custom_config_file">Custom Config File</string>
@@ -38,13 +39,38 @@
     <string name="overrides_summary">Override different configuration settings.</string>
     <string name="reset">Reset</string>
     <string name="reset_summary">Reset all preferences and reload the default values from the configuration file.</string>
-    <string name="loading">Loading...</string>
     <string name="help">Help</string>
     <string name="help_summary">Display the Moss help pages.</string>
 
 
     <string name="misc">Miscellaneous</string>
     <string name="empty_list">Empty List</string>
+
+    <string name="config_basic_name">Basic Configuration</string>
+    <string name="config_basic_desc">This is a small showcase of different system monitors.</string>
+
+    <string name="config_network">Network Emphasis</string>
+    <string name="config_network_desc">Focuses on network usage and devices.</string>
+
+    <string name="config_process">Process Emphasis</string>
+    <string name="config_process_desc">Focuses on displaying process information.</string>
+
+    <string name="config_full">Large Configuration</string>
+    <string name="config_full_desc">Includes many different objects.</string>
+
+    <string name="remove">Remove</string>
+
+    <string name="beginning_download">Beginning download</string>
+    <string name="loading">Loading...</string>
+    <string name="processing_x">Processing %1$s</string>
+    <string name="switching_to">Switching to %1$s</string>
+    <string name="error_during_lookup">Error during lookup</string>
+
+    <string name="removing_from_db">Removing %1$s from database</string>
+    <string name="removing_from_fs">Removing %1$s from filesystem</string>
+
+    <string name="available_configurations">Available Configurations</string>
+    <string name="current_configurations">Current Configuration</string>
 
     <!-- service -->
     <string name="service_desc">Moss data gathering service</string>

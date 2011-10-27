@@ -37,13 +37,13 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 
-public class MossSettings extends PreferenceActivity
+public class Settings extends PreferenceActivity
     implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     @Override
     protected void onCreate(Bundle icicle) {
         super.onCreate(icicle);
-        getPreferenceManager().setSharedPreferencesName(MossPaper.SHARED_PREFS_NAME);
+        getPreferenceManager().setSharedPreferencesName(WallPaper.SHARED_PREFS_NAME);
         addPreferencesFromResource(R.layout.act_settings);
 
         prefs = getPreferenceManager().getSharedPreferences();
@@ -56,7 +56,7 @@ public class MossSettings extends PreferenceActivity
         if (null != configList) {
             configList.setOnPreferenceClickListener(new OnPreferenceClickListener() {
                 public boolean onPreferenceClick(Preference pref) {
-                    startActivity(new Intent(MossSettings.this, MossConfigs.class));
+                    startActivity(new Intent(Settings.this, Configurations.class));
                     return true;
                 }
             });
@@ -66,28 +66,17 @@ public class MossSettings extends PreferenceActivity
         if (null != overrides) {
             overrides.setOnPreferenceClickListener(new OnPreferenceClickListener() {
                 public boolean onPreferenceClick(Preference pref) {
-                    startActivity(new Intent(MossSettings.this, MossOverrides.class));
+                    startActivity(new Intent(Settings.this, MossOverrides.class));
                     return true;
                 }
             });
         }
 
-        Preference reload = (Preference) findPreference("config_reload");
-        if (null != reload) {
-            reload.setOnPreferenceClickListener(new OnPreferenceClickListener() {
-                public boolean onPreferenceClick(Preference pref) {
-                    reloadConfig(prefs, "config_reload");
-                    PrefUtils.updatePrefs(MossSettings.this);
-                    checkErrors();
-                    return true;
-                }
-            });
-        }
         Preference help = (Preference) findPreference("config_help");
         if (null != help) {
             help.setOnPreferenceClickListener(new OnPreferenceClickListener() {
                 public boolean onPreferenceClick(Preference pref) {
-                    startActivity(new Intent(MossSettings.this, MossHelp.class));
+                    startActivity(new Intent(Settings.this, MossHelp.class));
                     return true;
                 }
             });
@@ -110,11 +99,7 @@ public class MossSettings extends PreferenceActivity
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-
-        if ("sample_config_file".equals(key) || "config_file".equals(key)) {
-            reloadConfig(prefs, key);
-            checkErrors();
-        }
+        checkErrors();
         PrefUtils.updatePrefs(this);
     }
 
@@ -160,7 +145,7 @@ public class MossSettings extends PreferenceActivity
                 edit.commit();
 
                 PrefUtils.defaultPrefs(currentEnv.env, prefs);
-                PrefUtils.updatePrefs(MossSettings.this);
+                PrefUtils.updatePrefs(Settings.this);
 
                 return true;
             }
@@ -180,14 +165,6 @@ public class MossSettings extends PreferenceActivity
         return dialog;
     }
 
-    private void reloadConfig(final SharedPreferences prefs, String key) {
-        new Thread(new Runnable() {
-            public void run() {
-                Env.reload(MossSettings.this);
-            }
-        }).start();
-    }
-
     private void checkErrors() {
         boolean hasErrors = false;
         synchronized (currentEnv) {
@@ -205,7 +182,7 @@ public class MossSettings extends PreferenceActivity
         AlertDialog.Builder builder;
         AlertDialog alertDialog;
 
-        Context context = MossSettings.this;
+        Context context = Settings.this;
         View layout = inflater.inflate(R.layout.dia_errors,
                                     (ViewGroup) findViewById(R.id.layout_root));
 
@@ -223,7 +200,7 @@ public class MossSettings extends PreferenceActivity
     private Env.Current currentEnv = Env.Current.INSTANCE;
 
     static final int DIA_ERROR_LIST = 1;
-    static final String TAG = "MossSettings";
+    static final String TAG = "Settings";
 
     class ErrorAdapter extends ArrayAdapter<MossException> {
         public ErrorAdapter(Context context, List<MossException> exs) {
