@@ -10,9 +10,7 @@
     <string name="description">System monitor wallpaper, in the likeness of Conky.</string>
 
     <!-- Prefs -->
-    <string name="config_cat">Configuration</string>
-    <string name="config_sample_title">Configuration File</string>
-    <string name="config_sample_summary">Preconfigured readonly configurations.</string>
+    <string name="config_custom_cat">Custom</string>
     <string name="config_file">Custom File</string>
 
     <string name="background_cat">Background</string>
@@ -65,6 +63,8 @@
     <string name="processing_x">Processing %1$s</string>
     <string name="switching_to">Switching to %1$s</string>
     <string name="error_during_lookup">Error during lookup</string>
+    <string name="path_to_config">Path to configuration file.</string>
+    <string name="does_not_exist">%1$s does not exist.</string>
 
     <string name="removing_from_db">Removing %1$s from database</string>
     <string name="removing_from_fs">Removing %1$s from filesystem</string>

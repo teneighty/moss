@@ -19,14 +19,14 @@ import android.widget.AdapterView;
 
 import org.moss.prefs.PrefUtils;
 
-public class MossOverrides extends PreferenceActivity
+public class OverridesActivity extends PreferenceActivity
     implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     @Override
     protected void onCreate(Bundle icicle) {
         super.onCreate(icicle);
         getPreferenceManager().setSharedPreferencesName(WallPaper.SHARED_PREFS_NAME);
-        addPreferencesFromResource(R.layout.act_settings_overrides);
+        addPreferencesFromResource(R.xml.prefs_overrides);
 
         prefs = getPreferenceManager().getSharedPreferences();
         prefs.registerOnSharedPreferenceChangeListener(this);
@@ -96,7 +96,7 @@ public class MossOverrides extends PreferenceActivity
                 edit.commit();
 
                 PrefUtils.defaultPrefs(currentEnv.env, prefs);
-                PrefUtils.updatePrefs(MossOverrides.this);
+                PrefUtils.updatePrefs(OverridesActivity.this);
 
                 return true;
             }
@@ -105,7 +105,7 @@ public class MossOverrides extends PreferenceActivity
 
     private Env.Current currentEnv = Env.Current.INSTANCE;
 
-    static final String TAG = "MossOverrides";
+    static final String TAG = "OverridesActivity";
 
     private SharedPreferences prefs;
     private LayoutInflater inflater = null;

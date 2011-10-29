@@ -12,9 +12,9 @@ import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import java.util.List;
 import java.util.LinkedList;
 
-public class ConfigDatabase extends SQLiteOpenHelper {
+public class PackageDatabase extends SQLiteOpenHelper {
 
-    public static class Config {
+    public static class Package {
         public long id;
         public String name;
         public String desc;
@@ -24,7 +24,7 @@ public class ConfigDatabase extends SQLiteOpenHelper {
     }
 
 
-    public ConfigDatabase(Context context) {
+    public PackageDatabase(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
         this.mContext = context;
         getWritableDatabase().close();
@@ -42,51 +42,90 @@ public class ConfigDatabase extends SQLiteOpenHelper {
                 + FIELD_IS_ASSET + " INTEGER ) ";
         db.execSQL(sql);
 
-        Config c1 = new Config();
+        Package c1 = new Package();
         c1.name = mContext.getString(R.string.config_basic_name);
         c1.desc = mContext.getString(R.string.config_basic_desc);
         c1.filepath = "default.conf";
         c1.asset = true;
-        insertConfig(db, c1);
+        insertPackage(db, c1);
 
-        Config c2 = new Config();
+        Package c2 = new Package();
         c2.name = mContext.getString(R.string.config_network);
         c2.desc = mContext.getString(R.string.config_network_desc);
         c2.filepath = "network.conf";
         c2.asset = true;
-        insertConfig(db, c2);
+        insertPackage(db, c2);
 
-        Config c3 = new Config();
+        Package c3 = new Package();
         c3.name = mContext.getString(R.string.config_process);
         c3.desc = mContext.getString(R.string.config_process_desc);
         c3.filepath = "process.conf";
         c3.asset = true;
-        insertConfig(db, c3);
+        insertPackage(db, c3);
     }
 
     @Override
     public final void onUpgrade(SQLiteDatabase db,
                                 int oldVersion, int newVersion) { }
 
-    public void insertConfig(Config config) {
+    public void storePackage(Package config) {
         synchronized (DB_LOCK) {
             SQLiteDatabase db = this.getWritableDatabase();
-            insertConfig(db, config);
+            storePackage(db, config);
         }
     }
 
-    private void insertConfig(SQLiteDatabase db, Config config) {
+    private void storePackage(SQLiteDatabase db, Package config) {
+        Cursor c =
+            db.query(TABLE_NAME, null, 
+                    " name = ? ", new String[] { String.valueOf(config.name) }, 
+                    null, null, null);
+        if (c.moveToNext()) {
+            config.id = c.getLong(c.getColumnIndexOrThrow("_id"));
+            updatePackage(db, config);
+        } else {
+            insertPackage(db, config);
+        }
+        c.close();
+    }
+
+
+    public void insertPackage(Package config) {
+        synchronized (DB_LOCK) {
+            SQLiteDatabase db = this.getWritableDatabase();
+            insertPackage(db, config);
+        }
+    }
+
+    private void insertPackage(SQLiteDatabase db, Package config) {
+        ContentValues values = buildContentValues(config);
+        config.id = db.insert(TABLE_NAME, null, values);
+    }
+
+    public void updatePackage(Package config) {
+        synchronized (DB_LOCK) {
+            SQLiteDatabase db = this.getWritableDatabase();
+            updatePackage(db, config);
+        }
+    }
+
+    private void updatePackage(SQLiteDatabase db, Package config) {
+        ContentValues values = buildContentValues(config);
+        db.update(TABLE_NAME, values, 
+                "_id = ?", new String[] { String.valueOf(config.id) });
+    }
+
+    private ContentValues buildContentValues(Package config) {
         ContentValues values = new ContentValues();
         values.put(FIELD_NAME, config.name);
         values.put(FIELD_DESC, config.desc);
         values.put(FIELD_CONFIG_PATH, config.filepath);
         values.put(FIELD_SOURCE_URL, config.sourceUrl);
         values.put(FIELD_IS_ASSET, Boolean.toString(config.asset));
-
-        config.id = db.insert(TABLE_NAME, null, values);
+        return values;
     }
 
-    public void deleteConfig(Config config) {
+    public void deletePackage(Package config) {
         synchronized (DB_LOCK) {
             SQLiteDatabase db = this.getWritableDatabase();
             db.delete(TABLE_NAME, "_id = ?",
@@ -96,23 +135,23 @@ public class ConfigDatabase extends SQLiteOpenHelper {
         }
     }
 
-    public List<Config> getConfigs() {
-        List<Config> configs;
+    public List<Package> getPackages() {
+        List<Package> configs;
 
         synchronized (DB_LOCK) {
             SQLiteDatabase db = this.getReadableDatabase();
 
             Cursor c =
-                db.query(TABLE_NAME, null, null, null, null, null, null);
-            configs = createConfig(c);
+                db.query(TABLE_NAME, null, null, null, null, null, "name", null);
+            configs = createPackage(c);
             c.close();
         }
 
         return configs;
     }
 
-    private List<Config> createConfig(Cursor c) {
-        List<Config> configs = new LinkedList<Config>();
+    private List<Package> createPackage(Cursor c) {
+        List<Package> configs = new LinkedList<Package>();
 
         final int COL_ID = c.getColumnIndexOrThrow("_id"),
             COL_NAME = c.getColumnIndexOrThrow(FIELD_NAME),
@@ -122,7 +161,7 @@ public class ConfigDatabase extends SQLiteOpenHelper {
             COL_ASSET = c.getColumnIndexOrThrow(FIELD_IS_ASSET);
 
         while (c.moveToNext()) {
-            Config config = new Config();
+            Package config = new Package();
             config.id = c.getLong(COL_ID);
             config.name = c.getString(COL_NAME);
             config.desc = c.getString(COL_DESC);

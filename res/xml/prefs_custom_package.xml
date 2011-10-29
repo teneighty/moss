@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen 
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res/org.moss.prefs" >
+
+    <PreferenceCategory android:title="@string/config_custom_cat">
+
+        <EditTextPreference
+            android:key="config_file"
+            android:title="@string/config_file"
+            android:singleLine="true"
+            />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

@@ -11,7 +11,10 @@ Current Release TODO
 ======================
 * Add manifest to moss packs 
 * Rename Class files and package
+  * Remove all the Config\*.java
 * Clean up preferences
+* Move service bind to Env
+
 
 Future Releases
 ========================

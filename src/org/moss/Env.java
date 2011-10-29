@@ -271,6 +271,9 @@ public class Env {
         if (configFile == null) {
             return;
         }
+        if (null == config) {
+            return;
+        }
         stopFileWatcher();
         if (config.getAutoReload()) {
             cwatcher =

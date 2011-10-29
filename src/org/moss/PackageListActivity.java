@@ -1,7 +1,6 @@
 package org.moss;
 
 import android.app.Activity;
-import android.app.ListActivity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -12,7 +11,10 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.preference.Preference;
+import android.preference.PreferenceActivity;
 import android.util.Log;
+import android.text.Html;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -41,40 +43,54 @@ import java.util.zip.ZipInputStream;
 import java.util.zip.ZipEntry;
 import java.util.ArrayList;
 
-public class Configurations extends ListActivity  {
+public class PackageListActivity extends PreferenceActivity 
+    implements SharedPreferences.OnSharedPreferenceChangeListener {
 
-    static final String TAG = "Configurations";
+    static final String TAG = "PackageListActivity";
 
     @Override
     protected void onCreate(Bundle icicle) {
         super.onCreate(icicle);
-        this.setContentView(R.layout.act_configs);
-        this.registerForContextMenu(this.getListView());
+        getPreferenceManager().setSharedPreferencesName(WallPaper.SHARED_PREFS_NAME);
+        this.setContentView(R.layout.act_packages);
+        this.addPreferencesFromResource(R.xml.prefs_custom_package);
+
+        this.pkgList = (ListView) findViewById(R.id.package_list);
+        this.registerForContextMenu(pkgList);
 
         handleIntents();
         updateList();
 
         this.inflater = LayoutInflater.from(this);
-        this.setListAdapter(
-                new ConfigAdapter(this, configs));
-
-        ListView list = this.getListView();
-        list.setOnItemClickListener(new OnItemClickListener() {
+        pkgList.setOnItemClickListener(new OnItemClickListener() {
             public void onItemClick(AdapterView parent, View v,
                                     int position, long id) {
-                if (position >= configs.size()) {
+                if (position >= packages.size()) {
                     /* TODO: report error */
                     return;
                 }
-                ConfigDatabase.Config c = configs.get(position);
-
-                pdialog = createDialog();
-                pdialog.setMessage(Configurations.this.getString(R.string.switching_to, c.name));
-                pdialog.show();
-
-                new ReloadTask().execute(c);
+                PackageDatabase.Package c = packages.get(position);
+                startReloadTask(c);
             }
         });
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
+        if ("config_file".equals(key)) {
+            Preference pref = this.findPreference(key);
+            if ("".equals(prefs.getString(key, ""))) {
+                    pref.setSummary(getString(R.string.path_to_config));
+            } else {
+                File file = new File(prefs.getString(key, ""));
+                if (file.exists()) {
+                    pref.setSummary(file.toString());
+                    startReloadTask(null);
+                } else {
+                    pref.setSummary(getString(R.string.does_not_exist, file.toString()));
+                }
+            }
+        }
     }
 
     @Override
@@ -89,18 +105,14 @@ public class Configurations extends ListActivity  {
         AdapterView.AdapterContextMenuInfo info =
             (AdapterView.AdapterContextMenuInfo) menuInfo;
 
-        final ConfigDatabase.Config config =
-            (ConfigDatabase.Config) this.getListView().getItemAtPosition(info.position);;
+        final PackageDatabase.Package config =
+            (PackageDatabase.Package) pkgList.getItemAtPosition(info.position);;
 
         MenuItem remove = menu.add(R.string.remove);
         remove.setEnabled(!config.asset);
         remove.setOnMenuItemClickListener(new OnMenuItemClickListener() {
             public boolean onMenuItemClick(MenuItem item) {
-                pdialog = createDialog();
-                pdialog.show();
-
-                new RemoveTask().execute(config);
-
+                startRemoveTask(config);
                 return true;
             }
         });
@@ -121,19 +133,19 @@ public class Configurations extends ListActivity  {
     }
 
     private void updateList() {
-        ConfigDatabase db = new ConfigDatabase(this);
-        configs = db.getConfigs();
+        PackageDatabase db = new PackageDatabase(this);
+        packages = db.getPackages();
         db.close();
 
-        this.setListAdapter(
-                new ConfigAdapter(this, configs));
+        pkgList.setAdapter(
+                new ConfigAdapter(this, packages));
 
     }
 
     protected Handler updateHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-            Configurations.this.updateList();
+            PackageListActivity.this.updateList();
         }
     };
 
@@ -145,54 +157,75 @@ public class Configurations extends ListActivity  {
         return pdialog;
     }
 
-    class ReloadTask extends AsyncTask<ConfigDatabase.Config, String, Long> {
+    private void startReloadTask(PackageDatabase.Package c) {
+        pdialog = createDialog();
+        if (null != c) {
+            pdialog.setMessage(PackageListActivity.this.getString(R.string.switching_to, c.name));
+        } else {
+        }
+        pdialog.show();
 
-        protected Long doInBackground(ConfigDatabase.Config... configs) {
-            ConfigDatabase.Config c = configs[0];
+        new ReloadTask().execute(c);
+    }
 
-            SharedPreferences prefs =
-                Configurations.this.getSharedPreferences(WallPaper.SHARED_PREFS_NAME, 0);
-            SharedPreferences.Editor edit = prefs.edit();
-            edit.putString("config_list", c.name);
-            if (c.asset) {
-                edit.putString("sample_config_file", c.filepath);
-                edit.putString("config_file", null);
-            } else {
-                edit.putString("sample_config_file", "CUSTOM");
-                edit.putString("config_file", c.filepath);
+    class ReloadTask extends AsyncTask<PackageDatabase.Package, String, Long> {
+
+        protected Long doInBackground(PackageDatabase.Package... packages) {
+            if (null != packages && packages.length == 1) {
+                PackageDatabase.Package c = packages[0];
+
+                SharedPreferences prefs =
+                    PackageListActivity.this.getSharedPreferences(WallPaper.SHARED_PREFS_NAME, 0);
+                SharedPreferences.Editor edit = prefs.edit();
+                edit.putString("config_list", c.name);
+                if (c.asset) {
+                    edit.putString("sample_config_file", c.filepath);
+                    edit.putString("config_file", null);
+                } else {
+                    edit.putString("sample_config_file", "CUSTOM");
+                    edit.putString("config_file", c.filepath);
+                }
+                edit.commit();
             }
-            edit.commit();
-            Env.reload(Configurations.this);
+            Env.reload(PackageListActivity.this);
             updateHandler.sendEmptyMessage(-1);
 
             return 0L;
         }
 
         protected void onPostExecute(Long result) {
-            Configurations.this.pdialog.dismiss();
+            PackageListActivity.this.pdialog.dismiss();
         }
     }
 
-    class RemoveTask extends AsyncTask<ConfigDatabase.Config, String, Long> {
+    private void startRemoveTask(PackageDatabase.Package config) {
+        pdialog = createDialog();
+        pdialog.show();
+
+        new RemoveTask().execute(config);
+
+    }
+
+    class RemoveTask extends AsyncTask<PackageDatabase.Package, String, Long> {
 
         protected void onProgressUpdate(String... progress) {
             pdialog.setMessage(progress[0]);
         }
 
-        protected Long doInBackground(ConfigDatabase.Config... configs) {
-            ConfigDatabase.Config c = configs[0];
+        protected Long doInBackground(PackageDatabase.Package... packages) {
+            PackageDatabase.Package c = packages[0];
 
             publishProgress(
-                Configurations.this.getString(R.string.removing_from_db, c.name));
-            ConfigDatabase db = new ConfigDatabase(Configurations.this);
-            db.deleteConfig(c);
+                PackageListActivity.this.getString(R.string.removing_from_db, c.name));
+            PackageDatabase db = new PackageDatabase(PackageListActivity.this);
+            db.deletePackage(c);
             db.close();
 
             File confFile = new File(c.filepath);
             if (confFile.exists()) {
                 File confDir = confFile.getParentFile();
                 publishProgress(
-                    Configurations.this.getString(R.string.removing_from_fs, confDir.toString()));
+                    PackageListActivity.this.getString(R.string.removing_from_fs, confDir.toString()));
                 recursiveDelete(confDir);
             }
 
@@ -216,7 +249,7 @@ public class Configurations extends ListActivity  {
         }
 
         protected void onPostExecute(Long result) {
-            Configurations.this.pdialog.dismiss();
+            PackageListActivity.this.pdialog.dismiss();
         }
     }
 
@@ -233,7 +266,7 @@ public class Configurations extends ListActivity  {
                 File mossDir = new File("/sdcard/moss/");
                 String defname = url.toString().replaceAll(".*/([^/]+)\\.mzip$", "$1");
 
-                ConfigDatabase.Config config = new ConfigDatabase.Config();
+                PackageDatabase.Package config = new PackageDatabase.Package();
                 config.asset = false;
                 config.name = defname;
                 config.sourceUrl = url.toString();
@@ -244,9 +277,9 @@ public class Configurations extends ListActivity  {
                 try  {
                     download(url, mossDir, config);
 
-                    ConfigDatabase db = new ConfigDatabase(Configurations.this);
-                    db.insertConfig(config);
-                    configs = db.getConfigs();
+                    PackageDatabase db = new PackageDatabase(PackageListActivity.this);
+                    db.storePackage(config);
+                    packages = db.getPackages();
                     db.close();
 
                 } catch (IOException e) {
@@ -257,11 +290,11 @@ public class Configurations extends ListActivity  {
                 Log.e(TAG, "", e);
             }
             updateHandler.sendEmptyMessage(-1);
-            Configurations.this.pdialog.dismiss();
+            PackageListActivity.this.pdialog.dismiss();
             return 100L;
         }
 
-        private void download(URL url, File mossDir, ConfigDatabase.Config config) throws IOException {
+        private void download(URL url, File mossDir, PackageDatabase.Package config) throws IOException {
             OutputStream os = null;
 
             ZipInputStream zis = 
@@ -271,7 +304,7 @@ public class Configurations extends ListActivity  {
                 ZipEntry ze;
                 while ((ze = zis.getNextEntry()) != null) {
                     publishProgress(
-                            Configurations.this.getString(R.string.processing_x, ze.getName()));
+                            PackageListActivity.this.getString(R.string.processing_x, ze.getName()));
                     if (ze.isDirectory()) {
                         new File(mossDir, ze.getName()).mkdirs();
                     } else {
@@ -313,25 +346,42 @@ public class Configurations extends ListActivity  {
          * TODO: this is a pretty weak parser. Consider improvementing or
          * switching to Yaml or something.
          */
-        private void parseManifest(String manifest, ConfigDatabase.Config config) {
-            for (String line : manifest.split("\n")) {
-                String[] arr = line.split(":");
-                if (arr.length == 2) {
-                    if ("name".equals(arr[0].trim())) {
-                        config.name = arr[1].trim();
-                    } else if ("description".equals(arr[0].trim())) {
-                        config.desc = arr[1].trim();
+        private void parseManifest(String manifest, PackageDatabase.Package config) {
+            int state = 0;
+            StringBuffer key = new StringBuffer("");
+            StringBuffer value = new StringBuffer("");
+            for (int i = 0; i < manifest.length(); ++i) {
+                char c = manifest.charAt(i);
+                if (0 == state) {
+                    if (c == ':') {
+                        state = 1;
+                    } else {
+                        key.append(c);
+                    }
+                } else if (1 == state) {
+                    if ('\n' == c) {
+                        String k = key.toString().trim();
+                        if ("name".equals(k)) {
+                            config.name = value.toString().trim();
+                        } else if ("description".equals(k)) {
+                            config.desc = value.toString().trim();
+                        }
+                        state = 0;
+                        key = new StringBuffer("");
+                        value = new StringBuffer("");
+                    } else {
+                        value.append(c);
                     }
                 }
             }
         }
     }
 
-    class ConfigAdapter extends ArrayAdapter<ConfigDatabase.Config> {
+    class ConfigAdapter extends ArrayAdapter<PackageDatabase.Package> {
 
-        public ConfigAdapter(Context context, List<ConfigDatabase.Config> configs) {
-            super(context, R.layout.item_config, configs);
-            this.configs = configs;
+        public ConfigAdapter(Context context, List<PackageDatabase.Package> packages) {
+            super(context, R.layout.item_config, packages);
+            this.packages = packages;
         }
 
         @Override
@@ -351,16 +401,16 @@ public class Configurations extends ListActivity  {
                 holder = (ViewHolder) convertView.getTag();
             }
 
-            ConfigDatabase.Config config = configs.get(position);
+            PackageDatabase.Package config = packages.get(position);
             if (config == null) {
                 /* Its a bummer man */
                 Log.e("DeviceAdapter", "Config is null!");
-                holder.name.setText(Configurations.this.getString(R.string.error_during_lookup));
+                holder.name.setText(PackageListActivity.this.getString(R.string.error_during_lookup));
                 return convertView;
             }
 
             holder.name.setText(config.name);
-            holder.desc.setText(config.desc);
+            holder.desc.setText(Html.fromHtml(config.desc));
 
             Context context = convertView.getContext();
             holder.name.setTextAppearance(context,
@@ -376,13 +426,14 @@ public class Configurations extends ListActivity  {
             private TextView desc;
         }
 
-        private List<ConfigDatabase.Config> configs;
+        private List<PackageDatabase.Package> packages;
     }
 
     private static final String MANIFEST = "manifest.txt";
     private static final String MOSSRC = "mossrc";
 
+    private ListView pkgList;
     private ProgressDialog pdialog;
     private LayoutInflater inflater = null;
-    private List <ConfigDatabase.Config> configs;
+    private List <PackageDatabase.Package> packages;
 }

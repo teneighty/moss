@@ -24,15 +24,14 @@
         </service>
 
         <activity android:label="@string/settings"
-                  android:name=".Settings" android:exported="true" />
+                  android:name=".SettingsActivity" android:exported="true" />
 
-        <activity android:label="@string/moss" android:name=".Configurations"
+        <activity android:label="@string/moss" android:name=".PackageListActivity"
                   android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <category android:name="android.intent.category.DEFAULT" />
-
                 <data android:scheme="http" />
                 <data android:host="*" />
                 <dataa android:pathPattern=".*\\.mzip" />
@@ -48,7 +47,7 @@
         </activity>
 
         <activity android:label="@string/overrides"
-                  android:name=".MossOverrides" />
+                  android:name=".OverridesActivity" />
 
         <activity android:label="@string/help"
                   android:name=".MossHelp" />

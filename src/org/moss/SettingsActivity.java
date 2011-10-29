@@ -37,14 +37,14 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 
-public class Settings extends PreferenceActivity
+public class SettingsActivity extends PreferenceActivity
     implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     @Override
     protected void onCreate(Bundle icicle) {
         super.onCreate(icicle);
         getPreferenceManager().setSharedPreferencesName(WallPaper.SHARED_PREFS_NAME);
-        addPreferencesFromResource(R.layout.act_settings);
+        addPreferencesFromResource(R.xml.prefs_menu);
 
         prefs = getPreferenceManager().getSharedPreferences();
         prefs.registerOnSharedPreferenceChangeListener(this);
@@ -56,7 +56,7 @@ public class Settings extends PreferenceActivity
         if (null != configList) {
             configList.setOnPreferenceClickListener(new OnPreferenceClickListener() {
                 public boolean onPreferenceClick(Preference pref) {
-                    startActivity(new Intent(Settings.this, Configurations.class));
+                    startActivity(new Intent(SettingsActivity.this, PackageListActivity.class));
                     return true;
                 }
             });
@@ -66,7 +66,7 @@ public class Settings extends PreferenceActivity
         if (null != overrides) {
             overrides.setOnPreferenceClickListener(new OnPreferenceClickListener() {
                 public boolean onPreferenceClick(Preference pref) {
-                    startActivity(new Intent(Settings.this, MossOverrides.class));
+                    startActivity(new Intent(SettingsActivity.this, OverridesActivity.class));
                     return true;
                 }
             });
@@ -76,7 +76,7 @@ public class Settings extends PreferenceActivity
         if (null != help) {
             help.setOnPreferenceClickListener(new OnPreferenceClickListener() {
                 public boolean onPreferenceClick(Preference pref) {
-                    startActivity(new Intent(Settings.this, MossHelp.class));
+                    startActivity(new Intent(SettingsActivity.this, MossHelp.class));
                     return true;
                 }
             });
@@ -98,7 +98,7 @@ public class Settings extends PreferenceActivity
     }
 
     @Override
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+    public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
         checkErrors();
         PrefUtils.updatePrefs(this);
     }
@@ -145,7 +145,7 @@ public class Settings extends PreferenceActivity
                 edit.commit();
 
                 PrefUtils.defaultPrefs(currentEnv.env, prefs);
-                PrefUtils.updatePrefs(Settings.this);
+                PrefUtils.updatePrefs(SettingsActivity.this);
 
                 return true;
             }
@@ -182,7 +182,7 @@ public class Settings extends PreferenceActivity
         AlertDialog.Builder builder;
         AlertDialog alertDialog;
 
-        Context context = Settings.this;
+        Context context = SettingsActivity.this;
         View layout = inflater.inflate(R.layout.dia_errors,
                                     (ViewGroup) findViewById(R.id.layout_root));
 
@@ -200,7 +200,7 @@ public class Settings extends PreferenceActivity
     private Env.Current currentEnv = Env.Current.INSTANCE;
 
     static final int DIA_ERROR_LIST = 1;
-    static final String TAG = "Settings";
+    static final String TAG = "SettingsActivity";
 
     class ErrorAdapter extends ArrayAdapter<MossException> {
         public ErrorAdapter(Context context, List<MossException> exs) {
