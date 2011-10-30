@@ -1,9 +1,10 @@
 package org.moss;
 
 import android.app.Dialog;
-import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
@@ -18,6 +19,8 @@ import android.view.View;
 import android.widget.AdapterView;
 
 import org.moss.prefs.PrefUtils;
+
+import java.io.File;
 
 public class OverridesActivity extends PreferenceActivity
     implements SharedPreferences.OnSharedPreferenceChangeListener {
@@ -63,7 +66,22 @@ public class OverridesActivity extends PreferenceActivity
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        PrefUtils.updatePrefs(this);
+        if ("config_file".equals(key)) {
+            Preference pref = this.findPreference(key);
+            if (null == prefs.getString(key, null)) {
+                pref.setSummary(getString(R.string.path_to_config));
+            } else {
+                File file = new File(prefs.getString(key, ""));
+                if (file.exists()) {
+                    pref.setSummary(file.toString());
+                    startReloadTask();
+                } else {
+                    pref.setSummary(getString(R.string.does_not_exist, file.toString()));
+                }
+            }
+        } else {
+            PrefUtils.updatePrefs(this);
+        }
     }
 
     @Override
@@ -103,11 +121,32 @@ public class OverridesActivity extends PreferenceActivity
         });
     }
 
+    private void startReloadTask() {
+        pdialog = new ProgressDialog(this);
+        pdialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        pdialog.setMessage(getString(R.string.reloading));
+        pdialog.show();
+
+        new ReloadTask().execute();
+    }
+
+    class ReloadTask extends AsyncTask<String, String, Long> {
+
+        protected Long doInBackground(String... s) {
+            Env.reload(OverridesActivity.this);
+
+            return 0L;
+        }
+
+        protected void onPostExecute(Long result) {
+            OverridesActivity.this.pdialog.dismiss();
+        }
+    }
+
     private Env.Current currentEnv = Env.Current.INSTANCE;
-
-    static final String TAG = "OverridesActivity";
-
+    private ProgressDialog pdialog;
     private SharedPreferences prefs;
     private LayoutInflater inflater = null;
-    static final int SELECT_CONFIG = 1111;
+
+    static final String TAG = "OverridesActivity";
 }

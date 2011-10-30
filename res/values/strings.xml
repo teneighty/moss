@@ -31,6 +31,7 @@
     <string name="configs_summary">Select a new configuration configurations.</string>
     <string name="custom_config_file">Custom Config File</string>
 
+    <string name="reloading">Reloading</string>
     <string name="reload">Reload</string>
     <string name="reload_summary">Force Moss to reload your configuration.</string>
     <string name="overrides">Overrides</string>

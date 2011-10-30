@@ -14,6 +14,7 @@ Current Release TODO
   * Remove all the Config\*.java
 * Clean up preferences
 * Move service bind to Env
+* Added alignr and alignc objects
 
 
 Future Releases

@@ -2,15 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:orientation="vertical"
+            android:orientation="vertical"
     >
-
-    <ListView  
-        android:id="@+id/package_list"
-        android:layout_width="fill_parent" 
-        android:layout_height="wrap_content"
-        android:numColumns="1"
-        android:gravity="center" /> 
 
     <ListView  
         android:id="@android:id/list"
@@ -18,5 +11,11 @@
         android:layout_height="wrap_content"
         android:numColumns="1"
         android:gravity="center" /> 
+
+    <TextView 
+        android:id="@android:id/empty"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:text="@string/empty_list" />
 
 </LinearLayout>

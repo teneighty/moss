@@ -1,6 +1,6 @@
 package org.moss;
 
-import android.app.Activity;
+import android.app.ListActivity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -43,19 +43,16 @@ import java.util.zip.ZipInputStream;
 import java.util.zip.ZipEntry;
 import java.util.ArrayList;
 
-public class PackageListActivity extends PreferenceActivity 
-    implements SharedPreferences.OnSharedPreferenceChangeListener {
+public class PackageListActivity extends ListActivity {
 
     static final String TAG = "PackageListActivity";
 
     @Override
     protected void onCreate(Bundle icicle) {
         super.onCreate(icicle);
-        getPreferenceManager().setSharedPreferencesName(WallPaper.SHARED_PREFS_NAME);
         this.setContentView(R.layout.act_packages);
-        this.addPreferencesFromResource(R.xml.prefs_custom_package);
 
-        this.pkgList = (ListView) findViewById(R.id.package_list);
+        this.pkgList = this.getListView();
         this.registerForContextMenu(pkgList);
 
         handleIntents();
@@ -73,24 +70,6 @@ public class PackageListActivity extends PreferenceActivity
                 startReloadTask(c);
             }
         });
-    }
-
-    @Override
-    public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
-        if ("config_file".equals(key)) {
-            Preference pref = this.findPreference(key);
-            if ("".equals(prefs.getString(key, ""))) {
-                    pref.setSummary(getString(R.string.path_to_config));
-            } else {
-                File file = new File(prefs.getString(key, ""));
-                if (file.exists()) {
-                    pref.setSummary(file.toString());
-                    startReloadTask(null);
-                } else {
-                    pref.setSummary(getString(R.string.does_not_exist, file.toString()));
-                }
-            }
-        }
     }
 
     @Override
@@ -417,6 +396,10 @@ public class PackageListActivity extends PreferenceActivity
                     android.R.attr.textAppearanceLarge);
             holder.desc.setTextAppearance(context,
                     android.R.attr.textAppearanceSmall);
+
+            if (true) {
+                convertView.setBackgroundColor(R.color.selected_color);
+            }
 
             return convertView;
         }

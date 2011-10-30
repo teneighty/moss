@@ -32,6 +32,16 @@
 
     </PreferenceCategory>
 
+    <PreferenceCategory android:title="@string/config_custom_cat">
+
+        <EditTextPreference
+            android:key="config_file"
+            android:title="@string/config_file"
+            android:singleLine="true"
+            />
+
+    </PreferenceCategory>
+
     <Preference
         android:key="config_reset"
         android:title="@string/reset"
