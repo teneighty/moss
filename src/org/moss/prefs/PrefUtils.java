@@ -25,7 +25,7 @@ public class PrefUtils {
                 continue;
             }
             CharSequence value = null;
-            if ("font_size".equals(key)) {
+            if ("font_size".equals(key) || "update_interval".equals(key)) {
                 value = String.format("%.0f", prefs.getFloat(key, -1.0f));
             } else if ("background_color".equals(key) || "mod_color".equals(key)) {
                 int c = prefs.getInt(key, -1);
@@ -53,6 +53,9 @@ public class PrefUtils {
 
     public static void defaultPrefs(Env env, SharedPreferences prefs) {
         SharedPreferences.Editor edit = prefs.edit();
+        if (-1.0f == prefs.getFloat("update_interval", -1.0f)) {
+            edit.putFloat("update_interval", env.getConfig().getUpdateInterval());
+        }
         if (-1.0f == prefs.getFloat("font_size", -1.0f)) {
             edit.putFloat("font_size", env.getConfig().getFontSize());
         }
@@ -84,6 +87,7 @@ public class PrefUtils {
     }
 
     static String[] defaultable = new String[] {
-        "background_image", "background_color", "mod_color", "font_size"
+        "update_interval", "background_image", 
+        "background_color", "mod_color", "font_size"
     };
 }

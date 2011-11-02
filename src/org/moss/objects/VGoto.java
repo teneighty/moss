@@ -12,7 +12,7 @@ public class VGoto implements MossObject {
      */
     public VGoto(String position) throws ParseException {
         try {
-            this.mPosition = new Integer(position).intValue();
+            this.mPosition = Integer.parseInt(position);
         } catch (NumberFormatException e) {
             throw new ParseException(String.format("Invalid position: '%s'", position));
         }

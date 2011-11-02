@@ -234,7 +234,11 @@ public class WallPaper extends WallpaperService {
 
             mHandler.removeCallbacks(mDrawMoss);
             if (this.isVisible) {
-                mHandler.postDelayed(mDrawMoss, DEFAULT_INTERVAL);
+                if (single.env != null) {
+                    mHandler.postDelayed(mDrawMoss, single.env.getUpdateInterval());
+                } else {
+                    mHandler.postDelayed(mDrawMoss, DEFAULT_INTERVAL);
+                }
                 if (null != dataService) {
                     dataService.setPaperVisible(isVisible);
                 }

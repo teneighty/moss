@@ -12,7 +12,7 @@ public class Offset implements MossObject {
      */
     public Offset(String pixels) throws ParseException {
         try {
-            this.mPixels = new Integer(pixels).intValue();
+            this.mPixels = Integer.parseInt(pixels);
         } catch (NumberFormatException e) {
             throw new ParseException(String.format("Invalid pixels: '%s'", pixels));
         }

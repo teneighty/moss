@@ -9,7 +9,7 @@ abstract class AbsBarObject {
      * TODO: Add error checking
      */
     AbsBarObject() {
-        this.height = 14f;
+        this.height = 10f;
         this.width = 150f;
     }
 

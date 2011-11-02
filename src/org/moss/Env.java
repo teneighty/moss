@@ -1,6 +1,5 @@
 package org.moss;
 
-import org.moss.Parser.Layout;
 import org.moss.objects.MossObject;
 import org.moss.objects.DataProvider;
 import org.moss.objects.Interval;
@@ -61,6 +60,10 @@ public class Env {
         }
     }
 
+    public static Env getEnv() {
+        return Current.INSTANCE.env;
+    }
+
     public Env() {
         paint = new Paint();
         paint.setColor(0xffffffff);
@@ -68,7 +71,7 @@ public class Env {
         paint.setStrokeWidth(1);
         paint.setStrokeCap(Paint.Cap.ROUND);
         paint.setStyle(Paint.Style.FILL_AND_STROKE);
-        paint.setStrokeWidth(1.0f);
+        paint.setStrokeWidth(0f); // Hairline mode
         paint.setTypeface(Typeface.MONOSPACE);
 
         exs = new ArrayList<MossException>();
@@ -152,7 +155,9 @@ public class Env {
         this.maxY = 0;
 
         if (null != config) {
-            this.updateInterval = (long) (1000.0f * config.getUpdateInterval());
+            this.updateInterval = 
+                (long) (1000.0f * 
+                        prefs.getFloat(Config.CONF_UPDATE_INTERVAL, config.getUpdateInterval()));
 
             try {
                 fontSize = prefs.getFloat("font_size", config.getFontSize());
@@ -252,17 +257,8 @@ public class Env {
 
         setX(0.0F);
         setY(0.0F);
-        Layout l = getLayout();
-        if (null != l) {
-            for (MossObject o : l) {
-                o.preDraw(this);
-            }
-            for (MossObject o : l) {
-                o.draw(this);
-            }
-            for (MossObject o : l) {
-                o.postDraw(this);
-            }
+        if (layout != null) {
+            layout.draw(c, this);
         }
         c.restore();
     }
@@ -421,6 +417,34 @@ public class Env {
 
     public float getPaperWidth() {
         return paperWidth;
+    }
+
+    public long getUpdateInterval() {
+        return updateInterval;
+    }
+
+    /**
+     * Create a partially "deep" copy of the Env for use in calculating
+     * coordinates without actually drawing anything, used with alignr and
+     * alignc.
+     */
+    public Env dummyClone() {
+        Env e = new Env();
+
+        e.paperWidth = this.paperWidth;
+        e.paperHeight = this.paperHeight;
+        e.startx = this.startx;
+        e.starty = this.starty;
+        e.x = this.x;;
+        e.y = this.y;;
+        e.maxX = this.maxX;
+        e.maxY = this.maxY;
+        /* copy existing paint */
+        e.paint = new Paint(paint);
+        /* an empty canvas not tied to the Surface holder */
+        e.canvas = new Canvas();
+        e.config = config;
+        return e;
     }
 
     private float paperWidth;

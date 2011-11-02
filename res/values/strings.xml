@@ -13,6 +13,8 @@
     <string name="config_custom_cat">Custom</string>
     <string name="config_file">Custom File</string>
 
+    <string name="update_interval">Update Interval</string>
+
     <string name="background_cat">Background</string>
     <string name="bg_image_title">Image</string>
     <string name="bg_color_title">Color</string>
@@ -23,7 +25,6 @@
     <string name="font_face_title">Font Family</string>
 
     <string name="pick_a_color">Select a color: </string>
-
     <string name="dia_errors_title">Configuration Errors</string>
 
     <string name="moss_viewer">Moss Viewer</string>
@@ -46,7 +47,7 @@
     <string name="empty_list">Empty List</string>
 
     <string name="config_basic_name">Basic Configuration</string>
-    <string name="config_basic_desc">This is a small showcase of different system monitors.</string>
+    <string name="config_basic_desc">A small and simple configuration.</string>
 
     <string name="config_network">Network Emphasis</string>
     <string name="config_network_desc">Focuses on network usage and devices.</string>

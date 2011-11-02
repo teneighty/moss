@@ -4,10 +4,27 @@
         <link rel="stylesheet" type="text/css" href="help.css" />
     </head>
     <body>
-        <a href="help.html">Back to Help</a>
         <div name="objects">
             <a name="objects"><h2>Objects</h2></a>
             <!-- OBJECTS BEGIN -->
+                <div>
+                    <h3><a name="alignc">alignc</a></h3>
+                    <p>
+                    Align the text to center.
+                    </p>
+                    
+                    <hr />
+                </div>
+            
+                <div>
+                    <h3><a name="alignr">alignr</a></h3>
+                    <p>
+                    Align the text to the right.
+                    </p>
+                    
+                    <hr />
+                </div>
+            
                 <div>
                     <h3><a name="battery">battery</a></h3>
                     <p>
@@ -36,15 +53,6 @@
                 </div>
             
                 <div>
-                    <h3><a name="battery_time">battery_time</a></h3>
-                    <p>
-                    Display the amount of time left on battery.
-                    </p>
-                    
-                    <hr />
-                </div>
-            
-                <div>
                     <h3><a name="color">color</a></h3>
                     <p>
                     Change the current paint color to the default color.
@@ -67,6 +75,15 @@
                     <h3><a name="cpu">cpu</a></h3>
                     <p>
                     Display the percentage of cpu usage.
+                    </p>
+                    
+                    <hr />
+                </div>
+            
+                <div>
+                    <h3><a name="cpubar">cpubar</a></h3>
+                    <p>
+                    Display the percentage of cpu usage in a bar.
                     </p>
                     
                     <hr />
@@ -118,11 +135,58 @@
                 </div>
             
                 <div>
+                    <h3><a name="font">font</a></h3>
+                    <p>
+                    Reset to the current font.
+                    </p>
+                    
+                    <hr />
+                </div>
+            
+                <div>
+                    <h3><a name="font">font</a>(font)</h3>
+                    <p>
+                    Change to the font described in font
+                    </p>
+                    Parameters: <ul><li>font - The font to switch to for drawing
+</li></ul>
+                    <hr />
+                </div>
+            
+                <div>
+                    <h3><a name="freq">freq</a></h3>
+                    <p>
+                    Returns firts CPU's frequency in MHz.
+                    </p>
+                    
+                    <hr />
+                </div>
+            
+                <div>
+                    <h3><a name="freq">freq</a>(cpuNum)</h3>
+                    <p>
+                    Returns CPU n's frequency in MHz.
+                    </p>
+                    Parameters: <ul><li>cpuNum - the cpu number
+</li></ul>
+                    <hr />
+                </div>
+            
+                <div>
                     <h3><a name="fs_bar">fs_bar</a>(mountPoint)</h3>
                     <p>
                     Display current file system usage in a usage bar.
                     </p>
                     Parameters: <ul><li>mountPoint - Mount point such as /sdcard, /system or /data</li></ul>
+                    <hr />
+                </div>
+            
+                <div>
+                    <h3><a name="fs_bar">fs_bar</a></h3>
+                    <p>
+                    
+                    </p>
+                    
                     <hr />
                 </div>
             
@@ -154,6 +218,25 @@
                 </div>
             
                 <div>
+                    <h3><a name="fs_used_perc">fs_used_perc</a>(mountPoint)</h3>
+                    <p>
+                    Display the amount of disk usage.
+                    </p>
+                    Parameters: <ul><li>mountPoint - Mount point such as /sdcard, /system or /data</li></ul>
+                    <hr />
+                </div>
+            
+                <div>
+                    <h3><a name="goto">goto</a>(position)</h3>
+                    <p>
+                    Change current horizontal location to postition
+                    </p>
+                    Parameters: <ul><li>position - the new position
+</li></ul>
+                    <hr />
+                </div>
+            
+                <div>
                     <h3><a name="hr">hr</a></h3>
                     <p>
                     Draw a horizontal rule using the default line height.
@@ -173,6 +256,15 @@
                 </div>
             
                 <div>
+                    <h3><a name="image">image</a></h3>
+                    <p>
+                    Draw a horizontal rule using the default line height.
+                    </p>
+                    
+                    <hr />
+                </div>
+            
+                <div>
                     <h3><a name="interval">interval</a></h3>
                     <p>
                     Changed the current update interval.
@@ -187,6 +279,16 @@
                     Display the kernel version.
                     </p>
                     
+                    <hr />
+                </div>
+            
+                <div>
+                    <h3><a name="length">length</a>(minLength, maxLength, object)</h3>
+                    <p>
+                    Limit an objects output to a certain number of characters.
+                    </p>
+                    Parameters: <ul><li>minLength - minimum length of the string</li><li>maxLength - max length of the string</li><li>object - a text object whose output will be limited to N characters
+</li></ul>
                     <hr />
                 </div>
             
@@ -237,6 +339,15 @@
                 </div>
             
                 <div>
+                    <h3><a name="membar">membar</a>(hw)</h3>
+                    <p>
+                    Display memory used in a bar graph.
+                    </p>
+                    Parameters: <ul><li>hw - comma delimited string of height and width</li></ul>
+                    <hr />
+                </div>
+            
+                <div>
                     <h3><a name="memmax">memmax</a></h3>
                     <p>
                     Display the maximum available memory.
@@ -251,6 +362,25 @@
                     Display the percentage of memory being used.
                     </p>
                     
+                    <hr />
+                </div>
+            
+                <div>
+                    <h3><a name="nodename">nodename</a></h3>
+                    <p>
+                    Display the system name
+                    </p>
+                    
+                    <hr />
+                </div>
+            
+                <div>
+                    <h3><a name="offset">offset</a>(pixels)</h3>
+                    <p>
+                    Move text horizontally by N pixels
+                    </p>
+                    Parameters: <ul><li>pixels - the number of pixels
+</li></ul>
                     <hr />
                 </div>
             
@@ -330,6 +460,15 @@
                 </div>
             
                 <div>
+                    <h3><a name="swapbar">swapbar</a>(hw)</h3>
+                    <p>
+                    Display swap used in a bar graph.
+                    </p>
+                    Parameters: <ul><li>hw - comma delimited string of height and width</li></ul>
+                    <hr />
+                </div>
+            
+                <div>
                     <h3><a name="swapmax">swapmax</a></h3>
                     <p>
                     Display the maximum swap memory available.
@@ -353,6 +492,15 @@
                     Display the system name
                     </p>
                     
+                    <hr />
+                </div>
+            
+                <div>
+                    <h3><a name="time">time</a>(format)</h3>
+                    <p>
+                    Prints the local time formatted according to parameter.
+                    </p>
+                    Parameters: <ul><li>format - uses C's strftime format to specify time format.</li></ul>
                     <hr />
                 </div>
             
@@ -387,6 +535,24 @@
                 </div>
             
                 <div>
+                    <h3><a name="totaldown">totaldown</a>(device)</h3>
+                    <p>
+                    Display the download speed for a network interface.
+                    </p>
+                    Parameters: <ul><li>device - network device such as eth0 or wlan0</li></ul>
+                    <hr />
+                </div>
+            
+                <div>
+                    <h3><a name="totalup">totalup</a>(device)</h3>
+                    <p>
+                    Display the download speed for a network interface.
+                    </p>
+                    Parameters: <ul><li>device - network device such as eth0 or wlan0</li></ul>
+                    <hr />
+                </div>
+            
+                <div>
                     <h3><a name="upspeed">upspeed</a>(device)</h3>
                     <p>
                     Display the upload speed for a network interface.
@@ -411,6 +577,26 @@
  system enters deep sleep. @see Realtime.
                     </p>
                     
+                    <hr />
+                </div>
+            
+                <div>
+                    <h3><a name="vgoto">vgoto</a>(position)</h3>
+                    <p>
+                    Change current vertical location to postition
+                    </p>
+                    Parameters: <ul><li>position - the new position
+</li></ul>
+                    <hr />
+                </div>
+            
+                <div>
+                    <h3><a name="voffset">voffset</a>(pixels)</h3>
+                    <p>
+                    Move text vertically by N pixels
+                    </p>
+                    Parameters: <ul><li>pixels - the number of pixels
+</li></ul>
                     <hr />
                 </div>
             

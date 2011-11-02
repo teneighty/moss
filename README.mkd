@@ -9,13 +9,9 @@ For example configurations please see [the samples on the Moss site][samples].
 
 Current Release TODO
 ======================
-* Add manifest to moss packs 
-* Rename Class files and package
-  * Remove all the Config\*.java
-* Clean up preferences
 * Move service bind to Env
-* Added alignr and alignc objects
-
+* Fix font to work like color
+* Allow override for update interval
 
 Future Releases
 ========================

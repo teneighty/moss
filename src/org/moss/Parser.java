@@ -14,9 +14,6 @@ import java.util.ArrayList;
 
 public class Parser {
 
-    public class Layout extends ArrayList<MossObject> implements List<MossObject> {
-    }
-
     public class NewLine implements MossObject {
 
         public void preDraw(Env env) { }

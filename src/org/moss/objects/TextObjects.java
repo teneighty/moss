@@ -26,8 +26,12 @@ public class TextObjects {
             Object[] nargs = new Object[args.size()];
 
             for (int i = 0; i < args.size(); ++i) {
-                sigs[i] = args.get(i).getClass();
                 nargs[i] = (Object) args.get(i);
+                if (args.get(i) instanceof MossObject) {
+                    sigs[i] = MossObject.class;
+                } else {
+                    sigs[i] = args.get(i).getClass();
+                }
             }
             Constructor<MossObject> con = mClass.getDeclaredConstructor(sigs);
             return con.newInstance(nargs);
@@ -113,7 +117,7 @@ public class TextObjects {
                 pe.setIdent(ident);
                 throw pe;
             } else {
-                Log.i(TAG, "Instantiation exception... "  + ident + " " + args.size());
+                Log.i(TAG, "Instantiation exception... "  + ident + ", args length: " + args.size());
                 Log.e(TAG, "", e);
                 ParseException pe = new ParseException("Argument error: " + join(args));
                 pe.setIdent(ident);
@@ -139,6 +143,9 @@ public class TextObjects {
 
         TEXT_OBJECTS.put("interval", Args.def(Interval.class));
         TEXT_OBJECTS.put("printf", new PrintfArgs(Printf.class));
+        TEXT_OBJECTS.put("length", Args.def(Length.class));
+        TEXT_OBJECTS.put("alignr", Args.def(AlignR.class));
+        TEXT_OBJECTS.put("alignc", Args.def(AlignC.class));
 
         TEXT_OBJECTS.put("color", Args.def(Color.class));
         TEXT_OBJECTS.put("hr", Args.def(HRule.class));
@@ -173,6 +180,7 @@ public class TextObjects {
         TEXT_OBJECTS.put("fs_size", Args.def(FSSize.class));
         TEXT_OBJECTS.put("fs_bar", Args.def(FSBar.class));
 
+        TEXT_OBJECTS.put("freq", Args.def(Freq.class));
         TEXT_OBJECTS.put("cpu", Args.def(Cpu.class));
         TEXT_OBJECTS.put("cpubar", Args.def(CpuBar.class));
         TEXT_OBJECTS.put("cpugraph", Args.def(CpuGraph.class));

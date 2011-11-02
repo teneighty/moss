@@ -32,7 +32,7 @@ sub load_objects {
     my $obj_lookup = ();
     open(JAVA, "<src/$package/TextObjects.java");
     while (<JAVA>) {
-        if ($_ =~ m/TEXT_OBJECTS.put\(\s*"(\w+)"\s*,\s*(\w+)\.class\s*\)/) {
+        if ($_ =~ m/TEXT_OBJECTS.put\(\s*"(\w+)"\s*,.*\((\w+)\.class\).*\)/) {
             $obj_lookup->{$2} = $1;
         }
     }

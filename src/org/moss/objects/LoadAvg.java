@@ -18,7 +18,7 @@ public class LoadAvg extends AbsMossObject implements MossObject {
      */
     public LoadAvg(String idx) throws ParseException {
         try {
-            this.idx = new Integer(idx).intValue();
+            this.idx = Integer.parseInt(idx);
             if (this.idx < 1 || this.idx > 3) {
                 throw new ParseException(String.format("Invalid index: '%s'", idx));
             }

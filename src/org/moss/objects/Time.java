@@ -2,6 +2,11 @@ package org.moss.objects;
 
 public class Time extends AbsMossObject {
 
+    /**
+     * Prints the local time formatted according to parameter. 
+     *
+     * @param format uses C's strftime format to specify time format.
+     */
     public Time(String format) {
         this.mFormat = format;
     }

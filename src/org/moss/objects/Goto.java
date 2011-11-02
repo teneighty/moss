@@ -12,7 +12,7 @@ public class Goto implements MossObject {
      */
     public Goto(String pixels) throws ParseException {
         try {
-            this.mPosition = new Integer(pixels).intValue();
+            this.mPosition = Integer.parseInt(pixels);
         } catch (NumberFormatException e) {
             throw new ParseException(String.format("Invalid pixels: '%s'", pixels));
         }

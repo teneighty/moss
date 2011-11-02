@@ -42,26 +42,37 @@ public class PackageDatabase extends SQLiteOpenHelper {
                 + FIELD_IS_ASSET + " INTEGER ) ";
         db.execSQL(sql);
 
+        defaultDatabase(db);
+    }
+
+    private void defaultDatabase(SQLiteDatabase db) {
         Package c1 = new Package();
         c1.name = mContext.getString(R.string.config_basic_name);
         c1.desc = mContext.getString(R.string.config_basic_desc);
         c1.filepath = "default.conf";
         c1.asset = true;
-        insertPackage(db, c1);
+        storePackage(db, c1);
 
         Package c2 = new Package();
         c2.name = mContext.getString(R.string.config_network);
         c2.desc = mContext.getString(R.string.config_network_desc);
         c2.filepath = "network.conf";
         c2.asset = true;
-        insertPackage(db, c2);
+        storePackage(db, c2);
 
         Package c3 = new Package();
         c3.name = mContext.getString(R.string.config_process);
         c3.desc = mContext.getString(R.string.config_process_desc);
         c3.filepath = "process.conf";
         c3.asset = true;
-        insertPackage(db, c3);
+        storePackage(db, c3);
+
+        Package c4 = new Package();
+        c4.name = mContext.getString(R.string.config_full);
+        c4.desc = mContext.getString(R.string.config_full_desc);
+        c4.filepath = "full.conf";
+        c4.asset = true;
+        storePackage(db, c4);
     }
 
     @Override
@@ -141,8 +152,9 @@ public class PackageDatabase extends SQLiteOpenHelper {
         synchronized (DB_LOCK) {
             SQLiteDatabase db = this.getReadableDatabase();
 
+            /* Return package list ordered by name case insensitive */ 
             Cursor c =
-                db.query(TABLE_NAME, null, null, null, null, null, "name", null);
+                db.query(TABLE_NAME, null, null, null, null, null, "lower(name)", null);
             configs = createPackage(c);
             c.close();
         }

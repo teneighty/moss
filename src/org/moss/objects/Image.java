@@ -11,7 +11,8 @@ import java.io.File;
 public class Image implements MossObject {
 
     /**
-     * Draw a horizontal rule using the default line height.
+     * Draw the image specified by the path. The cursor position will not be
+     * changed. 
      */
     public Image(String imagePath) {
         this.imagePath = imagePath;

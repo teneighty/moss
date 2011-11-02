@@ -5,7 +5,7 @@ import android.os.Bundle;
 import android.webkit.WebView;
 import android.view.KeyEvent;
 
-public class MossHelp extends Activity  {
+public class HelpActivity extends Activity  {
     @Override
     protected void onCreate(Bundle icicle) {
         super.onCreate(icicle);

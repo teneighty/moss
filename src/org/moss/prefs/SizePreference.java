@@ -33,7 +33,7 @@ import android.widget.TextView;
  * @author kenny
  *
  */
-public class FontSizePreference extends DialogPreference implements OnSeekBarChangeListener {
+public class SizePreference extends DialogPreference implements OnSeekBarChangeListener {
 
     private TextView mText;
     private int mProgress;
@@ -41,13 +41,13 @@ public class FontSizePreference extends DialogPreference implements OnSeekBarCha
 	 * @param context
 	 * @param attrs
 	 */
-	public FontSizePreference(Context context, AttributeSet attrs) {
+	public SizePreference(Context context, AttributeSet attrs) {
 		super(context, attrs);
 
 		setupLayout(context, attrs);
 	}
 
-	public FontSizePreference(Context context, AttributeSet attrs, int defStyle) {
+	public SizePreference(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
 
 		setupLayout(context, attrs);

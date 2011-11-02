@@ -59,7 +59,7 @@ public class Common {
         String h = hex.replaceAll("(?i)\\d*x", "");
         h = h.replaceAll("#", "");
         try {
-            return Long.valueOf(h, 16).intValue();
+            return Integer.parseInt(h, 16);
         } catch (NumberFormatException e) {
             return i;
         }

@@ -5,6 +5,15 @@
         android:title="@string/settings"
         android:key="settings">
 
+    <!--
+    <org.moss.prefs.IntervalPreference
+        android:key="update_interval"
+        android:title="@string/update_interval"
+        android:singleLine="true"
+        android:numeric="decimal"
+    />
+    -->
+
     <PreferenceCategory android:title="@string/background_cat">
 
         <com.att.preference.colorpicker.ColorPickerPreference
@@ -23,7 +32,7 @@
 
     <PreferenceCategory android:title="@string/font_cat">
 
-        <org.moss.prefs.FontSizePreference
+        <org.moss.prefs.SizePreference
             android:key="font_size"
             android:title="@string/font_size_title"
             android:singleLine="true"

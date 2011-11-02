@@ -34,15 +34,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <data android:scheme="http" />
                 <data android:host="*" />
-                <dataa android:pathPattern=".*\\.mzip" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <data android:scheme="file" />
-                <data android:host="*" />
-                <dataa android:pathPattern=".*\\.mzip" />
+                <data android:pathPattern=".*\\.mzip" />
             </intent-filter>
         </activity>
 
@@ -50,7 +42,7 @@
                   android:name=".OverridesActivity" />
 
         <activity android:label="@string/help"
-                  android:name=".MossHelp" />
+                  android:name=".HelpActivity" />
 
         <service 
             android:name=".DataService"

@@ -11,7 +11,7 @@ public abstract class AbsTop extends AbsMossObject implements MossObject {
 
     public AbsTop(String var, String num) {
         this.var = var;
-        this.num = new Integer(num).intValue() - 1;
+        this.num = Integer.parseInt(num) - 1;
     }
 
     public abstract Comparator getComparator();

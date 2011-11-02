@@ -1,13 +1,15 @@
 package org.moss;
 
 import android.app.Activity;
-import android.app.Dialog;
 import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
@@ -62,6 +64,16 @@ public class SettingsActivity extends PreferenceActivity
             });
         }
 
+        Preference configReload = (Preference) findPreference("config_reload");
+        if (null != configReload) {
+            configReload.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+                public boolean onPreferenceClick(Preference pref) {
+                    startReloadTask();
+                    return true;
+                }
+            });
+        }
+
         Preference overrides = (Preference) findPreference("config_overrides");
         if (null != overrides) {
             overrides.setOnPreferenceClickListener(new OnPreferenceClickListener() {
@@ -76,7 +88,7 @@ public class SettingsActivity extends PreferenceActivity
         if (null != help) {
             help.setOnPreferenceClickListener(new OnPreferenceClickListener() {
                 public boolean onPreferenceClick(Preference pref) {
-                    startActivity(new Intent(SettingsActivity.this, MossHelp.class));
+                    startActivity(new Intent(SettingsActivity.this, HelpActivity.class));
                     return true;
                 }
             });
@@ -114,7 +126,7 @@ public class SettingsActivity extends PreferenceActivity
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
         case R.id.help:
-            Intent helpIntent = new Intent(this, MossHelp.class);
+            Intent helpIntent = new Intent(this, HelpActivity.class);
             startActivity(helpIntent);
             return true;
         default:
@@ -144,7 +156,7 @@ public class SettingsActivity extends PreferenceActivity
                 edit.remove(pref.getKey());
                 edit.commit();
 
-                PrefUtils.defaultPrefs(currentEnv.env, prefs);
+                PrefUtils.defaultPrefs(Env.getEnv(), prefs);
                 PrefUtils.updatePrefs(SettingsActivity.this);
 
                 return true;
@@ -167,11 +179,9 @@ public class SettingsActivity extends PreferenceActivity
 
     private void checkErrors() {
         boolean hasErrors = false;
-        synchronized (currentEnv) {
-            /* TODO: buzz, your girlfriend...wooof, I can do better then this */
-            if (currentEnv.env != null && currentEnv.env.hasExs()) {
-                hasErrors = true;
-            }
+        /* TODO: buzz, your girlfriend...wooof, I can do better then this */
+        if (Env.getEnv() != null && Env.getEnv().hasExs()) {
+            hasErrors = true;
         }
         if (hasErrors) {
             showDialog(DIA_ERROR_LIST);
@@ -187,7 +197,7 @@ public class SettingsActivity extends PreferenceActivity
                                     (ViewGroup) findViewById(R.id.layout_root));
 
         ListView list = (ListView) layout.findViewById(R.id.error_list);
-        list.setAdapter(new ErrorAdapter(context, currentEnv.env.getExs()));
+        list.setAdapter(new ErrorAdapter(context, Env.getEnv().getExs()));
 
         builder = new AlertDialog.Builder(context);
         builder.setView(layout);
@@ -197,7 +207,29 @@ public class SettingsActivity extends PreferenceActivity
         return alertDialog;
     }
 
-    private Env.Current currentEnv = Env.Current.INSTANCE;
+    private void startReloadTask() {
+        pdialog = new ProgressDialog(this);
+        pdialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        pdialog.setMessage(getString(R.string.reloading));
+        pdialog.show();
+
+        new ReloadTask().execute();
+    }
+
+    class ReloadTask extends AsyncTask<String, String, Long> {
+
+        protected Long doInBackground(String... s) {
+            Env.reload(SettingsActivity.this);
+
+            return 0L;
+        }
+
+        protected void onPostExecute(Long result) {
+            SettingsActivity.this.pdialog.dismiss();
+        }
+    }
+
+    private ProgressDialog pdialog;
 
     static final int DIA_ERROR_LIST = 1;
     static final String TAG = "SettingsActivity";
