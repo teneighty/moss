@@ -39,8 +39,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 
-public class SettingsActivity extends PreferenceActivity
-    implements SharedPreferences.OnSharedPreferenceChangeListener {
+public class SettingsActivity extends PreferenceActivity {
 
     @Override
     protected void onCreate(Bundle icicle) {
@@ -48,9 +47,7 @@ public class SettingsActivity extends PreferenceActivity
         getPreferenceManager().setSharedPreferencesName(WallPaper.SHARED_PREFS_NAME);
         addPreferencesFromResource(R.xml.prefs_menu);
 
-        prefs = getPreferenceManager().getSharedPreferences();
-        prefs.registerOnSharedPreferenceChangeListener(this);
-
+        this.prefs = getPreferenceManager().getSharedPreferences();
         this.registerForContextMenu(this.getListView());
         this.inflater = LayoutInflater.from(this);
 
@@ -93,7 +90,8 @@ public class SettingsActivity extends PreferenceActivity
                 }
             });
         }
-        onSharedPreferenceChanged(prefs, null);
+        checkErrors();
+        PrefUtils.updatePrefs(this);
     }
 
     @Override
@@ -104,15 +102,7 @@ public class SettingsActivity extends PreferenceActivity
 
     @Override
     protected void onDestroy() {
-        getPreferenceManager().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(
-                this);
         super.onDestroy();
-    }
-
-    @Override
-    public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
-        checkErrors();
-        PrefUtils.updatePrefs(this);
     }
 
     @Override

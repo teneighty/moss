@@ -5,14 +5,12 @@
         android:title="@string/settings"
         android:key="settings">
 
-    <!--
     <org.moss.prefs.IntervalPreference
         android:key="update_interval"
         android:title="@string/update_interval"
         android:singleLine="true"
         android:numeric="decimal"
     />
-    -->
 
     <PreferenceCategory android:title="@string/background_cat">
 

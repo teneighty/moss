@@ -42,6 +42,26 @@ public class Common {
         }
     }
 
+    public static String formatSecondsShort(long seconds) {
+        long days;
+        int hours, minutes;
+
+        days = seconds / 86400;
+        seconds %= 86400;
+        hours = (int) (seconds / 3600);
+        seconds %= 3600;
+        minutes = (int) (seconds / 60);
+        seconds %= 60;
+
+        if (days > 0) {
+            return String.format("%dd, %dh", days, hours);
+        } else if (hours > 0) {
+            return String.format("%dh %dm", hours, minutes);
+        } else {
+            return String.format("%dm %ds", minutes, seconds);
+        }
+    }
+
     public static String humanReadble(long num) {
         int is = 0;
         while (num / 1024 >= 1 && is < suffixes.length) {

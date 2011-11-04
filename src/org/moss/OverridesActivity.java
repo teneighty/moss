@@ -42,6 +42,7 @@ public class OverridesActivity extends PreferenceActivity
             reset.setOnPreferenceClickListener(new OnPreferenceClickListener() {
                 public boolean onPreferenceClick(Preference pref) {
                     PrefUtils.resetPrefs(currentEnv.env, prefs);
+                    PrefUtils.defaultPrefs(currentEnv.env, prefs);
 
                     return true;
                 }
@@ -82,13 +83,6 @@ public class OverridesActivity extends PreferenceActivity
         } else {
             PrefUtils.updatePrefs(this);
         }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.settings_menu, menu);
-        return true;
     }
 
     @Override

@@ -7,6 +7,7 @@ import android.preference.ListPreference;
 import android.preference.PreferenceActivity;
 import android.preference.Preference;
 
+import org.moss.Common;
 import org.moss.Env;
 
 public class PrefUtils {
@@ -25,8 +26,10 @@ public class PrefUtils {
                 continue;
             }
             CharSequence value = null;
-            if ("font_size".equals(key) || "update_interval".equals(key)) {
+            if ("font_size".equals(key)) {
                 value = String.format("%.0f", prefs.getFloat(key, -1.0f));
+            } else if ("update_interval".equals(key)) {
+                value = Common.formatSecondsShort((long) prefs.getFloat(key, -1.0f));
             } else if ("background_color".equals(key) || "mod_color".equals(key)) {
                 int c = prefs.getInt(key, -1);
                 if (-1 != c) {

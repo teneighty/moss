@@ -167,12 +167,12 @@ public class PackageListActivity extends ListActivity {
                 edit.commit();
             }
             Env.reload(PackageListActivity.this);
-            updateHandler.sendEmptyMessage(-1);
 
             return 0L;
         }
 
         protected void onPostExecute(Long result) {
+            updateHandler.sendEmptyMessage(-1);
             PackageListActivity.this.pdialog.dismiss();
         }
     }
@@ -207,9 +207,6 @@ public class PackageListActivity extends ListActivity {
                     PackageListActivity.this.getString(R.string.removing_from_fs, confDir.toString()));
                 recursiveDelete(confDir);
             }
-
-            updateHandler.sendEmptyMessage(-1);
-
             return 0L;
         }
 
@@ -228,6 +225,7 @@ public class PackageListActivity extends ListActivity {
         }
 
         protected void onPostExecute(Long result) {
+            updateHandler.sendEmptyMessage(-1);
             PackageListActivity.this.pdialog.dismiss();
         }
     }
@@ -236,6 +234,11 @@ public class PackageListActivity extends ListActivity {
 
         protected void onProgressUpdate(String... progress) {
             pdialog.setMessage(progress[0]);
+        }
+
+        protected void onPostExecute(Long result) {
+            updateHandler.sendEmptyMessage(-1);
+            PackageListActivity.this.pdialog.dismiss();
         }
 
         protected Long doInBackground(Uri... uris) {
@@ -268,8 +271,6 @@ public class PackageListActivity extends ListActivity {
             } catch (MalformedURLException e) {
                 Log.e(TAG, "", e);
             }
-            updateHandler.sendEmptyMessage(-1);
-            PackageListActivity.this.pdialog.dismiss();
             return 100L;
         }
 
