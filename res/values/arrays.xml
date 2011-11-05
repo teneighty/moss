@@ -28,13 +28,13 @@
     <string-array name="interval_types">
         <item>Seconds</item>
         <item>Minutes</item>
-        <item>Days</item>
+        <item>Hours</item>
     </string-array>
 
     <integer-array name="interval_values">
         <item>1</item>
         <item>60</item>
-        <item>1440</item>
+        <item>3600</item>
     </integer-array>
 
 </resources>

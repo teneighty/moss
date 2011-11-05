@@ -46,6 +46,14 @@ public class IntervalPreference extends DialogPreference {
         View view = super.onCreateDialogView();
 
         float val = getPersistedFloat(1.0f);
+        int idx = 0; // seconds
+        if (val >= 3600) {
+            idx = 2; // hours
+            val /= 3600.0f;
+        } else if (val >= 60) {
+            idx = 1;  // minutes
+            val /= 60.0f;
+        }
 
         mText = (EditText) view.findViewById(R.id.interval_string);
         mText.setText(String.valueOf(val));
@@ -55,6 +63,7 @@ public class IntervalPreference extends DialogPreference {
                 getContext(), R.array.interval_types, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mSpinner.setAdapter(adapter);
+        mSpinner.setSelection(idx);
         mSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
 
             public void onItemSelected(AdapterView parent, View view, int pos, long id) {
