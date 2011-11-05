@@ -203,6 +203,7 @@ public class Env {
                     if (m == null) {
                         m = new UpdateManager(d);
                     }
+                    m.reset();
                     m.setInterval(interval);
                     dataProviders.put(d, m);
                 }

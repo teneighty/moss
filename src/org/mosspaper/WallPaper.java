@@ -108,7 +108,6 @@ public class WallPaper extends WallpaperService {
 
             /* Start the data service */
             doBindService();
-
         }
 
         void doBindService() {
@@ -146,6 +145,10 @@ public class WallPaper extends WallpaperService {
             } else {
                 if (single.env != null) {
                     single.env.loadPrefs(WallPaper.this, prefs);
+                    if ("update_interval".equals(key)) {
+                        single.env.buildDataProviders();
+                        dataService.setDataProviders(single.env.getDataProviders());
+                    }
                 }
             }
         }

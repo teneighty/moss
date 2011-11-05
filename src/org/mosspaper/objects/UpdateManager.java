@@ -8,8 +8,7 @@ public class UpdateManager {
 
     public UpdateManager(DataProvider data) {
         this.data = data;
-        this.lastUpdate = 0L;
-        this.interval = -1;
+        reset();
     }
 
     public void setInterval(long newinterval) {
@@ -24,13 +23,17 @@ public class UpdateManager {
         return this.interval;
     }
 
+    public void reset() {
+        this.interval = -1;
+        this.lastUpdate = 0L;
+    }
+
     public void update(State state) {
         if (!state.isVisible() && !data.runWhenInvisible()) {
             return;
         }
         long now = System.currentTimeMillis();
         if (Math.abs(now - lastUpdate) > interval) {
-            Log.i(TAG, data.getClass().getName());
             data.update(state);
             lastUpdate = now;
         }
