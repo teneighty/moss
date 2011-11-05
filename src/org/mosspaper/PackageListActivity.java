@@ -246,7 +246,7 @@ public class PackageListActivity extends ListActivity {
             try {
                 URL url = new URL(uris[0].toString());
                 File mossDir = new File("/sdcard/moss/");
-                String defname = url.toString().replaceAll(".*/([^/]+)\\.mzip$", "$1");
+                String defname = url.toString().replaceAll(".*/([^/]+)\\.mba$", "$1");
 
                 PackageDatabase.Package config = new PackageDatabase.Package();
                 config.asset = false;
