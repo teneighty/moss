@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    package="org.moss">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="org.moss"
+    android:versionName="0.1"
+    android:versionCode="1">
 
     <uses-sdk android:minSdkVersion="8" />
     <uses-feature android:name="android.software.live_wallpaper" />
@@ -9,8 +10,8 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application 
-        android:label="@string/wallpapers"
-        android:icon="@drawable/icon" >
+        android:icon="@drawable/icon" 
+        android:label="@string/moss" >
 
         <service
             android:label="@string/moss"

@@ -4,7 +4,6 @@
     <skip />
 
     <!-- Application name -->
-    <string name="wallpapers">Moss</string>
     <string name="moss">Moss</string>
     <string name="settings">Settings</string>
     <string name="description">System monitor wallpaper, in the likeness of Conky.</string>

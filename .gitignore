@@ -5,3 +5,5 @@ gen
 libs
 obj
 local.properties
+ant.properties
+build.properties
