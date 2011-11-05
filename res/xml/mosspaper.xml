@@ -2,4 +2,4 @@
 <wallpaper xmlns:android="http://schemas.android.com/apk/res/android"
            android:description="@string/description"
            android:thumbnail="@drawable/icon"
-           android:settingsActivity="org.moss.SettingsActivity" />
+           android:settingsActivity="org.mosspaper.SettingsActivity" />

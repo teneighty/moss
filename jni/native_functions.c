@@ -6,10 +6,10 @@
 #include <time.h>
 
 void
-Java_org_moss_objects_FSJni_getFsInfo(JNIEnv* env,
-                                      jobject obj,
-                                      jstring jpath,
-                                      jobject fs_obj)
+Java_org_mosspaper_objects_FSJni_getFsInfo(JNIEnv* env,
+                                           jobject obj,
+                                           jstring jpath,
+                                           jobject fs_obj)
 {
     jfieldID type_fid, bsize_fid, blocks_fid, bfree_fid, bavail_fid;
 
@@ -47,8 +47,8 @@ Java_org_moss_objects_FSJni_getFsInfo(JNIEnv* env,
 }
 
 void
-Java_org_moss_objects_UnameProvider_setUname(JNIEnv* env,
-                                             jobject obj)
+Java_org_mosspaper_objects_UnameProvider_setUname(JNIEnv* env,
+                                                  jobject obj)
 {
     jstring jstr;
     jfieldID sysname, nodename, release, version, machine;
@@ -86,9 +86,9 @@ Java_org_moss_objects_UnameProvider_setUname(JNIEnv* env,
 }
 
 jstring
-Java_org_moss_objects_Time_strftime(JNIEnv* env,
-                                    jobject obj,
-                                    jstring jformat)
+Java_org_mosspaper_objects_Time_strftime(JNIEnv* env,
+                                         jobject obj,
+                                         jstring jformat)
 {
     char buf[128];
     const jbyte *format = (*env)->GetStringUTFChars(env, jformat, NULL);

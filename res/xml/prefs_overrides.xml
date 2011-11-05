@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen 
         xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res/org.moss.prefs"
+        xmlns:app="http://schemas.android.com/apk/res/org.mosspaper.prefs"
         android:title="@string/settings"
         android:key="settings">
 
-    <org.moss.prefs.IntervalPreference
+    <org.mosspaper.prefs.IntervalPreference
         android:key="update_interval"
         android:title="@string/update_interval"
         android:singleLine="true"
@@ -30,7 +30,7 @@
 
     <PreferenceCategory android:title="@string/font_cat">
 
-        <org.moss.prefs.SizePreference
+        <org.mosspaper.prefs.SizePreference
             android:key="font_size"
             android:title="@string/font_size_title"
             android:singleLine="true"

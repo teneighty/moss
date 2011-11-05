@@ -8,10 +8,10 @@ use File::Basename;
 use Getopt::Long;
 use Pod::Usage;
 
-my $package = 'org/moss/objects';
+my $package = 'org/mosspaper/objects';
 my $TMP_OUT_DIR = '/tmp/moss-docs';
-my $CONFIG_JAVA = 'src/org/moss/Config.java';
-my $CONFIG_DOC = "$TMP_OUT_DIR/org/moss/Config.html";
+my $CONFIG_JAVA = 'src/org/mosspaper/Config.java';
+my $CONFIG_DOC = "$TMP_OUT_DIR/org/mosspaper/Config.html";
 
 sub load_config {
     my $config_lookup = {};
@@ -42,7 +42,7 @@ sub load_objects {
 
 sub run_javadoc {
     print "Running javadoc\n";
-    my $files = join(' ', split(/\n/, `find src/org/moss/objects -type f -not -name '.*.swp'`));
+    my $files = join(' ', split(/\n/, `find src/org/mosspaper/objects -type f -not -name '.*.swp'`));
     mkdir $TMP_OUT_DIR;
     my $ec = system("javadoc -d $TMP_OUT_DIR $files $CONFIG_JAVA 1>/dev/null 2>&1 ");
     if ($ec != 0) {
