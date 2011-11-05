@@ -147,7 +147,9 @@ public class WallPaper extends WallpaperService {
                     single.env.loadPrefs(WallPaper.this, prefs);
                     if ("update_interval".equals(key)) {
                         single.env.buildDataProviders();
-                        dataService.setDataProviders(single.env.getDataProviders());
+                        if (dataService != null) {
+                            dataService.setDataProviders(single.env.getDataProviders());
+                        }
                     }
                 }
             }
