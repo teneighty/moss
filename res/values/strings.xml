@@ -73,6 +73,11 @@
     <string name="available_configurations">Available Configurations</string>
     <string name="current_configurations">Current Configuration</string>
 
+    <string name="download_dialog">Download Results</string>
+    <string name="ok">Okay</string>
+    <string name="download_finished">Your download finished.</string>
+    <string name="error_occured">An error occured.</string>
+
     <!-- service -->
     <string name="service_desc">Moss data gathering service</string>
 

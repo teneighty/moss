@@ -1,9 +1,11 @@
 package org.mosspaper;
 
 import android.app.ListActivity;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -230,18 +232,35 @@ public class PackageListActivity extends ListActivity {
         }
     }
 
-    class PackLoaderTask extends AsyncTask<Uri, String, Long> {
+    class PackLoaderTask extends AsyncTask<Uri, String, Boolean> {
 
         protected void onProgressUpdate(String... progress) {
             pdialog.setMessage(progress[0]);
         }
 
-        protected void onPostExecute(Long result) {
+        protected void onPostExecute(Boolean result) {
+            AlertDialog.Builder builder = 
+                new AlertDialog.Builder(PackageListActivity.this);
+            // builder.setTitle(getString(R.string.download_dialog);
+            builder.setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                            dialog.dismiss();
+                    }
+                });
+            builder.setCancelable(true);
+            if (result) {
+                builder.setMessage(getString(R.string.download_finished));
+            } else {
+                builder.setMessage(getString(R.string.error_occured));
+            }
+            AlertDialog alert = builder.create();
+            alert.show();
+
             updateHandler.sendEmptyMessage(-1);
             PackageListActivity.this.pdialog.dismiss();
         }
 
-        protected Long doInBackground(Uri... uris) {
+        protected Boolean doInBackground(Uri... uris) {
             publishProgress(getString(R.string.beginning_download));
             try {
                 URL url = new URL(uris[0].toString());
@@ -266,12 +285,14 @@ public class PackageListActivity extends ListActivity {
 
                 } catch (IOException e) {
                     Log.e(TAG, "", e);
+                    return false;
                 }
 
             } catch (MalformedURLException e) {
                 Log.e(TAG, "", e);
+                return false;
             }
-            return 100L;
+            return true;
         }
 
         private void download(URL url, File mossDir, PackageDatabase.Package config) throws IOException {
