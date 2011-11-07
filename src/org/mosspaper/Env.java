@@ -110,17 +110,15 @@ public class Env {
                 newEnv = loadDefaultConfig(context, prefs);
             }
 
-            if (null != oldEnv) {
-                oldEnv.stopFileWatcher();
-            }
-            newEnv.startFileWatcher(context);
-
             PrefUtils.resetPrefs(newEnv, prefs);
             PrefUtils.defaultPrefs(newEnv, prefs);
 
             newEnv.loadPrefs(context, prefs);
             newEnv.buildDataProviders();
 
+            if (null != oldEnv) {
+                oldEnv.stopFileWatcher();
+            }
             synchronized (Current.INSTANCE) {
                 if (oldEnv != null) {
                     newEnv.paperHeight = oldEnv.getPaperHeight();
@@ -130,6 +128,8 @@ public class Env {
                 oldEnv = null;
                 Current.INSTANCE.env = newEnv;
             }
+            newEnv.startFileWatcher(context);
+
         } catch (IOException e) {
             /* This is not good */
             Log.e(TAG, "Fatal Error: Could not load any config.", e);
@@ -276,9 +276,6 @@ public class Env {
             cwatcher =
                 new ConfigWatcher(context, configFile.getParent(), configFile.getName());
             cwatcher.startWatching();
-            Log.i(TAG, "Auto Reload ENABLED");
-        } else {
-            Log.i(TAG, "Auto Reload DISABLED");
         }
     }
 
