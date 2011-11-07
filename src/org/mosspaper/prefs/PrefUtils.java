@@ -90,7 +90,7 @@ public class PrefUtils {
     }
 
     static String[] defaultable = new String[] {
-        "update_interval", "background_image", 
+        "background_image", 
         "background_color", "mod_color", "font_size"
     };
 }
