@@ -7,11 +7,6 @@ It is highly configurable. Configuration tries to closely follow [Conky's][conky
 
 For example configurations please see [the samples on the Moss site][samples].
 
-Current Release TODO
-======================
-* Move service bind to Env
-* Fix font to work like color
-
 Future Releases
 ========================
 * Add weather

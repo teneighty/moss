@@ -135,8 +135,7 @@ public class Config {
                 throw new ConfigException("requires alias and font path.");
             }
         } else if (k.indexOf("font") == 0) {
-            String cname = k.replaceAll("font", "");
-            Font.loadFont(cname, v);
+            Font.addFontObject(k, v);
         } else {
             throw new ConfigException("Unknown config option.");
         }

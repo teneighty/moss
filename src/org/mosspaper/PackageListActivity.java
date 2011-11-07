@@ -11,6 +11,7 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.preference.Preference;
@@ -35,12 +36,15 @@ import android.widget.TextView;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Enumeration;
 import java.util.List;
+import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipEntry;
 import java.util.ArrayList;
@@ -202,18 +206,25 @@ public class PackageListActivity extends ListActivity {
             db.deletePackage(c);
             db.close();
 
+            File mossDir = new File(Environment.getExternalStorageDirectory(), "moss");
             File confFile = new File(c.filepath);
             if (confFile.exists()) {
+                /* Only delete if we are within the moss directory, otherwise its your problem */
                 File confDir = confFile.getParentFile();
-                publishProgress(
-                    PackageListActivity.this.getString(R.string.removing_from_fs, confDir.toString()));
-                recursiveDelete(confDir);
+                if (confDir.toString().indexOf(mossDir.toString()) == 0) {
+                    publishProgress(
+                        PackageListActivity.this.getString(R.string.removing_from_fs, confDir.toString()));
+                    recursiveDelete(confDir);
+                }
             }
             return 0L;
         }
 
         private void recursiveDelete(File fs) {
             if (null == fs || !fs.exists()) {
+                return;
+            }
+            if (null == fs.listFiles()) {
                 return;
             }
             for (File f : fs.listFiles()) {
@@ -264,8 +275,8 @@ public class PackageListActivity extends ListActivity {
             publishProgress(getString(R.string.beginning_download));
             try {
                 URL url = new URL(uris[0].toString());
-                File mossDir = new File("/sdcard/moss/");
-                String defname = url.toString().replaceAll(".*/([^/]+)\\.mba$", "$1");
+                File mossDir = new File(Environment.getExternalStorageDirectory(), "moss");
+                String defname = url.toString().replaceAll(".*/([^/]+\\.mba)$", "$1");
 
                 PackageDatabase.Package config = new PackageDatabase.Package();
                 config.asset = false;
@@ -296,34 +307,48 @@ public class PackageListActivity extends ListActivity {
         }
 
         private void download(URL url, File mossDir, PackageDatabase.Package config) throws IOException {
-            OutputStream os = null;
+            File zipFile = new File(mossDir, config.name);
 
-            ZipInputStream zis = 
-                new ZipInputStream(
-                    new BufferedInputStream((InputStream) url.getContent()));
+            BufferedInputStream dis = null;
+            FileOutputStream os = null;
             try {
-                ZipEntry ze;
-                while ((ze = zis.getNextEntry()) != null) {
-                    publishProgress(
-                            PackageListActivity.this.getString(R.string.processing_x, ze.getName()));
-                    if (ze.isDirectory()) {
-                        new File(mossDir, ze.getName()).mkdirs();
-                    } else {
-                        File file = new File(mossDir, ze.getName());
-                        writeFile(zis, file);
-                        if (ze.getName().contains(MANIFEST) && file.exists()) {
-                            parseManifest(Common.slurp(file), config);
-                        } else if (ze.getName().contains(MOSSRC)) {
-                            config.filepath = file.toString();
-                        }
-                    }
+                dis = new BufferedInputStream((InputStream) url.getContent());
+                os = new FileOutputStream(zipFile);
+
+                int br;
+                byte[] b = new byte[1024];
+                while ((br = dis.read(b)) > 0) {
+                    os.write(b, 0, br);
                 }
             } finally {
-                zis.close();
+                dis.close();
+                os.close();
             }
+
+            ZipFile zf = new ZipFile(zipFile);
+            File pakDir = new File(mossDir, "tmp");
+            for (Enumeration e = zf.entries(); e.hasMoreElements();) {
+                ZipEntry ze = (ZipEntry) e.nextElement();
+                publishProgress(
+                        PackageListActivity.this.getString(R.string.processing_x, ze.getName()));
+                if (ze.isDirectory()) {
+                    new File(pakDir, ze.getName()).mkdirs();
+                } else {
+                    File file = new File(pakDir, ze.getName());
+                    writeFile(zf.getInputStream(ze), file);
+                    if (ze.getName().contains(MANIFEST) && file.exists()) {
+                        parseManifest(Common.slurp(file), config);
+                    }
+                }
+            }
+            zipFile.delete();
+
+            File newDir = new File(mossDir, config.name);
+            pakDir.renameTo(newDir);
+            config.filepath = new File(newDir, "mossrc").toString();
         }
 
-        private void writeFile(ZipInputStream zis, File dest) throws IOException {
+        private void writeFile(InputStream zis, File dest) throws IOException {
             FileOutputStream os = null;
             try {
                 int br;

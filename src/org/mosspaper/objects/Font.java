@@ -80,6 +80,10 @@ public class Font implements MossObject {
         fontMap.put(alias, parseFont(font));
     }
 
+    public static void addFontObject(String alias, String font) throws ParseException {
+        TextObjects.TEXT_OBJECTS.put(alias, new TextObjects.FontArgs(font));
+    }
+
     public static void loadTypeface(Env env, String family, String path) throws ParseException {
         try {
             Typeface t = null;

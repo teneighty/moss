@@ -76,6 +76,21 @@ public class TextObjects {
         private String mColor;
     }
 
+    static class FontArgs extends Args {
+        FontArgs(String font) {
+            super(Font.class);
+            this.mFont = font;
+        }
+
+        MossObject newInstance(String ident, List<Object> _args) throws Exception {
+            Class[] sigs = new Class[] {String.class};
+            Constructor<MossObject> con = mClass.getDeclaredConstructor(sigs);
+            return con.newInstance(mFont);
+        }
+
+        private String mFont;
+    }
+
     static class PrintfArgs extends Args {
 
         PrintfArgs(Class clazz) {
