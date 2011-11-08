@@ -17,7 +17,6 @@ import android.os.Message;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.util.Log;
-import android.text.Html;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -164,11 +163,11 @@ public class PackageListActivity extends ListActivity {
                 SharedPreferences.Editor edit = prefs.edit();
                 edit.putString("config_list", c.name);
                 if (c.asset) {
-                    edit.putString("sample_config_file", c.filepath);
+                    edit.putString("sample_config_file", c.confFile);
                     edit.putString("config_file", null);
                 } else {
                     edit.putString("sample_config_file", "CUSTOM");
-                    edit.putString("config_file", c.filepath);
+                    edit.putString("config_file", c.confFile);
                 }
                 edit.commit();
             }
@@ -207,10 +206,9 @@ public class PackageListActivity extends ListActivity {
             db.close();
 
             File mossDir = new File(Environment.getExternalStorageDirectory(), "moss");
-            File confFile = new File(c.filepath);
-            if (confFile.exists()) {
+            File confDir = new File(c.root);
+            if (confDir.exists()) {
                 /* Only delete if we are within the moss directory, otherwise its your problem */
-                File confDir = confFile.getParentFile();
                 if (confDir.toString().indexOf(mossDir.toString()) == 0) {
                     publishProgress(
                         PackageListActivity.this.getString(R.string.removing_from_fs, confDir.toString()));
@@ -276,7 +274,8 @@ public class PackageListActivity extends ListActivity {
             try {
                 URL url = new URL(uris[0].toString());
                 File mossDir = new File(Environment.getExternalStorageDirectory(), "moss");
-                String defname = url.toString().replaceAll(".*/([^/]+\\.mba)$", "$1");
+                String defname = url.getHost() + "_" + 
+                                 url.toString().replaceAll(".*/([^/]+)\\.mba$", "$1");
 
                 PackageDatabase.Package config = new PackageDatabase.Package();
                 config.asset = false;
@@ -307,7 +306,8 @@ public class PackageListActivity extends ListActivity {
         }
 
         private void download(URL url, File mossDir, PackageDatabase.Package config) throws IOException {
-            File zipFile = new File(mossDir, config.name);
+            File zipFile = new File(mossDir, config.name + ".mba");
+            File tmpDir = new File(mossDir, "tmp-" + config.name);
 
             BufferedInputStream dis = null;
             FileOutputStream os = null;
@@ -325,27 +325,51 @@ public class PackageListActivity extends ListActivity {
                 os.close();
             }
 
-            ZipFile zf = new ZipFile(zipFile);
-            File pakDir = new File(mossDir, "tmp");
-            for (Enumeration e = zf.entries(); e.hasMoreElements();) {
-                ZipEntry ze = (ZipEntry) e.nextElement();
-                publishProgress(
-                        PackageListActivity.this.getString(R.string.processing_x, ze.getName()));
-                if (ze.isDirectory()) {
-                    new File(pakDir, ze.getName()).mkdirs();
+            if (!zipFile.exists()) {
+                return;
+            }
+            try {
+                ZipFile zf = new ZipFile(zipFile);
+                for (Enumeration e = zf.entries(); e.hasMoreElements();) {
+                    ZipEntry ze = (ZipEntry) e.nextElement();
+                    publishProgress(
+                            PackageListActivity.this.getString(R.string.processing_x, ze.getName()));
+                    if (ze.isDirectory()) {
+                        new File(tmpDir, ze.getName()).mkdirs();
+                    } else {
+                        File file = new File(tmpDir, ze.getName());
+                        writeFile(zf.getInputStream(ze), file);
+                    }
+                }
+            } catch (IOException e) {
+                throw e;
+            } finally {
+                zipFile.delete();
+            }
+
+            if (tmpDir.exists()) {
+                File pakDir = new File(mossDir, config.name);
+                tmpDir.renameTo(pakDir);
+                config.root = pakDir.toString();
+                buildConfig(config, pakDir);
+            }
+            if (null == config.confFile) {
+                throw new IOException("Invalid package");
+            }
+        }
+
+        private void buildConfig(PackageDatabase.Package config, File directory) throws IOException {
+            for (File f : directory.listFiles()) {
+                if (f.isDirectory()) {
+                    buildConfig(config, f);
                 } else {
-                    File file = new File(pakDir, ze.getName());
-                    writeFile(zf.getInputStream(ze), file);
-                    if (ze.getName().contains(MANIFEST) && file.exists()) {
-                        parseManifest(Common.slurp(file), config);
+                    if (f.getName().equals(MANIFEST) && f.exists()) {
+                        parseManifest(Common.slurp(f), config);
+                    } else if (f.getName().equals(MOSSRC)) {
+                        config.confFile = f.toString();
                     }
                 }
             }
-            zipFile.delete();
-
-            File newDir = new File(mossDir, config.name);
-            pakDir.renameTo(newDir);
-            config.filepath = new File(newDir, "mossrc").toString();
         }
 
         private void writeFile(InputStream zis, File dest) throws IOException {
@@ -420,8 +444,9 @@ public class PackageListActivity extends ListActivity {
                     inflater.inflate(R.layout.item_config, null, false);
 
                 holder = new ViewHolder();
-                holder.name = (TextView) convertView.findViewById(android.R.id.text1);
-                holder.desc = (TextView) convertView.findViewById(android.R.id.text2);
+                holder.name = (TextView) convertView.findViewById(R.id.text1);
+                holder.desc = (TextView) convertView.findViewById(R.id.text2);
+                holder.url = (TextView) convertView.findViewById(R.id.url);
                 convertView.setTag(holder);
             } else {
                 holder = (ViewHolder) convertView.getTag();
@@ -436,7 +461,8 @@ public class PackageListActivity extends ListActivity {
             }
 
             holder.name.setText(config.name);
-            holder.desc.setText(Html.fromHtml(config.desc));
+            holder.desc.setText(config.desc);
+            holder.url.setText(config.sourceUrl);
 
             Context context = convertView.getContext();
             holder.name.setTextAppearance(context,
@@ -454,6 +480,7 @@ public class PackageListActivity extends ListActivity {
         class ViewHolder {
             private TextView name;
             private TextView desc;
+            private TextView url;
         }
 
         private List<PackageDatabase.Package> packages;

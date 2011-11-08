@@ -18,9 +18,10 @@ public class PackageDatabase extends SQLiteOpenHelper {
         public long id;
         public String name;
         public String desc;
-        public String sourceUrl;
         public boolean asset;
-        public String filepath;
+        public String confFile;
+        public String sourceUrl;
+        public String root;
     }
 
 
@@ -39,6 +40,7 @@ public class PackageDatabase extends SQLiteOpenHelper {
                 + FIELD_DESC + " TEXT, "
                 + FIELD_CONFIG_PATH + " TEXT, "
                 + FIELD_SOURCE_URL + " TEXT, "
+                + FIELD_PACKAGE_ROOT + " TEXT, "
                 + FIELD_IS_ASSET + " INTEGER ) ";
         db.execSQL(sql);
 
@@ -49,28 +51,28 @@ public class PackageDatabase extends SQLiteOpenHelper {
         Package c1 = new Package();
         c1.name = mContext.getString(R.string.config_basic_name);
         c1.desc = mContext.getString(R.string.config_basic_desc);
-        c1.filepath = "default.conf";
+        c1.confFile = "default.conf";
         c1.asset = true;
         storePackage(db, c1);
 
         Package c2 = new Package();
         c2.name = mContext.getString(R.string.config_network);
         c2.desc = mContext.getString(R.string.config_network_desc);
-        c2.filepath = "network.conf";
+        c2.confFile = "network.conf";
         c2.asset = true;
         storePackage(db, c2);
 
         Package c3 = new Package();
         c3.name = mContext.getString(R.string.config_process);
         c3.desc = mContext.getString(R.string.config_process_desc);
-        c3.filepath = "process.conf";
+        c3.confFile = "process.conf";
         c3.asset = true;
         storePackage(db, c3);
 
         Package c4 = new Package();
         c4.name = mContext.getString(R.string.config_full);
         c4.desc = mContext.getString(R.string.config_full_desc);
-        c4.filepath = "full.conf";
+        c4.confFile = "full.conf";
         c4.asset = true;
         storePackage(db, c4);
     }
@@ -89,7 +91,8 @@ public class PackageDatabase extends SQLiteOpenHelper {
     private void storePackage(SQLiteDatabase db, Package config) {
         Cursor c =
             db.query(TABLE_NAME, null, 
-                    " name = ? ", new String[] { String.valueOf(config.name) }, 
+                    " name = ? AND source_url = ? ", 
+                    new String[] { String.valueOf(config.name), String.valueOf(config.sourceUrl) }, 
                     null, null, null);
         if (c.moveToNext()) {
             config.id = c.getLong(c.getColumnIndexOrThrow("_id"));
@@ -130,9 +133,11 @@ public class PackageDatabase extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         values.put(FIELD_NAME, config.name);
         values.put(FIELD_DESC, config.desc);
-        values.put(FIELD_CONFIG_PATH, config.filepath);
-        values.put(FIELD_SOURCE_URL, config.sourceUrl);
+        values.put(FIELD_CONFIG_PATH, config.confFile);
+        values.put(FIELD_PACKAGE_ROOT, config.root);
         values.put(FIELD_IS_ASSET, Boolean.toString(config.asset));
+        values.put(FIELD_SOURCE_URL, config.sourceUrl);
+        values.put(FIELD_PACKAGE_ROOT, config.root);
         return values;
     }
 
@@ -170,6 +175,7 @@ public class PackageDatabase extends SQLiteOpenHelper {
             COL_DESC = c.getColumnIndexOrThrow(FIELD_DESC),
             COL_PATH = c.getColumnIndexOrThrow(FIELD_CONFIG_PATH),
             COL_URL = c.getColumnIndexOrThrow(FIELD_SOURCE_URL),
+            COL_ROOT = c.getColumnIndexOrThrow(FIELD_PACKAGE_ROOT),
             COL_ASSET = c.getColumnIndexOrThrow(FIELD_IS_ASSET);
 
         while (c.moveToNext()) {
@@ -177,7 +183,9 @@ public class PackageDatabase extends SQLiteOpenHelper {
             config.id = c.getLong(COL_ID);
             config.name = c.getString(COL_NAME);
             config.desc = c.getString(COL_DESC);
-            config.filepath = c.getString(COL_PATH);
+            config.confFile = c.getString(COL_PATH);
+            config.sourceUrl = c.getString(COL_URL);
+            config.root = c.getString(COL_ROOT);
             config.asset = Boolean.valueOf(c.getString(COL_ASSET));
             configs.add(config);
         }
@@ -196,6 +204,7 @@ public class PackageDatabase extends SQLiteOpenHelper {
     static final String FIELD_DESC = "desc";
     static final String FIELD_CONFIG_PATH = "config_path";
     static final String FIELD_SOURCE_URL = "source_url";
+    static final String FIELD_PACKAGE_ROOT = "package_root";
     static final String FIELD_IS_ASSET = "asset";
 
     static final Object[] DB_LOCK = new Object[0];
