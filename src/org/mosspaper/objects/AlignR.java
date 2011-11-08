@@ -2,21 +2,35 @@ package org.mosspaper.objects;
 
 import org.mosspaper.Env;
 
-public class AlignR implements MossObject {
+public class AlignR extends AbsAlign implements MossObject {
 
     /**
      * Align the text to the right.
      */
     public AlignR() { }
 
-    public void preDraw(Env env) { }
+    public void draw(Env env) { 
 
-    public void draw(Env env) { }
+        if (curX != null && curX == lastX) {
+            env.setX(curX);
+            return;
+        }
 
-    public void postDraw(Env env) { }
+        Env tmpEnv = buildEnv(env);
+        if (tmpEnv == null) {
+            return;
+        }
 
-    public DataProvider getDataProvider() {
-        return null;
+        float delta = tmpEnv.getX() - env.getX();
+
+        if (env.getMaxX() > delta 
+                && env.getX() < env.getMaxX() - delta) {
+            lastX = curX;
+            curX = env.getMaxX() - delta;
+            env.setX(curX);
+        }
     }
 
+    Float curX;
+    Float lastX;
 }

@@ -187,6 +187,11 @@ public class WallPaper extends WallpaperService {
             super.onSurfaceChanged(holder, format, width, height);
             single.env.setPaperHeight(height);
             single.env.setPaperWidth(width);
+
+            /* Draw frame twice since this will be the first time drawing the
+             * new frame.
+             */
+            drawFrame();
             drawFrame();
         }
 
