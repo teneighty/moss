@@ -20,7 +20,12 @@ public enum PortMonProvider implements DataProvider {
     }
 
     @Override
-    public void startup(Context context) { }
+    public void startup(Context context) { 
+        if (!started) {
+            moninit();
+            started = true;
+        }
+    }
 
     @Override
     public void update(State state) {
@@ -30,6 +35,7 @@ public enum PortMonProvider implements DataProvider {
     @Override
     public void destroy(Context context) {
         mondestroy();
+        started = false;
     }
 
     @Override

@@ -275,7 +275,7 @@ public class PackageListActivity extends ListActivity {
                 URL url = new URL(uris[0].toString());
                 File mossDir = new File(Environment.getExternalStorageDirectory(), "moss");
                 String defname = url.getHost() + "_" + 
-                                 url.toString().replaceAll(".*/([^/]+)\\.mba$", "$1");
+                                 url.toString().replaceAll(".*/([^/]+)\\." + EXT + "$", "$1");
 
                 PackageDatabase.Package config = new PackageDatabase.Package();
                 config.asset = false;
@@ -306,7 +306,7 @@ public class PackageListActivity extends ListActivity {
         }
 
         private void download(URL url, File mossDir, PackageDatabase.Package config) throws IOException {
-            File zipFile = new File(mossDir, config.name + ".mba");
+            File zipFile = new File(mossDir, config.name + "." + EXT);
             File tmpDir = new File(mossDir, "tmp-" + config.name);
 
             BufferedInputStream dis = null;
@@ -321,8 +321,12 @@ public class PackageListActivity extends ListActivity {
                     os.write(b, 0, br);
                 }
             } finally {
-                dis.close();
-                os.close();
+                if (null != dis) {
+                    dis.close();
+                }
+                if (null != os) {
+                    os.close();
+                }
             }
 
             if (!zipFile.exists()) {
@@ -488,6 +492,7 @@ public class PackageListActivity extends ListActivity {
 
     private static final String MANIFEST = "manifest.txt";
     private static final String MOSSRC = "mossrc";
+    private static final String EXT = "mpk";
 
     private ListView pkgList;
     private ProgressDialog pdialog;

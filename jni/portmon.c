@@ -97,4 +97,5 @@ Java_org_mosspaper_objects_PortMonProvider_mondestroy(JNIEnv* env,
     if (NULL != p_coll) {
         destroy_tcp_port_monitor_collection(p_coll);
     }
+    p_coll = NULL;
 }
