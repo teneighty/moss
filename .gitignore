@@ -3,6 +3,7 @@ gen
 .*.swp
 .*.swo
 libs
+jni
 obj
 local.properties
 build.properties
