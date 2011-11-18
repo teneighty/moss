@@ -1,3 +1,6 @@
 [submodule "tools/color-picker"]
 	path = tools/color-picker
 	url = https://github.com/attenzione/android-ColorPickerPreference.git
+[submodule "jni/tcp-portmon"]
+	path = jni/tcp-portmon
+	url = git://github.com/teneighty/tcp-portmon.git

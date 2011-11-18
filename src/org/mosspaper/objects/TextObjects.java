@@ -212,6 +212,7 @@ public class TextObjects {
         TEXT_OBJECTS.put("upspeed", Args.def(UpSpeed.class));
         TEXT_OBJECTS.put("upspeedgraph", Args.def(UpSpeedGraph.class));
         TEXT_OBJECTS.put("totalup", Args.def(TotalUp.class));
+        TEXT_OBJECTS.put("tcp_portmon", Args.def(PortMon.class));
 
         TEXT_OBJECTS.put("image", Args.def(Image.class));
         TEXT_OBJECTS.put("goto", Args.def(Goto.class));

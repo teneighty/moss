@@ -103,3 +103,4 @@ Java_org_mosspaper_objects_Time_strftime(JNIEnv* env,
     (*env)->ReleaseStringUTFChars(env, jformat, format);
     return (*env)->NewStringUTF(env, buf);
 }
+

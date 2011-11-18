@@ -29,6 +29,15 @@ public class Printf extends AbsMossObject implements MossObject {
     }
 
     public DataProvider getDataProvider() {
+        /* XXX: this only works for one */
+        for (Object o : objects) {
+            if (o instanceof MossObject) {
+                MossObject ms = (MossObject)o;
+                if (ms.getDataProvider() != null) {
+                    return ms.getDataProvider();
+                }
+            }
+        }
         return null;
     }
 
@@ -52,7 +61,11 @@ public class Printf extends AbsMossObject implements MossObject {
     public String toString() {
         String[] strs = new String[objects.length];
         for (int i = 0; i < objects.length; i++) {
-            strs[i] = nvl(objects[i].toString(), "");
+            if (null != objects[i]) {
+                strs[i] = nvl(objects[i].toString(), "");
+            } else {
+                strs[i] = "";
+            }
         }
         try {
             return String.format(format, (Object[]) strs);
