@@ -8,7 +8,7 @@
     <Preference
         android:key="config_list"
         android:title="@string/configs"
-        android:summary="@string/overrides_summary"
+        android:summary="@string/configs_summary"
         android:singleLine="true"
         />
 
