@@ -78,6 +78,7 @@
     <string name="ok">Okay</string>
     <string name="download_finished">Your download finished.</string>
     <string name="error_occured">An error occured.</string>
+    <string name="local">local</string>
 
     <!-- service -->
     <string name="service_desc">Moss data gathering service</string>

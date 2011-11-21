@@ -466,7 +466,12 @@ public class PackageListActivity extends ListActivity {
 
             holder.name.setText(config.name);
             holder.desc.setText(config.desc);
-            holder.url.setText(config.sourceUrl);
+
+            if (null == config.sourceUrl || "".equals(config.sourceUrl.toString())) {
+                config.sourceUrl = PackageListActivity.this.getString(R.string.local);
+            } else {
+                holder.url.setText(config.sourceUrl);
+            }
 
             Context context = convertView.getContext();
             holder.name.setTextAppearance(context,

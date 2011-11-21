@@ -81,12 +81,16 @@ public class Env {
         stopFileWatcher();
     }
 
-    public static void load(Context context, Handler handler) {
-        mHandler = handler;
-        reload(context);
+    public static void reload(Context context) {
+        reload(context, false);
     }
 
-    public static void reload(Context context) {
+    public static void load(Context context, Handler handler) {
+        mHandler = handler;
+        reload(context, false);
+    }
+
+    public static void reload(Context context, boolean resetPrefs) {
         SharedPreferences prefs =
             context.getSharedPreferences(WallPaper.SHARED_PREFS_NAME, 0);
         Env oldEnv = Current.INSTANCE.env;
@@ -110,7 +114,9 @@ public class Env {
                 newEnv = loadDefaultConfig(context, prefs);
             }
 
-            PrefUtils.resetPrefs(newEnv, prefs);
+            if (resetPrefs) {
+                PrefUtils.resetPrefs(newEnv, prefs);
+            }
             PrefUtils.defaultPrefs(newEnv, prefs);
 
             newEnv.loadPrefs(context, prefs);
