@@ -82,12 +82,12 @@ public class Env {
     }
 
     public static void reload(Context context) {
-        reload(context, false);
+        reload(context, true);
     }
 
     public static void load(Context context, Handler handler) {
         mHandler = handler;
-        reload(context, false);
+        reload(context, true);
     }
 
     public static void reload(Context context, boolean resetPrefs) {
