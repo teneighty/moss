@@ -130,10 +130,11 @@ sub uncommitted_changes {
     return length($mods) > 0;
 }
 
-my ($help, $sitedocs) = (0, 0);
+my ($help, $sitedocs, $vimsyntax) = (0, 0, 0);
 
 GetOptions('help' => \$help
          , 'sitedocs' => \$sitedocs
+         , 'vimsyntax' => \$vimsyntax
        ) or pod2usage(2);
 pod2usage(1) if $help;
 
@@ -223,6 +224,35 @@ if ($sitedocs) {
     $obj_html .= "\n</table>\n";
     # checkout gh-pages
     `git checkout gh-pages`
+} if ($vimsyntax) {
+    my $INDENT = "\n    \\";
+    my $config_html = $INDENT;
+    my $obj_html = $INDENT;
+
+    my $total = 0;
+    for my $k (sort keys %{ $config }) {
+        my %h = %{ $config->{$k} };
+        my $var_name = $h{var_name};
+        if ($total > 70) {
+            $config_html .= $INDENT;
+            $total = 0;
+        }
+        $config_html .= "$var_name ";
+        $total += length($var_name) + 1;
+    }
+
+    $total = 0;
+    for my $k (sort keys %{ $objs }) {
+        if ($total > 70) {
+            $obj_html .= $INDENT;
+            $total = 0;
+        }
+        $obj_html .= "$k ";
+        $total += length($k) + 1;
+    }
+    print $config_html, "\n";
+    print $obj_html, "\n";
+    exit;
 } else {
     for my $k (sort keys %{ $config }) {
         my %h = %{ $config->{$k} };

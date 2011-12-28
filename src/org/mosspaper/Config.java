@@ -89,7 +89,7 @@ public class Config {
             } else {
                 throw new ConfigException("Invalid type for uppercase.");
             }
-        } else if ("alignment".equals(k)) {
+        } else if (CONF_ALIGNMENT.equals(k)) {
             String[] split = v.split("_");
             if (split.length == 2) {
                 if ("top".equals(split[0])) {
@@ -231,6 +231,11 @@ public class Config {
      * Added or override colors to color dictionary
      */
     public static final String CONF_ADD_COLOR = "color_add";
+    
+    /**
+     * Set the alignment the layout 
+     */
+    public static final String CONF_ALIGNMENT = "alignment";
 
     /**
      * Set the default color of the paint.
