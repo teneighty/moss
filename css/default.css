@@ -160,3 +160,41 @@ p {
     -moz-box-shadow: 0px 0px 10px #888;
 }
 
+h1 {
+    border-bottom: 1px solid #CCC;
+    margin: 20px 0 10px;  
+}
+
+h2 {
+    border-bottom: 1px solid #CCC;
+    margin: 20px 0 10px; 
+}
+
+pre {
+    border: 1px solid #ddd;
+    background-color: #eef;
+    font-size: 1.1em;
+    padding: 10px;
+    overflow: auto;
+}
+
+code {
+    border: 1px solid #ddd;
+    background-color: #eef;
+    padding: 0 .2em;
+}
+
+pre code {
+    border: none;
+}
+
+pre.terminal {
+    border: 1px solid black;
+    background-color: #333;
+    color: white;
+}
+
+pre.terminal code {
+    background-color: #333;
+}
+
