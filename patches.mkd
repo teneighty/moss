@@ -7,8 +7,8 @@ Moss Patches
 ===========
 
 Moss Patches are zip files that can be loaded into Moss. Moss Patches enable
-users to customize Moss to their liking and to easily share their customizes
-with others.
+users to customize Moss to their liking and to easily share their
+customizations with others.
 
 Moss Patches consist of a Moss configuration file, a manifest.txt file and
 any other resource that you need such as images or fonts. The files are
@@ -65,7 +65,7 @@ manager.
 More Examples
 -------------
 
-More Moss Patches can be found on the [Samples](Samples.html) page or on the
+More Moss Patches can be found on the [Samples](samples.html) page or on the
 [moss-configs][moss-configs] repository on [github][github]. Take a look there
 to get more ideas on how to include background images or custom fonts. You can
 download and unzip them to take a look. 
