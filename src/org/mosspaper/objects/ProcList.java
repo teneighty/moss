@@ -405,7 +405,7 @@ public enum ProcList implements DataProvider {
             + "(\\d+)\\s+" // irq
             + "(\\d+)\\s+" // softirq
             + "(\\d+)\\s+" // steal
-            + "(\\d+)\\s*"; // quest
+            + "(\\d+)\\s*.*"; // quest
 
     private Pattern memPattern;
     static final String MEM_REGEX =
@@ -438,7 +438,7 @@ public enum ProcList implements DataProvider {
             + "(.*?)\\s+" /* stime %lu */
             + ".*$";
 
-    static final String TAG = "ProcMemInfo";
+    static final String TAG = "ProcList";
     // static List<Proc> procCopy;
     static List<CpuInfo> cpuHistory;
     static Map<String, Proc> processes;
