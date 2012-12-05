@@ -26,12 +26,12 @@ public class TopMem extends AbsTop implements MossObject {
     public Comparator getComparator() {
         return new Comparator<Proc>() {
             public int compare(Proc p1, Proc p2) {
-                if (p1.memPerc == p2.memPerc) {
+                if (p1 == p2 || p1.memPerc == p2.memPerc) {
                     return 0;
                 } else if (p1.memPerc < p2.memPerc) {
-                    return 1;
-                } else {
                     return -1;
+                } else {
+                    return 1;
                 }
             }
         };

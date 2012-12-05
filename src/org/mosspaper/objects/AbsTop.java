@@ -29,6 +29,7 @@ public abstract class AbsTop extends AbsMossObject implements MossObject {
         }
         setList(procList.getProcesses());
         Collections.sort(getList(), getComparator());
+        Collections.reverse(getList());
     }
 
     @Override
