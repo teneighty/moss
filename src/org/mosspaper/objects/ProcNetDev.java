@@ -87,6 +87,13 @@ public enum ProcNetDev implements DataProvider {
                         Log.e(TAG, "Regex did not match on /proc/net/dev");
                     } else {
                         Device device = devices.get(m.group(1));
+                        /* The device tiwlan0 migth not exist. Usually the user
+                         * means wlan0 in that case. This code checks for that case. */ 
+                        if (device == null 
+                                && WLAN0.equals(m.group(1)) 
+                                && devices.get(TIWLAN0) != null) {
+                            device = devices.get(TIWLAN0);
+                        }
                         if (null == device) {
                             continue;
                         }
@@ -216,6 +223,8 @@ public enum ProcNetDev implements DataProvider {
         "(\\d+)\\s*";  /* compressed */
 
     static final String TAG = "ProcNetS";
+    static final String TIWLAN0 = "tiwlan0";
+    static final String WLAN0 = "wlan0";
     static final int MAX_HISTORY = 500;
     static final int INIT_BUFFER = 64;
 }
