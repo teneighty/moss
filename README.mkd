@@ -7,11 +7,5 @@ It is highly configurable. Configuration tries to closely follow [Conky's][conky
 
 For example configurations please see [the samples on the Moss site][samples].
 
-Future Releases
-========================
-* Add weather
-* Allow more config overrides
-* Fix battery\_time
-
 [conky]: http://www.conky.com
 [samples]: http://teneighty.github.com/moss/samples.html
