@@ -87,7 +87,7 @@ public class Env {
 
     public static void load(Context context, Handler handler) {
         mHandler = handler;
-        reload(context, true);
+        reload(context, false);
     }
 
     public static void reload(Context context, boolean resetPrefs) {
