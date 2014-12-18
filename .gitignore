@@ -1,9 +1,59 @@
-bin
-gen
-.*.swp
-.*.swo
-libs
-obj
+/build
 local.properties
-ant.properties
-build.properties
+libprojects/abs
+libprojects/facebook-android-sdk-3.0
+gen
+bin
+keys
+.idea
+*.swp
+*.pyc
+*.db
+*.so
+TODO
+*.log
+.classpath
+.settings
+.project
+*.keystore
+usercontext.properties
+keys.xml
+
+.gradle
+/local.properties
+/.idea/workspace.xml
+.DS_Store
+
+# built application files
+*.apk
+*.ap_
+
+# files for the dex VM
+*.dex
+
+# Java class files
+*.class
+
+# generated files
+bin/
+gen/
+
+# Local configuration file (sdk path, etc)
+local.properties
+
+# Eclipse project files
+.classpath
+.project
+
+# Android Studio
+.idea/
+.gradle
+/*/local.properties
+/*/out
+/*/*/build
+/*/*/production
+*.iml
+*.iws
+
+AirBitz/airbitz/src/main/res/values/com_crashlytics_export_strings.xml
+all_keys.xml
