@@ -214,6 +214,11 @@ public class TextObjects {
         TEXT_OBJECTS.put("totalup", Args.def(TotalUp.class));
         TEXT_OBJECTS.put("tcp_portmon", Args.def(PortMon.class));
 
+        TEXT_OBJECTS.put("entropy_avail", Args.def(Entropy.Available.class));
+        TEXT_OBJECTS.put("entropy_bar", Args.def(Entropy.Bar.class));
+        TEXT_OBJECTS.put("entropy_perc", Args.def(Entropy.Percent.class));
+        TEXT_OBJECTS.put("entropy_poolsize", Args.def(Entropy.PoolSize.class));
+
         TEXT_OBJECTS.put("image", Args.def(Image.class));
         TEXT_OBJECTS.put("goto", Args.def(Goto.class));
         TEXT_OBJECTS.put("vgoto", Args.def(VGoto.class));
