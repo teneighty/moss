@@ -348,7 +348,7 @@ public enum ProcList implements DataProvider {
     boolean isNum(String name) {
         try {
             new Integer(name);
-        } catch (NumberFormatException _) {
+        } catch (NumberFormatException _e) {
             return false;
         }
         return true;
