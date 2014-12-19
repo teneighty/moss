@@ -48,6 +48,6 @@ public enum UnameProvider implements DataProvider {
     }
 
     static {
-        System.loadLibrary("native_functions");
+        System.loadLibrary("moss");
     }
 }

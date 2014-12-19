@@ -62,6 +62,6 @@ public enum FSJni implements DataProvider {
     private Map<String, StatFS> stats;
 
     static {
-        System.loadLibrary("native_functions");
+        System.loadLibrary("moss");
     }
 }

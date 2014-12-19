@@ -78,6 +78,6 @@ public enum PortMonProvider implements DataProvider {
     public native String monpeek(int startPort, int endPort, int item, int index);
 
     static {
-        System.loadLibrary("portmon");
+        System.loadLibrary("moss");
     }
 }

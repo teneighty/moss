@@ -21,6 +21,6 @@ public class Time extends AbsMossObject {
     private String mFormat;
 
     static {
-        System.loadLibrary("native_functions");
+        System.loadLibrary("moss");
     }
 }
