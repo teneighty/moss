@@ -2,9 +2,7 @@
 <manifest 
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="org.mosspaper"
-    android:versionName="0.5"
-    android:versionCode="5">
+    package="org.mosspaper">
 
     <uses-sdk android:minSdkVersion="8" />
     <uses-feature android:name="android.software.live_wallpaper" />
