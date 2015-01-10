@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen 
         xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res/org.mosspaper.prefs"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:title="@string/settings"
         android:key="settings">
 
@@ -35,6 +35,37 @@
             android:title="@string/font_size_title"
             android:singleLine="true"
             android:numeric="decimal"
+            />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/font_cat">
+
+        <org.mosspaper.prefs.SizePreference
+            android:key="font_size"
+            android:title="@string/font_size_title"
+            android:singleLine="true"
+            android:numeric="decimal"
+            />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/gap_cat">
+
+        <org.mosspaper.prefs.SizePreference
+            android:key="gap_x"
+            android:title="@string/gap_x"
+            android:singleLine="true"
+            android:numeric="decimal"
+            app:min="0" app:max="500"
+            />
+
+        <org.mosspaper.prefs.SizePreference
+            android:key="gap_y"
+            android:title="@string/gap_y"
+            android:singleLine="true"
+            android:numeric="decimal"
+            app:min="0" app:max="500"
             />
 
     </PreferenceCategory>

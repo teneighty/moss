@@ -26,7 +26,7 @@ public class PrefUtils {
                 continue;
             }
             CharSequence value = null;
-            if ("font_size".equals(key)) {
+            if ("font_size".equals(key) || "gap_x".equals(key) || "gap_y".equals(key)) {
                 value = String.format("%.0f", prefs.getFloat(key, -1.0f));
             } else if ("update_interval".equals(key)) {
                 value = Common.formatSecondsShort((long) prefs.getFloat(key, -1.0f));
@@ -61,6 +61,12 @@ public class PrefUtils {
         }
         if (-1.0f == prefs.getFloat("font_size", -1.0f)) {
             edit.putFloat("font_size", env.getConfig().getFontSize());
+        }
+        if (-1.0f == prefs.getFloat("gap_x", -1.0f)) {
+            edit.putFloat("gap_x", env.getGapX());
+        }
+        if (-1.0f == prefs.getFloat("gap_y", -1.0f)) {
+            edit.putFloat("gap_y", env.getGapY());
         }
         if (-1 == prefs.getInt("background_color", -1)) {
             int c = env.getConfig().getBackgroundColor();

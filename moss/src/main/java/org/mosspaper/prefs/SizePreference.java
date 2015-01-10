@@ -20,14 +20,17 @@ package org.mosspaper.prefs;
 import org.mosspaper.Config;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.preference.DialogPreference;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
+import android.widget.SeekBar;
 import android.widget.TextView;
+
+import org.mosspaper.R;
 
 /**
  * @author kenny
@@ -55,6 +58,11 @@ public class SizePreference extends DialogPreference implements OnSeekBarChangeL
 
 	private void setupLayout(Context context, AttributeSet attrs) {
         setPersistent(true);
+        TypedArray a = context.obtainStyledAttributes(attrs,
+            R.styleable.SizePreference);
+        
+        mMin = a.getInteger(R.styleable.SizePreference_min, mMin);
+        mMax = a.getInteger(R.styleable.SizePreference_max, mMax);
 	}
 
 	@Override
@@ -72,8 +80,8 @@ public class SizePreference extends DialogPreference implements OnSeekBarChangeL
 
         mProgress = (int) (getPersistedFloat(Config.CONF_FONT_SIZE_VALUE));
 		SeekBar sb = new SeekBar(getContext());
-		sb.setMax(MAX - MIN);
-		sb.setProgress(mProgress - MIN);
+		sb.setMax(mMax - mMin);
+		sb.setProgress(mProgress - mMin);
 		sb.setPadding(10, 10, 10, 10);
 		sb.setOnSeekBarChangeListener(this);
         layout.addView(sb);
@@ -98,13 +106,13 @@ public class SizePreference extends DialogPreference implements OnSeekBarChangeL
 	}
 
     private int adjustProgress(int progress) {
-        return progress + MIN;
+        return progress + mMin;
     }
 
 	public void onStartTrackingTouch(SeekBar seekBar) { }
 
 	public void onStopTrackingTouch(SeekBar seekBar) { }
 
-    private final int MIN = 8;
-    private final int MAX = 50;
+    private int mMin = 8;
+    private int mMax = 100;
 }

@@ -180,6 +180,9 @@ public class Env {
             if (modColor != -1) {
                 modColor |= 0xff000000;
             }
+
+            gapX = getFloat(prefs, "gap_x", config.getGapX());
+            gapY = getFloat(prefs, "gap_y", config.getGapY());
         }
 
         if (null != config.getBackgroundImagePath()) {
@@ -191,6 +194,14 @@ public class Env {
             }
         }
         lineHeight = paint.getTextSize();
+    }
+
+    private float getFloat(SharedPreferences prefs, String key, float def) {
+        try {
+            return prefs.getFloat(key, def);
+        } catch (Exception e) {
+            return def;
+        }
     }
 
     public void buildDataProviders() {
@@ -241,23 +252,23 @@ public class Env {
             float mossHeight = getMaxY();
             switch (config.getHAlign()) {
             case RIGHT:
-                startx = (getPaperWidth() - mossWidth) - config.getGapX();
+                startx = (getPaperWidth() - mossWidth) - gapX;
                 break;
             case MIDDLE:
                 startx = (getPaperWidth() - mossWidth) / 2.0f;
                 break;
             default:
-                startx = config.getGapX();
+                startx = gapX;
             }
             switch (config.getVAlign()) {
             case BOTTOM:
-                starty = getPaperHeight() - mossHeight - config.getGapY();
+                starty = getPaperHeight() - mossHeight - gapY;
                 break;
             case MIDDLE:
                 starty = (getPaperHeight() - mossHeight) / 2.0f;
                 break;
             default:
-                starty = config.getGapY();
+                starty = gapY;
             }
         }
         c.translate(startx, starty);
@@ -310,6 +321,14 @@ public class Env {
 
     public float getMaxX() {
         return maxX;
+    }
+
+    public float getGapX() {
+        return gapX;
+    }
+
+    public float getGapY() {
+        return gapY;
     }
 
     public void setY(float y) {
@@ -467,6 +486,9 @@ public class Env {
      * align the canvas */
     private float maxX;
     private float maxY;
+
+    private float gapX;
+    private float gapY;
 
     private float lineHeight;
     private Canvas canvas;

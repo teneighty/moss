@@ -24,6 +24,10 @@
     <string name="font_size_title">Font Size</string>
     <string name="font_face_title">Font Family</string>
 
+    <string name="gap_cat">Gap</string>
+    <string name="gap_x">X</string>
+    <string name="gap_y">Y</string>
+
     <string name="pick_a_color">Select a color: </string>
     <string name="dia_errors_title">Configuration Errors</string>
 
