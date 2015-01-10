@@ -106,5 +106,5 @@ public class SizePreference extends DialogPreference implements OnSeekBarChangeL
 	public void onStopTrackingTouch(SeekBar seekBar) { }
 
     private final int MIN = 8;
-    private final int MAX = 30;
+    private final int MAX = 50;
 }
