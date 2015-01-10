@@ -53,7 +53,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data android:scheme="content" />
                 <data android:pathPattern=".*\\.mpk" />
-                <data android:mimeType="*/*" />
+                <data android:mimeType="application/zip" />
             </intent-filter>
         </activity>
 
