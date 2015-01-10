@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.BatteryManager;
+import android.util.Log;
 
 import java.util.List;
 import java.util.Iterator;
@@ -35,7 +36,11 @@ public enum BatteryReceiver implements DataProvider {
     public void update(State state) { }
 
     public void destroy(Context context) {
-        context.unregisterReceiver(this.receiver);
+        try {
+            context.unregisterReceiver(this.receiver);
+        } catch (Exception e) {
+            Log.e(TAG, "unregisterReceiver", e);
+        }
     }
 
     public boolean runWhenInvisible() {
