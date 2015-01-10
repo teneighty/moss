@@ -271,22 +271,31 @@ public class PackageListActivity extends ListActivity {
 
         protected Boolean doInBackground(Uri... uris) {
             publishProgress(getString(R.string.beginning_download));
+            Uri uri = uris[0];
+            String defname = null;
+            String sourceUrl = null;
             try {
-                URL url = new URL(uris[0].toString());
+                if ("content".equals(uri.getScheme())) {
+                    defname = "downloads";
+                    sourceUrl = uri.toString();
+                } else {
+                    URL url = new URL(uri.toString());
+                    defname = url.getHost() + "_" + 
+                            url.toString().replaceAll(".*/([^/]+)\\." + EXT + "$", "$1");
+                    sourceUrl = url.toString();
+                }
                 File mossDir = new File(Environment.getExternalStorageDirectory(), "moss");
-                String defname = url.getHost() + "_" + 
-                                 url.toString().replaceAll(".*/([^/]+)\\." + EXT + "$", "$1");
+                if (!mossDir.exists()) {
+                    mossDir.mkdirs();
+                }
 
                 PackageDatabase.Package config = new PackageDatabase.Package();
                 config.asset = false;
                 config.name = defname;
-                config.sourceUrl = url.toString();
+                config.sourceUrl = sourceUrl;
 
-                if (!mossDir.exists()) {
-                    mossDir.mkdirs();
-                }
-                try  {
-                    download(url, mossDir, config);
+                try {
+                    fetchFile(uri, mossDir, config);
 
                     PackageDatabase db = new PackageDatabase(PackageListActivity.this);
                     db.storePackage(config);
@@ -305,14 +314,20 @@ public class PackageListActivity extends ListActivity {
             return true;
         }
 
-        private void download(URL url, File mossDir, PackageDatabase.Package config) throws IOException {
+        private void fetchFile(Uri uri, File mossDir, PackageDatabase.Package config) throws IOException, MalformedURLException {
             File zipFile = new File(mossDir, config.name + "." + EXT);
             File tmpDir = new File(mossDir, "tmp-" + config.name);
 
             BufferedInputStream dis = null;
             FileOutputStream os = null;
             try {
-                dis = new BufferedInputStream((InputStream) url.getContent());
+                if ("content".equals(uri.getScheme())) {
+                    dis = new BufferedInputStream(
+                                getContentResolver().openInputStream(uri));
+                } else {
+                    URL url = new URL(uri.toString());
+                    dis = new BufferedInputStream((InputStream) url.getContent());
+                }
                 os = new FileOutputStream(zipFile);
 
                 int br;
