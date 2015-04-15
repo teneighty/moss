@@ -10,10 +10,12 @@ import org.mosspaper.util.RRDList;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.List;
 import java.util.ArrayList;
-import java.util.Map;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -75,6 +77,7 @@ public enum ProcNetDev implements DataProvider {
     public synchronized void update(State state) {
         String devStr;
         try {
+            List<Device> genericDevs = new ArrayList<Device>();
             BufferedReader reader = new BufferedReader(new FileReader("/proc/net/dev"), INIT_BUFFER);
             long ts = System.currentTimeMillis();
             try {
@@ -87,18 +90,21 @@ public enum ProcNetDev implements DataProvider {
                         Log.e(TAG, "Regex did not match on /proc/net/dev");
                     } else {
                         Device device = devices.get(m.group(1));
-                        /* The device tiwlan0 migth not exist. Usually the user
-                         * means wlan0 in that case. This code checks for that case. */ 
-                        if (device == null 
-                                && WLAN0.equals(m.group(1)) 
-                                && devices.get(TIWLAN0) != null) {
-                            device = devices.get(TIWLAN0);
+                        if (device == null) {
+                            registerDevice(m.group(1));
+                            device = devices.get(m.group(1));
                         }
                         if (null == device) {
                             continue;
                         }
                         device.totalDown = Common.toLong(m.group(2));
                         device.totalUp = Common.toLong(m.group(10));
+                        if (device.totalDown > 0 || device.totalUp > 0) {
+                            // Ignore loopback for generic devices
+                            if (!"lo".equals(device.deviceName)) {
+                                genericDevs.add(device);
+                            }
+                        }
 
                         if (true) {
                             DeviceStat stat = new DeviceStat();
@@ -116,6 +122,16 @@ public enum ProcNetDev implements DataProvider {
                         device.timestamp = ts;
                     }
                 }
+                Collections.sort(genericDevs, new Comparator<Device>() {
+                    public int compare(Device d1, Device d2) {
+                        return (int) ((d2.totalDown + d2.totalUp) - (d1.totalDown + d1.totalUp));
+                    }
+                });
+                int i = 0;
+                for (Device d : genericDevs) {
+                    devices.put("dev" + i, d);
+                    i++;
+                }
             } finally {
                 reader.close();
             }
@@ -132,6 +148,15 @@ public enum ProcNetDev implements DataProvider {
             }
         } catch (IOException e) {
             Log.e(TAG, "IO Exception getting /proc/net/dev", e);
+        }
+    }
+
+    public synchronized String getDevName(String deviceName) {
+        Device d = devices.get(deviceName);
+        if (null != d) {
+            return d.deviceName;
+        } else {
+            return "";
         }
     }
 

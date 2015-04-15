@@ -206,6 +206,7 @@ public class TextObjects {
         /* TODO: fix battery time */
         // TEXT_OBJECTS.put("battery_time", BatteryTime.class);
 
+        TEXT_OBJECTS.put("devname", Args.def(DevName.class));
         TEXT_OBJECTS.put("downspeed", Args.def(DownSpeed.class));
         TEXT_OBJECTS.put("downspeedgraph", Args.def(DownSpeedGraph.class));
         TEXT_OBJECTS.put("totaldown", Args.def(TotalDown.class));
