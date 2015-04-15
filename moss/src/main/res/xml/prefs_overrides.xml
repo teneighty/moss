@@ -39,17 +39,6 @@
 
     </PreferenceCategory>
 
-    <PreferenceCategory android:title="@string/font_cat">
-
-        <org.mosspaper.prefs.SizePreference
-            android:key="font_size"
-            android:title="@string/font_size_title"
-            android:singleLine="true"
-            android:numeric="decimal"
-            />
-
-    </PreferenceCategory>
-
     <PreferenceCategory android:title="@string/gap_cat">
 
         <org.mosspaper.prefs.SizePreference
