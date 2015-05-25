@@ -79,7 +79,16 @@ public class PackageDatabase extends SQLiteOpenHelper {
 
     @Override
     public final void onUpgrade(SQLiteDatabase db,
-                                int oldVersion, int newVersion) { }
+                                int oldVersion, int newVersion) {
+        if (oldVersion < 2) {
+            Package ebuprof = new Package();
+            ebuprof.name = mContext.getString(R.string.config_ebuprof);
+            ebuprof.desc = mContext.getString(R.string.config_ebuprof_desc);
+            ebuprof.confFile = "ebuprof.conf";
+            ebuprof.asset = true;
+            storePackage(db, ebuprof);
+        }
+    }
 
     public void storePackage(Package config) {
         synchronized (DB_LOCK) {
@@ -90,9 +99,9 @@ public class PackageDatabase extends SQLiteOpenHelper {
 
     private void storePackage(SQLiteDatabase db, Package config) {
         Cursor c =
-            db.query(TABLE_NAME, null, 
-                    " name = ? AND source_url = ? ", 
-                    new String[] { String.valueOf(config.name), String.valueOf(config.sourceUrl) }, 
+            db.query(TABLE_NAME, null,
+                    " name = ? AND source_url = ? ",
+                    new String[] { String.valueOf(config.name), String.valueOf(config.sourceUrl) },
                     null, null, null);
         if (c.moveToNext()) {
             config.id = c.getLong(c.getColumnIndexOrThrow("_id"));
@@ -125,7 +134,7 @@ public class PackageDatabase extends SQLiteOpenHelper {
 
     private void updatePackage(SQLiteDatabase db, Package config) {
         ContentValues values = buildContentValues(config);
-        db.update(TABLE_NAME, values, 
+        db.update(TABLE_NAME, values,
                 "_id = ?", new String[] { String.valueOf(config.id) });
     }
 
@@ -157,7 +166,7 @@ public class PackageDatabase extends SQLiteOpenHelper {
         synchronized (DB_LOCK) {
             SQLiteDatabase db = this.getReadableDatabase();
 
-            /* Return package list ordered by name case insensitive */ 
+            /* Return package list ordered by name case insensitive */
             Cursor c =
                 db.query(TABLE_NAME, null, null, null, null, null, "lower(name)", null);
             configs = createPackage(c);
@@ -196,7 +205,7 @@ public class PackageDatabase extends SQLiteOpenHelper {
     private Context mContext;
 
     static final String DB_NAME = "configurations";
-    static final int DB_VERSION = 1;
+    static final int DB_VERSION = 2;
 
     static final String TABLE_NAME = "configurations";
 
